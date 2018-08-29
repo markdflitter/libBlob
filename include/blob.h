@@ -107,19 +107,22 @@ class Movement
 class Blob {
 public:
 	Blob (std::function<double (double)> rnd, double x, double y, double speed, double smell) :
-		_rnd (rnd), _p (x, y), _speed (speed), _smell (smell)
+		_rnd (rnd), _speed (speed), _smell (smell)
 	{
+		_points.push_back (Pt<double> (x,y));
 	}
 
 	friend std::ostream& operator<<(std::ostream& s, const Blob& b);
 
-	double x () const {return _p.x ();}
-	double y () const {return _p.y ();}
+	double x () const {return _points.back ().x ();}
+	double y () const {return _points.back ().y ();}
+
+	std::vector<Pt<double>> history () const {return _points;}
 
 	double distance (const Blob& other) const
 	{
-		double dx = -_p.x () + other.x ();
-		double dy = -_p.y () + other.y ();
+		double dx = other.x () - x();
+		double dy = other.y () - y();
 		double d = sqrt ((dx * dx) + (dy * dy));
 
 		return d; 
@@ -145,8 +148,12 @@ public:
 		_previousAngleInRadians = angleInRadians;
 
 		double denormalisedMoveDirection = _previousAngleInRadians - M_PI / 2;
-		_p.x () += speed * cos (denormalisedMoveDirection);
-		_p.y () += speed * sin (denormalisedMoveDirection);
+		double newX = x () + speed * cos (denormalisedMoveDirection);
+		double newY = y () + speed * sin (denormalisedMoveDirection);
+			
+		_points.push_back (Pt<double> (newX, newY));
+		while (_points.size () > 100)
+			_points.erase (_points.begin (), _points.begin () + 1);
 	}
 
         Movement wander (const std::vector<Blob>& others)
@@ -208,7 +215,7 @@ public:
 */
 private:
 	std::function<double(double)> _rnd;
-	Pt<double> _p;
+	std::vector<Pt<double>> _points;
 
 	double _speed;
         double _smell;
@@ -216,20 +223,20 @@ private:
 	double _previousAngleInRadians = 0;
 };
 
-std::ostream& operator<< (std::ostream& s, const Blob& b)
+inline std::ostream& operator<< (std::ostream& s, const Blob& b)
 {
 	s << b.x () << "," << b.y ();
 	return s; 
 }
 
-std::ostream& operator<< (std::ostream& s, const Movement& m)
+inline std::ostream& operator<< (std::ostream& s, const Movement& m)
 {
 	s << m._reason << "," << m._speed << "," << 360 * m._angleInRadians / (2 * M_PI);
 	return s; 
 }
 
 
-void Movement::apply ()
+inline void Movement::apply ()
 {
 	_blob->move (_speed, _angleInRadians);
 }
