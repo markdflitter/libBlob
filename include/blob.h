@@ -1,3 +1,6 @@
+#ifndef INCLUDED_BLOB_H
+#define INCLUDED_BLOB_H
+
 #include "pt.h"
 #include <functional>
 #include <iostream>
@@ -172,10 +175,7 @@ public:
 		double dy = -_p.y () + other.y ();
 		double d = sqrt ((dx * dx) + (dy * dy)) / 100.0;
 
-//		std::cout << d << ",";
-
 		if (_dead) {
-			std::cout << "dead,";
 			return;
 		}
 
@@ -183,21 +183,18 @@ public:
 
 		if ((sqrt (d) < 1) && _c) {
 			_dead = true;    
-//			std::cout << "dying,";
 		}
 		else if (can_smell && _a) {
 			_previousAngleInRadians = atan2 (dy,dx); 
 
 			_p.x () += _speed * cos (_previousAngleInRadians);
 			_p.y () += _speed * sin (_previousAngleInRadians);
-//			std::cout << "hunting,";
 		}
 		else if (can_smell && _c) {
 			_previousAngleInRadians = atan2 (dy,dx) + M_PI; 
 
 			_p.x () += _speed * cos (_previousAngleInRadians);
 			_p.y () += _speed * sin (_previousAngleInRadians);
-//			std::cout << "running,";
 		}
 		else {	
 			float n = _rnd (_previousAngleInRadians);
@@ -205,10 +202,7 @@ public:
 			_p.x () += _speed * cos (n);
 			_p.y () += _speed * sin(n);
 
-			//    std::cout << _p.x () / 100 << ", " << _p.y () / 100  << '\n';
-
 			_previousAngleInRadians = n;
-//			std::cout << "wandering,";    
 		}
 	}
 */
@@ -240,4 +234,4 @@ void Movement::apply ()
 	_blob->move (_speed, _angleInRadians);
 }
 
-
+#endif
