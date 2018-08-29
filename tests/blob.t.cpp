@@ -341,6 +341,45 @@ TEST (Blob, moveNegativeY)
 	ASSERT_TRUE (fabs (b1.y () - -9.8) < threshold);
 }
 
+
+TEST (Blob, history)
+{
+	Blob b1 {fixed_angle, 10, 20, 5, 0};
+	b1.move (5, 0);
+	b1.move (5, 0);
+	b1.move (5, M_PI / 2);
+
+	std::vector<Pt<double>> history = b1.history ();
+	ASSERT_TRUE (history.size () == 4);
+	ASSERT_TRUE (history[0].x () == 10);
+ 	ASSERT_TRUE (history[0].y () == 20);
+	ASSERT_TRUE (history[1].x () == 10);
+ 	ASSERT_TRUE (history[1].y () == 15);
+	ASSERT_TRUE (history[2].x () == 10);
+ 	ASSERT_TRUE (history[2].y () == 10);
+	ASSERT_TRUE (history[3].x () == 15);
+ 	ASSERT_TRUE (history[3].y () == 10);
+}
+
+TEST (Blob, history_length)
+{
+	Blob b1 {fixed_angle, 10, 20, 5, 0};
+	for (int i = 0; i < 200; i++)
+	{
+		b1.move (5, 0);
+	}
+	
+	std::vector<Pt<double>> history = b1.history ();
+	ASSERT_TRUE (history.size () == 100);
+	
+	ASSERT_TRUE (history[0].x () == 10);
+ 	ASSERT_TRUE (history[0].y () == -485);
+	
+	ASSERT_TRUE (history[99].x () == 10);
+ 	ASSERT_TRUE (history[99].y () == -980);
+
+}
+
 TEST (Blob, movement)
 {
 	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
