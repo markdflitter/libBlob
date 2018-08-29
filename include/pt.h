@@ -1,5 +1,5 @@
-#ifndef PT_H
-#define PT_H
+#ifndef INCLUDED_PT_H
+#define INCLUDED_PT_H
 
 template <typename T>
 class Pt {
