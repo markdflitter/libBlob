@@ -1,3 +1,6 @@
+#ifndef PT_H
+#define PT_H
+
 template <typename T>
 class Pt {
 public:
@@ -14,3 +17,4 @@ private:
   T _y;
 };
 
+#endif
