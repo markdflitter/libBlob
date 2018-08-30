@@ -116,6 +116,8 @@ public:
 
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
+	int speed () const {return _speed;}
+	int smell () const {return _smell;}
 
 	std::vector<Pt<double>> history () const {return _points;}
 
