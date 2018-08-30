@@ -106,19 +106,20 @@ class Movement
 
 class Blob {
 public:
-	Blob (std::function<double (double)> rnd, double x, double y, double speed, double smell) :
-		_rnd (rnd), _speed (speed), _smell (smell)
+	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double smell) :
+		_name (name), _rnd (rnd), _speed (speed), _smell (smell)
 	{
 		_points.push_back (Pt<double> (x,y));
 	}
 
 	friend std::ostream& operator<<(std::ostream& s, const Blob& b);
 
+	std::string name () const {return _name;}
+	std::string state () const {return _state;}
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
 	int speed () const {return _speed;}
 	int smell () const {return _smell;}
-
 	std::vector<Pt<double>> history () const {return _points;}
 
 	double distance (const Blob& other) const
@@ -145,7 +146,7 @@ public:
 		return inRange (other, _smell);
 	}
 
-        void move (double speed, double angleInRadians) 
+        void move (double speed, double angleInRadians, const std::string& newState) 
 	{
 		_previousAngleInRadians = angleInRadians;
 
@@ -156,6 +157,8 @@ public:
 		_points.push_back (Pt<double> (newX, newY));
 		while (_points.size () > 100)
 			_points.erase (_points.begin (), _points.begin () + 1);
+	
+		_state = newState;
 	}
 
         Movement wander (const std::vector<Blob>& others)
@@ -219,6 +222,8 @@ private:
 	std::function<double(double)> _rnd;
 	std::vector<Pt<double>> _points;
 
+	std::string _name;
+	std::string _state;
 	double _speed;
         double _smell;
 
@@ -240,7 +245,7 @@ inline std::ostream& operator<< (std::ostream& s, const Movement& m)
 
 inline void Movement::apply ()
 {
-	_blob->move (_speed, _angleInRadians);
+	_blob->move (_speed, _angleInRadians, _reason);
 }
 
 #endif
