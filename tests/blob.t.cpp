@@ -11,15 +11,19 @@ double fixed_angle (double previousMoveDirection)
 
 TEST (Blob, create) 
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 0, 0};
+	Blob b1 {fixed_angle, 10.1, 20.2, 100, 200};
 
 	ASSERT_EQ (b1.x (), 10.1);
 	ASSERT_EQ (b1.y (), 20.2);
+	ASSERT_EQ (b1.speed (), 100);
+	ASSERT_EQ (b1.smell (), 200);
 
-	Blob b2 {fixed_angle, -10.1, -20.2, 0, 0};
+	Blob b2 {fixed_angle, -10.1, -20.2, 300, 400};
 
 	ASSERT_EQ (b2.x (), -10.1);
 	ASSERT_EQ (b2.y (), -20.2);
+	ASSERT_EQ (b2.speed (), 300);
+	ASSERT_EQ (b2.smell (), 400);
 }
 
 TEST(Movement, equal)
