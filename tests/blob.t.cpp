@@ -11,15 +11,17 @@ double fixed_angle (double previousMoveDirection)
 
 TEST (Blob, create) 
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 100, 200};
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 100, 200};
 
+	ASSERT_EQ (b1.name (), "mark");
 	ASSERT_EQ (b1.x (), 10.1);
 	ASSERT_EQ (b1.y (), 20.2);
 	ASSERT_EQ (b1.speed (), 100);
 	ASSERT_EQ (b1.smell (), 200);
 
-	Blob b2 {fixed_angle, -10.1, -20.2, 300, 400};
+	Blob b2 {"annette", fixed_angle, -10.1, -20.2, 300, 400};
 
+	ASSERT_EQ (b2.name (), "annette");
 	ASSERT_EQ (b2.x (), -10.1);
 	ASSERT_EQ (b2.y (), -20.2);
 	ASSERT_EQ (b2.speed (), 300);
@@ -28,8 +30,8 @@ TEST (Blob, create)
 
 TEST(Movement, equal)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 0, 0};
-	Blob b2 {fixed_angle, 10.1, 20.2, 0, 0};
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 0, 0};
+	Blob b2 {"annette", fixed_angle, 10.1, 20.2, 0, 0};
 
 	Movement m (&b1, "a", 10, 20);
 	ASSERT_TRUE (m == m);
@@ -49,8 +51,8 @@ TEST(Movement, equal)
 
 TEST(Movement, not_equal)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 0, 0};
-	Blob b2 {fixed_angle, 10.1, 20.2, 0, 0};
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 0, 0};
+	Blob b2 {"annette", fixed_angle, 10.1, 20.2, 0, 0};
 
 	Movement m (&b1, "a", 10, 20);
 	ASSERT_FALSE (m != m);
@@ -71,7 +73,7 @@ TEST(Movement, not_equal)
 
 TEST(Movement, copy_construct)
 {
-  	Blob b1 {fixed_angle, 10.1, 20.2, 0, 0};
+  	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 0, 0};
 	Movement m (&b1, "a", 10, 20);
 	Movement m2 (m);
 
@@ -80,7 +82,7 @@ TEST(Movement, copy_construct)
 
 TEST(Movement, move_construct)
 {
-  	Blob b1 {fixed_angle, 10.1, 20.2, 0, 0};
+  	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 0, 0};
 	Movement m (&b1, "a", 10, 20);
 	Movement m2 (Movement (&b1, "a", 10, 20));
 	
@@ -89,7 +91,7 @@ TEST(Movement, move_construct)
 
 TEST(Movement, assign)
 {
-  	Blob b1 {fixed_angle, 10.1, 20.2, 0, 0};
+  	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 0, 0};
 	Movement m (&b1, "a", 10, 20);
 	Movement m2 (&b1, "c", 10, 20);
 	m2 = m;
@@ -99,7 +101,7 @@ TEST(Movement, assign)
 
 TEST(Movement, move_assign)
 {
-  	Blob b1 {fixed_angle, 10.1, 20.2, 0, 0};
+  	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 0, 0};
 	Movement m (&b1, "a", 10, 20);
 	Movement m2 (&b1, "c", 10, 20);
 	m2 = Movement (&b1, "a", 10, 20);
@@ -109,8 +111,8 @@ TEST(Movement, move_assign)
 
 TEST (Blob, distance0)
 {
-	Blob b1 {fixed_angle, 10, 10, 0, 0};
-	Blob b2 {fixed_angle, 10, 10, 0, 0};
+	Blob b1 {"mark", fixed_angle, 10, 10, 0, 0};
+	Blob b2 {"annette", fixed_angle, 10, 10, 0, 0};
 
 	ASSERT_EQ (b1.distance (b2), 0);
 	ASSERT_EQ (b2.distance (b1), 0);
@@ -118,8 +120,8 @@ TEST (Blob, distance0)
 
 TEST (Blob, distance345)
 {
-	Blob b1 {fixed_angle, 0, 0, 0, 0};
-	Blob b2 {fixed_angle, 3, 4, 0, 0};
+	Blob b1 {"mark", fixed_angle, 0, 0, 0, 0};
+	Blob b2 {"annette", fixed_angle, 3, 4, 0, 0};
 
 	ASSERT_EQ (b1.distance (b2), 5);
 	ASSERT_EQ (b2.distance (b1), 5);
@@ -127,8 +129,8 @@ TEST (Blob, distance345)
 
 TEST (Blob, distancen345)
 {
-	Blob b1 {fixed_angle, 0, 0, 0, 0};
-	Blob b2 {fixed_angle, -3, -4, 0, 0};
+	Blob b1 {"mark", fixed_angle, 0, 0, 0, 0};
+	Blob b2 {"annette", fixed_angle, -3, -4, 0, 0};
 
 	ASSERT_EQ (b1.distance (b2), 5);
 	ASSERT_EQ (b2.distance (b1), 5);
@@ -136,8 +138,8 @@ TEST (Blob, distancen345)
 
 TEST (Blob, distance345_2)
 {
-	Blob b1 {fixed_angle, 3, 4, 0, 0};
-	Blob b2 {fixed_angle, 6, 8, 0, 0};
+	Blob b1 {"mark", fixed_angle, 3, 4, 0, 0};
+	Blob b2 {"annette", fixed_angle, 6, 8, 0, 0};
 
 	ASSERT_EQ (b1.distance (b2), 5);
 	ASSERT_EQ (b2.distance (b1), 5);
@@ -145,8 +147,8 @@ TEST (Blob, distance345_2)
 
 TEST (Blob, inRangex)
 {
-	Blob b1 {fixed_angle, 0, 0, 0, 0};
-	Blob b2 {fixed_angle, 10, 0, 0, 0};
+	Blob b1 {"mark", fixed_angle, 0, 0, 0, 0};
+	Blob b2 {"annette", fixed_angle, 10, 0, 0, 0};
 
 	ASSERT_FALSE (b1.inRange (b2, 9));
 	ASSERT_FALSE (b2.inRange (b1, 9));
@@ -157,8 +159,8 @@ TEST (Blob, inRangex)
 
 TEST (Blob, inRangey)
 {
-	Blob b1 {fixed_angle, 0, 0, 0, 0};
-	Blob b2 {fixed_angle, 0, 10, 0, 0};
+	Blob b1 {"mark", fixed_angle, 0, 0, 0, 0};
+	Blob b2 {"annette", fixed_angle, 0, 10, 0, 0};
 
 	ASSERT_FALSE (b1.inRange (b2, 9));
 	ASSERT_FALSE (b2.inRange (b1, 9));
@@ -169,8 +171,8 @@ TEST (Blob, inRangey)
 
 TEST (Blob, inRangexy)
 {
-	Blob b1 {fixed_angle, 3, 4, 0, 0};
-	Blob b2 {fixed_angle, 6, 8, 0, 0};
+	Blob b1 {"mark", fixed_angle, 3, 4, 0, 0};
+	Blob b2 {"annette", fixed_angle, 6, 8, 0, 0};
 
 	ASSERT_FALSE (b1.inRange (b2, 4));
 	ASSERT_FALSE (b2.inRange (b1, 4));
@@ -181,8 +183,8 @@ TEST (Blob, inRangexy)
 
 TEST (Blob, sameSquareTrue)
 {
-	Blob b1 {fixed_angle, 10, 20, 0, 0};
-	Blob b2 {fixed_angle, 10, 20, 0, 0};
+	Blob b1 {"mark", fixed_angle, 10, 20, 0, 0};
+	Blob b2 {"annette", fixed_angle, 10, 20, 0, 0};
 
 	ASSERT_TRUE (b1.sameSquare (b2));
 	ASSERT_TRUE (b2.sameSquare (b1));
@@ -190,8 +192,8 @@ TEST (Blob, sameSquareTrue)
 
 TEST (Blob, sameSquareFalse)
 {
-	Blob b1 {fixed_angle, 10, 20, 0, 0};
-	Blob b2 {fixed_angle, 20, 10, 0, 0};
+	Blob b1 {"mark", fixed_angle, 10, 20, 0, 0};
+	Blob b2 {"annette", fixed_angle, 20, 10, 0, 0};
 
 	ASSERT_FALSE (b1.sameSquare (b2));
 	ASSERT_FALSE (b2.sameSquare (b1));
@@ -199,8 +201,8 @@ TEST (Blob, sameSquareFalse)
 
 TEST (Blob, canSmellTrue)
 {
-	Blob b1 {fixed_angle, 3, 4, 100, 5};
-	Blob b2 {fixed_angle, 6, 8, 100, 5};
+	Blob b1 {"mark", fixed_angle, 3, 4, 100, 5};
+	Blob b2 {"annette", fixed_angle, 6, 8, 100, 5};
 
 	ASSERT_TRUE (b1.canSmell (b2));
 	ASSERT_TRUE (b2.canSmell (b1));
@@ -208,8 +210,8 @@ TEST (Blob, canSmellTrue)
 
 TEST (Blob, canSmellFalse)
 {
-	Blob b1 {fixed_angle, 3, 4, 0, 4};
-	Blob b2 {fixed_angle, 6, 8, 0, 4};
+	Blob b1 {"mark", fixed_angle, 3, 4, 0, 4};
+	Blob b2 {"annette", fixed_angle, 6, 8, 0, 4};
 
 	ASSERT_FALSE (b1.canSmell (b2));
 	ASSERT_FALSE (b2.canSmell (b1));
@@ -217,8 +219,8 @@ TEST (Blob, canSmellFalse)
 
 TEST (Blob, canSmellBoth)
 {
-	Blob b1 {fixed_angle, 3, 4, 0, 4};
-	Blob b2 {fixed_angle, 6, 8, 0, 5};
+	Blob b1 {"mark", fixed_angle, 3, 4, 0, 4};
+	Blob b2 {"annette", fixed_angle, 6, 8, 0, 5};
 
 	ASSERT_FALSE (b1.canSmell (b2));
 	ASSERT_TRUE (b2.canSmell (b1));
@@ -226,132 +228,148 @@ TEST (Blob, canSmellBoth)
 
 TEST (Blob, moveN)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (5, 0);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (5, 0, "N");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 15.2) < threshold);
+	ASSERT_TRUE (b1.state () == "N");
 }
 
 TEST (Blob, moveFast)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (10, 0);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (10, 0, "N");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 10.2) < threshold);
+	ASSERT_TRUE (b1.state () == "N");
 }
 
 TEST (Blob, moveS)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (5, M_PI);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (5, M_PI, "S");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 25.2) < threshold);
+	ASSERT_TRUE (b1.state () == "S");
 
-	b1.move (5, -M_PI);
+	b1.move (5, -M_PI, "S");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 30.2) < threshold);
+	ASSERT_TRUE (b1.state () == "S");
 }
+
 
 TEST (Blob, moveE)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2,5 , 0};
-	b1.move (5, M_PI / 2);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2,5 , 0};
+	b1.move (5, M_PI / 2, "E");
 
 	ASSERT_TRUE (fabs (b1.x () - 15.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 20.2) < threshold);
+	ASSERT_TRUE (b1.state () == "E");
 }
 
 TEST (Blob, moveW)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (5, 3 * M_PI / 2);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (5, 3 * M_PI / 2, "W");
 
 	ASSERT_TRUE (fabs (b1.x () - 5.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 20.2) < threshold);
+	ASSERT_TRUE (b1.state () == "W");
 
-	b1.move (5, -M_PI / 2);
+	b1.move (5, -M_PI / 2, "W");
 
 	ASSERT_TRUE (fabs (b1.x () - 0.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 20.2) < threshold);
+	ASSERT_TRUE (b1.state () == "W");
 }
 
 TEST (Blob, moveNE)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (5, M_PI / 4);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (5, M_PI / 4,"NE");
 
 	ASSERT_TRUE (fabs (b1.x () - 13.635533905932737) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 16.664466094067262) < threshold);
+	ASSERT_TRUE (b1.state () == "NE");
 }
 
 TEST (Blob, moveNW)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (5, -M_PI / 4);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (5, -M_PI / 4, "NW");
 
 	ASSERT_TRUE (fabs (b1.x () - 06.564466094067262) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 16.664466094067262) < threshold);
+	ASSERT_TRUE (b1.state () == "NW");
 
-	Blob b2 {fixed_angle, 10.1, 20.2, 5, 0};
-	b2.move (5, 7 * M_PI / 4);
+	Blob b2 {"annette", fixed_angle, 10.1, 20.2, 5, 0};
+	b2.move (5, 7 * M_PI / 4, "NW");
 	
 	ASSERT_TRUE (fabs (b2.x () - 06.564466094067262) < threshold);
 	ASSERT_TRUE (fabs (b2.y () - 16.664466094067262) < threshold);
+	ASSERT_TRUE (b1.state () == "NW");
 }
 
 TEST (Blob, moveSE)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (5, 3 * M_PI / 4);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (5, 3 * M_PI / 4, "SE");
 
 	ASSERT_TRUE (fabs (b1.x () - 13.63553390593273) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 23.73553390593273) < threshold);
+	ASSERT_TRUE (b1.state () == "SE");
 }
 
 TEST (Blob, moveSW)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (5, 5 * M_PI / 4);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (5, 5 * M_PI / 4, "SW");
 
 	ASSERT_TRUE (fabs (b1.x () - 06.564466094067262) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 23.73553390593273) < threshold);
-	
-	Blob b2 {fixed_angle, 10.1, 20.2, 5, 0};
-	b2.move (5, -3 * M_PI / 4);
+	ASSERT_TRUE (b1.state () == "SW");
+
+	Blob b2 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b2.move (5, -3 * M_PI / 4, "SW");
 
 	ASSERT_TRUE (fabs (b2.x () - 06.564466094067262) < threshold);
 	ASSERT_TRUE (fabs (b2.y () - 23.73553390593273) < threshold);
+	ASSERT_TRUE (b1.state () == "SW");
 }
 
 TEST (Blob, moveNegativeX)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (20, 3 * M_PI / 2);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (20, 3 * M_PI / 2, "-x");
 
 	ASSERT_TRUE (fabs (b1.x () - -9.9) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - 20.2) < threshold);
+	ASSERT_TRUE (b1.state () == "-x");
 }
 
 TEST (Blob, moveNegativeY)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (30, 0);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	b1.move (30, 0, "-y");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - -9.8) < threshold);
+	ASSERT_TRUE (b1.state () == "-y");
 }
 
 
 TEST (Blob, history)
 {
-	Blob b1 {fixed_angle, 10, 20, 5, 0};
-	b1.move (5, 0);
-	b1.move (5, 0);
-	b1.move (5, M_PI / 2);
+	Blob b1 {"mark", fixed_angle, 10, 20, 5, 0};
+	b1.move (5, 0, "N");
+	b1.move (5, 0, "N");
+	b1.move (5, M_PI / 2, "E");
 
 	std::vector<Pt<double>> history = b1.history ();
 	ASSERT_TRUE (history.size () == 4);
@@ -367,10 +385,10 @@ TEST (Blob, history)
 
 TEST (Blob, history_length)
 {
-	Blob b1 {fixed_angle, 10, 20, 5, 0};
+	Blob b1 {"mark", fixed_angle, 10, 20, 5, 0};
 	for (int i = 0; i < 200; i++)
 	{
-		b1.move (5, 0);
+		b1.move (5, 0, "N");
 	}
 	
 	std::vector<Pt<double>> history = b1.history ();
@@ -386,12 +404,13 @@ TEST (Blob, history_length)
 
 TEST (Blob, movement)
 {
-	Blob b1 {fixed_angle, 10.1, 20.2, 5, 0};
-	Movement m (&b1, "", 5.0, 0.0);
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	Movement m (&b1, "because", 5.0, 0.0);
         m.apply ();
 	
 	ASSERT_EQ (b1.x (), 10.1);
 	ASSERT_EQ (b1.y (), 15.2);
+	ASSERT_TRUE (b1.state () == "because");
 }
 
 TEST (fixed_angle, isFixed)
@@ -404,7 +423,7 @@ TEST (fixed_angle, isFixed)
 
 TEST (Blob, usesFixedAngle)
 {
-	Blob b {fixed_angle, 10.1, 20.2, 5, 0};
+	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0};
 
 	for (int step = 1; step <= 8; step++)
 	{
@@ -419,7 +438,7 @@ TEST (Blob, usesFixedAngle)
 
 TEST (Blob, wandering)
 {
-	Blob b {fixed_angle, 10.1, 20.2, 5, 0};
+	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0};
 
 	Movement m = b.wander (std::vector <Blob> {});
 	m.apply ();
@@ -464,7 +483,7 @@ TEST (Blob, wandering)
 
 TEST (Blob, choose_to_wander)
 {
-	Blob b {fixed_angle, 10.1, 20.2, 5, 0};
+	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0};
 
 	Movement m = b.chooseNextAction (std::vector <Blob> {});
 	m.apply ();
@@ -572,7 +591,7 @@ TEST (Blob, choose_move_random_wander)
 		return previousMoveDirection + (2 * M_PI * dist (gen) / 360);
 	};
 
-	Blob b {rnd_angle, 10.1, 20.2, 5, 0};
+	Blob b {"mark", rnd_angle, 10.1, 20.2, 5, 0};
 	ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 
@@ -590,7 +609,7 @@ TEST (Blob, move_random_wander)
 		return previousMoveDirection + (2 * M_PI * dist (gen) / 360);
 	};
 
-	Blob b {rnd_angle, 10.1, 20.2, 5, 0};
+	Blob b {"mark", rnd_angle, 10.1, 20.2, 5, 0};
 	ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 
@@ -613,7 +632,7 @@ TEST (Blob, move_random_wander)
 
 TEST (Blob, parms)
 {
-  Blob b {fixed_angle, 20, 40, 5, 100};
+  Blob b {"mark", fixed_angle, 20, 40, 5, 100};
   Movement m (&b, "", 10.0, M_PI / 2);
   m.apply ();
 
@@ -622,7 +641,7 @@ TEST (Blob, parms)
 
 TEST (Blob, output)
 {
-  Blob b {fixed_angle, 20, 40, 5, 100};
+  Blob b {"mark", fixed_angle, 20, 40, 5, 100};
   Movement m (&b, "", 10.0, M_PI / 2);
   m.apply ();
 
@@ -635,7 +654,7 @@ TEST (Blob, output)
 
 TEST (Movement, output)
 {
-  Blob b {fixed_angle, 20, 40, 5, 100};
+  Blob b {"mark", fixed_angle, 20, 40, 5, 100};
   Movement m (&b, "hello", 10.0, M_PI / 2);
 
   std::stringstream s;
@@ -647,9 +666,9 @@ TEST (Movement, output)
 
 TEST (Rnd, independent)
 {
-	Blob b1 {Rnd (1, 40), 0, 0, 10, 10};
-	Blob b2 {Rnd (1, 40), 0, 0, 10, 10};
-	Blob b3 {Rnd (2, 40), 0, 0, 10, 10};
+	Blob b1 {"mark", Rnd (1, 40), 0, 0, 10, 10};
+	Blob b2 {"annette", Rnd (1, 40), 0, 0, 10, 10};
+	Blob b3 {"grace", Rnd (2, 40), 0, 0, 10, 10};
 	
 	b1.chooseNextAction (std::vector<Blob> {}).apply ();
 	b2.chooseNextAction (std::vector<Blob> {}).apply ();
