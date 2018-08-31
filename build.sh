@@ -15,6 +15,8 @@ pushd ../../../bld/libraries/libBlob
 cmake ../../../src/libraries/libBlob
 make
 
-ctest .. 
+if [ $? -eq 0 ]; then
+  ctest .. 
+fi
 
 popd

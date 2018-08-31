@@ -16,6 +16,8 @@ cmake ../../../src/libraries/libBlob
 make clean
 make
 
-ctest .. 
+if [ $? -eq 0 ]; then
+  ctest .. 
+fi
 
 popd
