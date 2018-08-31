@@ -13,6 +13,7 @@ fi
 pushd ../../../bld/libraries/libBlob
 
 cmake ../../../src/libraries/libBlob
+make clean
 make
 
 ctest .. 
