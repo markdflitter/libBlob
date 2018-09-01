@@ -226,6 +226,79 @@ TEST (Blob, canSmellBoth)
 	ASSERT_TRUE (b2.canSmell (b1));
 }
 
+TEST (Blob, angleN)
+{
+	Blob b1 {"mark", fixed_angle, 5, 5, 0, 0};
+	Blob b2 {"annette", fixed_angle, 5, 10, 0, 0};
+
+
+	double angle = b1.angle (b2);
+	ASSERT_TRUE (fabs (angle - 0.0f) < threshold);
+}
+
+TEST (Blob, angleS)
+{
+	Blob b1 {"mark", fixed_angle, -5, -5, 0, 0};
+	Blob b2 {"annette", fixed_angle, -5, -10, 0, 0};
+
+	double angle = b1.angle (b2);
+	ASSERT_TRUE (fabs (angle - M_PI) < threshold);
+}
+
+TEST (Blob, angleE)
+{
+	Blob b1 {"mark", fixed_angle, 5, 5, 0, 0};
+	Blob b2 {"annette", fixed_angle, 10, 5, 0, 0};
+
+	double angle = b1.angle (b2);
+	ASSERT_TRUE (fabs (angle - M_PI / 2) < threshold);
+}
+
+TEST (Blob, angleW)
+{
+	Blob b1 {"mark", fixed_angle, -5, 5, 0, 0};
+	Blob b2 {"annette", fixed_angle, -10, 5, 0, 0};
+
+	double angle = b1.angle (b2);
+	ASSERT_TRUE (fabs (angle - 3*M_PI/2) < threshold);
+}
+
+TEST (Blob, angleNE)
+{
+	Blob b1 {"mark", fixed_angle, 5, 5, 0, 0};
+	Blob b2 {"annette", fixed_angle, 10, 10, 0, 0};
+
+	double angle = b1.angle (b2);
+	ASSERT_TRUE (fabs (angle - M_PI/4) < threshold);
+}
+
+TEST (Blob, angleNW)
+{
+	Blob b1 {"mark", fixed_angle, -5, 5, 0, 0};
+	Blob b2 {"annette", fixed_angle, -10, 10, 0, 0};
+
+	double angle = b1.angle (b2);
+	ASSERT_TRUE (fabs (angle - -M_PI/4) < threshold);
+}
+
+TEST (Blob, angleSE)
+{
+	Blob b1 {"mark", fixed_angle, 5, -5, 0, 0};
+	Blob b2 {"annette", fixed_angle, 10, -10, 0, 0};
+
+	double angle = b1.angle (b2);
+	ASSERT_TRUE (fabs (angle - 3 * M_PI/4) < threshold);
+}
+
+TEST (Blob, angleSW)
+{
+	Blob b1 {"mark", fixed_angle, -5, -5, 0, 0};
+	Blob b2 {"annette", fixed_angle, -10, -10, 0, 0};
+
+	double angle = b1.angle (b2);
+	ASSERT_TRUE (fabs (angle - 5 * M_PI/4) < threshold);
+}
+
 TEST (Blob, moveN)
 {
 	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
@@ -427,7 +500,7 @@ TEST (Blob, usesFixedAngle)
 
 	for (int step = 1; step <= 8; step++)
 	{
-		Movement m = b.wander (std::vector <Blob> {});
+		Movement m = b.wander ();
 		ASSERT_EQ (m._reason, "wandering");
 		ASSERT_EQ (m._speed, 5);
 
@@ -440,45 +513,103 @@ TEST (Blob, wandering)
 {
 	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0};
 
-	Movement m = b.wander (std::vector <Blob> {});
+	Movement m = b.wander ();
+	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI / 4));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 16.66446609406730) < threshold);
 
-	m = b.wander (std::vector <Blob> {});
-        m.apply ();
+	m = b.wander ();
+       	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI / 2));
+	m.apply ();
 	ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 16.66446609406730) < threshold);
 
-	m = b.wander (std::vector <Blob> {});
+	m = b.wander ();
+	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 3 * M_PI / 4));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 
-	m = b.wander (std::vector <Blob> {});
+	m = b.wander ();
+	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 25.2) < threshold);
 
-	m = b.wander (std::vector <Blob> {});
+	m = b.wander ();
+	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 5 * M_PI / 4));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 28.73553390593270) < threshold);
 
-	m = b.wander (std::vector <Blob> {});
+	m = b.wander ();
+	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 3 * M_PI / 2));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 28.7355339059327) < threshold);
 
-	m = b.wander (std::vector <Blob> {});
+	m = b.wander ();
+	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 7 * M_PI / 4));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 25.2) < threshold);
 
-	m = b.wander (std::vector <Blob> {});
+	m = b.wander ();
+	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 2 * M_PI));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
+}
+
+
+TEST (Blob, huntN)
+{
+	Blob b1 {"mark", fixed_angle, 5, 5, 7, 0};
+	Blob b2 {"annette", fixed_angle, 5, 10, 12, 0};
+
+	Movement m = b1.hunt (b2);
+	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 7, 0));
+}
+
+TEST (Blob, huntS)
+{
+	Blob b1 {"mark", fixed_angle, 5, 5, 7, 0};
+	Blob b2 {"annette", fixed_angle, 5, -10, 12, 0};
+
+	Movement m = b1.hunt (b2);
+	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 7, M_PI));
+}
+
+TEST (Blob, huntE)
+{
+	Blob b1 {"mark", fixed_angle, 5, 5, 7, 0};
+	Blob b2 {"annette", fixed_angle, 10, 5, 12, 0};
+
+	Movement m = b1.hunt (b2);
+	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 7, M_PI/2));
+}
+
+TEST (Blob, huntW)
+{
+	Blob b1 {"mark", fixed_angle, -5, 5, 7, 0};
+	Blob b2 {"annette", fixed_angle, -10, 5, 12, 0};
+
+	Movement m = b1.hunt (b2);
+	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 7, 3 * M_PI / 2));
+}
+
+TEST (Blob, huntGetsCloser)
+{
+	Blob b1 {"mark", fixed_angle, -5, 5, 7, 0};
+	Blob b2 {"annette", fixed_angle, -10, 5, 12, 0};
+
+	double d1 = b1.distance (b2);
+	Movement m = b1.hunt (b2);
+	m.apply ();
+
+	double d2 = b1.distance (b2);
+	ASSERT_TRUE (d2 < d1);
 }
 
 TEST (Blob, choose_to_wander)

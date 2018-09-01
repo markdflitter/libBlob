@@ -146,6 +146,14 @@ public:
 		return inRange (other, _smell);
 	}
 
+	double angle (const Blob& other) const
+	{
+		double dx = x () - other.x ();
+		double dy = y () - other.y ();
+
+		return atan2 (dy, -dx) + M_PI/2;
+	}
+
         void move (double speed, double angleInRadians, const std::string& newState) 
 	{
 		_previousAngleInRadians = angleInRadians;
@@ -161,15 +169,20 @@ public:
 		_state = newState;
 	}
 
-        Movement wander (const std::vector<Blob>& others)
+        Movement wander ()
         {
 		double angle = _rnd (_previousAngleInRadians);
 		return Movement (this, "wandering", _speed, angle);
 	}
+        
+	Movement hunt (const Blob& target)
+        {
+		return Movement (this, "hunting " + target.name (), _speed, angle (target));
+	}
 
 	Movement chooseNextAction (const std::vector<Blob>& others)
 	{
-		return wander (others);
+		return wander ();
 	}
 
 	std::string parms () const 
