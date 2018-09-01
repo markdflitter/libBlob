@@ -674,7 +674,7 @@ TEST (Blob, choosesToHunt)
 {
 	Blob b1 {"mark", fixed_angle, 10, 10, 5, 100};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 100};
-	Movement m = b1.chooseNextAction (std::vector <Blob> {b2});
+	Movement m = b1.chooseNextAction (std::vector <Blob> {b1, b2});
 
 	ASSERT_TRUE (m == Movement (&b1, "hunting annette",5, M_PI/4)); 
 }
@@ -686,11 +686,10 @@ TEST (Blob, choosesClosestToHunt)
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 1000};
 	Blob b3 {"duncan", fixed_angle, 25, 25, 5, 1000};
 
-	Movement m = b1.chooseNextAction (std::vector <Blob> {b2});
+	Movement m = b1.chooseNextAction (std::vector <Blob> {b1, b2, b3});
 
 	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 5, M_PI/4)); 
 }
-
 
 TEST (Blob, seededNormalDistributionInDegrees)
 {

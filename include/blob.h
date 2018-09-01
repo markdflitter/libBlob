@@ -188,7 +188,7 @@ public:
 		std::vector <std::pair <double, Blob>> huntTargets;
 		for (auto b : others)
 		{
-			if (canSmell (b))
+			if ((b.name () != name ()) && canSmell (b))
 			{
 				double weight = 1.0 - (distance (b) / _smell);
 				huntTargets.push_back (std::make_pair (weight, b));
