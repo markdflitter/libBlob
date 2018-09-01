@@ -185,7 +185,20 @@ public:
 
 	Movement chooseNextAction (const std::vector<Blob>& others)
 	{
-		return wander ();
+		std::vector <std::pair <double, Blob>> huntTargets;
+		for (auto b : others)
+		{
+			if (canSmell (b))
+			{
+				double weight = 1.0 - (distance (b) / _smell);
+				huntTargets.push_back (std::make_pair (weight, b));
+			}
+		}	
+		std::sort (huntTargets.begin (), huntTargets.end (),
+			   [] (const std::pair <double, Blob>& lhs,
+			       std::pair <double, Blob>& rhs) {return lhs.first < rhs.first;});
+		
+		return huntTargets.size () > 0 ? hunt (huntTargets.back ().second) : wander ();
 	}
 
 	std::string parms () const 
