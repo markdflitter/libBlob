@@ -565,38 +565,38 @@ TEST (Blob, wandering)
 
 TEST (Blob, huntN)
 {
-	Blob b1 {"mark", fixed_angle, 5, 5, 7, 0};
+	Blob b1 {"mark", fixed_angle, 5, 5, 2, 0};
 	Blob b2 {"annette", fixed_angle, 5, 10, 12, 0};
 
 	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 7, 0));
+	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 2, 0));
 }
 
 TEST (Blob, huntS)
 {
-	Blob b1 {"mark", fixed_angle, 5, 5, 7, 0};
+	Blob b1 {"mark", fixed_angle, 5, 5, 2, 0};
 	Blob b2 {"annette", fixed_angle, 5, -10, 12, 0};
 
 	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 7, M_PI));
+	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 2, M_PI));
 }
 
 TEST (Blob, huntE)
 {
-	Blob b1 {"mark", fixed_angle, 5, 5, 7, 0};
+	Blob b1 {"mark", fixed_angle, 5, 5, 2, 0};
 	Blob b2 {"annette", fixed_angle, 10, 5, 12, 0};
 
 	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 7, M_PI/2));
+	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 2, M_PI/2));
 }
 
 TEST (Blob, huntW)
 {
-	Blob b1 {"mark", fixed_angle, -5, 5, 7, 0};
+	Blob b1 {"mark", fixed_angle, -5, 5, 2, 0};
 	Blob b2 {"annette", fixed_angle, -10, 5, 12, 0};
 
 	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 7, 3 * M_PI / 2));
+	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 2, 3 * M_PI / 2));
 }
 
 TEST (Blob, huntGetsCloser)
@@ -611,6 +611,19 @@ TEST (Blob, huntGetsCloser)
 	double d2 = b1.distance (b2);
 	ASSERT_TRUE (d2 < d1);
 }
+
+TEST (Blob, huntCatches)
+{
+	Blob b1 {"mark", fixed_angle, -5, 5, 7, 0};
+	Blob b2 {"annette", fixed_angle, -10, 5, 12, 0};
+
+	Movement m = b1.hunt (b2);
+	ASSERT_TRUE (m._speed < 7);
+	m.apply ();
+
+	ASSERT_TRUE (b1.sameSquare (b2));
+}
+
 
 TEST (Blob, choose_to_wander)
 {

@@ -177,7 +177,10 @@ public:
         
 	Movement hunt (const Blob& target)
         {
-		return Movement (this, "hunting " + target.name (), _speed, angle (target));
+		return Movement (this,
+				 "hunting " + target.name (),
+				std::min (_speed, distance (target)),
+				angle (target));
 	}
 
 	Movement chooseNextAction (const std::vector<Blob>& others)
