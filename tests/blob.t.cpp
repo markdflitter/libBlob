@@ -301,11 +301,11 @@ TEST (Blob, angleSW)
 
 TEST (Blob, moveN)
 {
-	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+	Blob b1 {"mark", fixed_angle, 10.1, 15.2, 5, 0};
 	b1.move (5, 0, "N");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
-	ASSERT_TRUE (fabs (b1.y () - 15.2) < threshold);
+	ASSERT_TRUE (fabs (b1.y () - 20.2) < threshold);
 	ASSERT_TRUE (b1.state () == "N");
 }
 
@@ -315,7 +315,7 @@ TEST (Blob, moveFast)
 	b1.move (10, 0, "N");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
-	ASSERT_TRUE (fabs (b1.y () - 10.2) < threshold);
+	ASSERT_TRUE (fabs (b1.y () - 30.2) < threshold);
 	ASSERT_TRUE (b1.state () == "N");
 }
 
@@ -325,13 +325,13 @@ TEST (Blob, moveS)
 	b1.move (5, M_PI, "S");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
-	ASSERT_TRUE (fabs (b1.y () - 25.2) < threshold);
+	ASSERT_TRUE (fabs (b1.y () - 15.2) < threshold);
 	ASSERT_TRUE (b1.state () == "S");
 
 	b1.move (5, -M_PI, "S");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
-	ASSERT_TRUE (fabs (b1.y () - 30.2) < threshold);
+	ASSERT_TRUE (fabs (b1.y () - 10.2) < threshold);
 	ASSERT_TRUE (b1.state () == "S");
 }
 
@@ -368,7 +368,7 @@ TEST (Blob, moveNE)
 	b1.move (5, M_PI / 4,"NE");
 
 	ASSERT_TRUE (fabs (b1.x () - 13.635533905932737) < threshold);
-	ASSERT_TRUE (fabs (b1.y () - 16.664466094067262) < threshold);
+	ASSERT_TRUE (fabs (b1.y () - 23.735533905932737) < threshold);
 	ASSERT_TRUE (b1.state () == "NE");
 }
 
@@ -378,14 +378,14 @@ TEST (Blob, moveNW)
 	b1.move (5, -M_PI / 4, "NW");
 
 	ASSERT_TRUE (fabs (b1.x () - 06.564466094067262) < threshold);
-	ASSERT_TRUE (fabs (b1.y () - 16.664466094067262) < threshold);
+	ASSERT_TRUE (fabs (b1.y () - 23.735533905932737) < threshold);
 	ASSERT_TRUE (b1.state () == "NW");
 
 	Blob b2 {"annette", fixed_angle, 10.1, 20.2, 5, 0};
 	b2.move (5, 7 * M_PI / 4, "NW");
 	
-	ASSERT_TRUE (fabs (b2.x () - 06.564466094067262) < threshold);
-	ASSERT_TRUE (fabs (b2.y () - 16.664466094067262) < threshold);
+	ASSERT_TRUE (fabs (b2.x () - 06.56446609406726) < threshold);
+	ASSERT_TRUE (fabs (b2.y () - 23.73553390593273) < threshold);
 	ASSERT_TRUE (b1.state () == "NW");
 }
 
@@ -395,7 +395,7 @@ TEST (Blob, moveSE)
 	b1.move (5, 3 * M_PI / 4, "SE");
 
 	ASSERT_TRUE (fabs (b1.x () - 13.63553390593273) < threshold);
-	ASSERT_TRUE (fabs (b1.y () - 23.73553390593273) < threshold);
+	ASSERT_TRUE (fabs (b1.y () - 16.66446609406726) < threshold);
 	ASSERT_TRUE (b1.state () == "SE");
 }
 
@@ -404,15 +404,15 @@ TEST (Blob, moveSW)
 	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
 	b1.move (5, 5 * M_PI / 4, "SW");
 
-	ASSERT_TRUE (fabs (b1.x () - 06.564466094067262) < threshold);
-	ASSERT_TRUE (fabs (b1.y () - 23.73553390593273) < threshold);
+	ASSERT_TRUE (fabs (b1.x () - 06.56446609406726) < threshold);
+	ASSERT_TRUE (fabs (b1.y () - 16.66446609406726) < threshold);
 	ASSERT_TRUE (b1.state () == "SW");
 
 	Blob b2 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
 	b2.move (5, -3 * M_PI / 4, "SW");
 
-	ASSERT_TRUE (fabs (b2.x () - 06.564466094067262) < threshold);
-	ASSERT_TRUE (fabs (b2.y () - 23.73553390593273) < threshold);
+	ASSERT_TRUE (fabs (b2.x () - 06.56446609406726) < threshold);
+	ASSERT_TRUE (fabs (b2.y () - 16.66446609406726) < threshold);
 	ASSERT_TRUE (b1.state () == "SW");
 }
 
@@ -429,7 +429,7 @@ TEST (Blob, moveNegativeX)
 TEST (Blob, moveNegativeY)
 {
 	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0};
-	b1.move (30, 0, "-y");
+	b1.move (30, M_PI, "-y");
 
 	ASSERT_TRUE (fabs (b1.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - -9.8) < threshold);
@@ -440,8 +440,8 @@ TEST (Blob, moveNegativeY)
 TEST (Blob, history)
 {
 	Blob b1 {"mark", fixed_angle, 10, 20, 5, 0};
-	b1.move (5, 0, "N");
-	b1.move (5, 0, "N");
+	b1.move (5, M_PI, "N");
+	b1.move (5, M_PI, "N");
 	b1.move (5, M_PI / 2, "E");
 
 	std::vector<Pt<double>> history = b1.history ();
@@ -459,20 +459,19 @@ TEST (Blob, history)
 TEST (Blob, history_length)
 {
 	Blob b1 {"mark", fixed_angle, 10, 20, 5, 0};
-	for (int i = 0; i < 200; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 		b1.move (5, 0, "N");
 	}
 	
 	std::vector<Pt<double>> history = b1.history ();
-	ASSERT_TRUE (history.size () == 100);
+	ASSERT_TRUE (history.size () == 500);
 	
 	ASSERT_TRUE (history[0].x () == 10);
- 	ASSERT_TRUE (history[0].y () == -485);
+ 	ASSERT_TRUE (history[0].y () == 2525);
 	
-	ASSERT_TRUE (history[99].x () == 10);
- 	ASSERT_TRUE (history[99].y () == -980);
-
+	ASSERT_TRUE (history[499].x () == 10);
+ 	ASSERT_TRUE (history[499].y () == 5020);
 }
 
 TEST (Blob, movement)
@@ -482,7 +481,7 @@ TEST (Blob, movement)
         m.apply ();
 	
 	ASSERT_EQ (b1.x (), 10.1);
-	ASSERT_EQ (b1.y (), 15.2);
+	ASSERT_EQ (b1.y (), 25.2);
 	ASSERT_TRUE (b1.state () == "because");
 }
 
@@ -511,19 +510,30 @@ TEST (Blob, usesFixedAngle)
 
 TEST (Blob, wandering)
 {
-	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0};
+/*
+13.635533905932700	23.735533905932700
+18.635533905932700	23.735533905932700
+22.171067811865500	20.200000000000000
+22.171067811865500	15.200000000000000
+18.635533905932700	11.664466094067300
+13.635533905932700	11.664466094067300
+10.100000000000000	15.200000000000000
+10.100000000000000	20.200000000000000
+*/
+
+	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0.0};
 
 	Movement m = b.wander ();
 	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI / 4));
 	m.apply ();
-        ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 16.66446609406730) < threshold);
+        ASSERT_TRUE (fabs (b.x () - 13.6355339059327) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 23.7355339059327) < threshold);
 
 	m = b.wander ();
        	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI / 2));
 	m.apply ();
-	ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 16.66446609406730) < threshold);
+	ASSERT_TRUE (fabs (b.x () - 18.6355339059327) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 23.7355339059327) < threshold);
 
 	m = b.wander ();
 	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 3 * M_PI / 4));
@@ -535,25 +545,25 @@ TEST (Blob, wandering)
 	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 25.2) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 
 	m = b.wander ();
 	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 5 * M_PI / 4));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 28.73553390593270) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 
 	m = b.wander ();
 	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 3 * M_PI / 2));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 28.7355339059327) < threshold);
-
+	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
+	
 	m = b.wander ();
 	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 7 * M_PI / 4));
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 25.2) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 
 	m = b.wander ();
 	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 2 * M_PI));
@@ -627,18 +637,30 @@ TEST (Blob, huntCatches)
 
 TEST (Blob, choose_to_wander)
 {
+/*
+13.635533905932700	23.735533905932700
+18.635533905932700	23.735533905932700
+22.171067811865500	20.200000000000000
+22.171067811865500	15.200000000000000
+18.635533905932700	11.664466094067300
+13.635533905932700	11.664466094067300
+10.100000000000000	15.200000000000000
+10.100000000000000	20.200000000000000
+*/
+
+
 	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0};
 
 	Movement m = b.chooseNextAction (std::vector <Blob> {});
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 16.66446609406730) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 23.73553390593270) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
         m.apply ();
 	ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 16.66446609406730) < threshold);
-
+	ASSERT_TRUE (fabs (b.y () - 23.73553390593270) < threshold);
+	
 	m = b.chooseNextAction (std::vector <Blob> {});
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
@@ -647,23 +669,23 @@ TEST (Blob, choose_to_wander)
 	m = b.chooseNextAction (std::vector <Blob> {});
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 25.2) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 28.73553390593270) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 28.7355339059327) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 25.2) < threshold);
-
+	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
+	
 	m = b.chooseNextAction (std::vector <Blob> {});
 	m.apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
@@ -674,9 +696,10 @@ TEST (Blob, choosesToHunt)
 {
 	Blob b1 {"mark", fixed_angle, 10, 10, 5, 100};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 100};
-	Movement m = b1.chooseNextAction (std::vector <Blob> {b1, b2});
-
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette",5, M_PI/4)); 
+	std::vector <Blob> blobs {b1, b2};
+	
+	Movement m = blobs.front ().chooseNextAction (blobs);
+	ASSERT_TRUE (m == Movement (&blobs.front (), "hunting annette",5, M_PI/4)); 
 }
 
 
@@ -685,10 +708,11 @@ TEST (Blob, choosesClosestToHunt)
 	Blob b1 {"mark", fixed_angle, 10, 10, 5, 1000};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 1000};
 	Blob b3 {"duncan", fixed_angle, 25, 25, 5, 1000};
+	std::vector <Blob> blobs {b1, b2, b3};
+	
+	Movement m = blobs.front ().chooseNextAction (blobs); 
 
-	Movement m = b1.chooseNextAction (std::vector <Blob> {b1, b2, b3});
-
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 5, M_PI/4)); 
+	ASSERT_TRUE (m == Movement (&blobs.front (), "hunting annette", 5, M_PI/4)); 
 }
 
 TEST (Blob, seededNormalDistributionInDegrees)
@@ -781,17 +805,17 @@ TEST (Blob, move_random_wander)
 	Movement m = b.chooseNextAction (std::vector<Blob> {});
 	m.apply ();
 	ASSERT_TRUE (fabs (b.x () - 13.630087040) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 16.659027607) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 23.740972392) < threshold);
 
 	m = b.chooseNextAction (std::vector<Blob> {});
 	m.apply ();
 	ASSERT_TRUE (fabs (b.x () - 17.824580716) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 13.937589972) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 26.462410339) < threshold);
 	
 	m = b.chooseNextAction (std::vector<Blob> {});
 	m.apply ();
 	ASSERT_TRUE (fabs (b.x () - 22.148524241) < threshold);
-	ASSERT_TRUE (fabs (b.y () - 11.426894803) < threshold);
+	ASSERT_TRUE (fabs (b.y () - 28.97310591453995698) < threshold);
 }
 
 

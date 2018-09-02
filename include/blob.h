@@ -160,10 +160,10 @@ public:
 
 		double denormalisedMoveDirection = _previousAngleInRadians - M_PI / 2;
 		double newX = x () + speed * cos (denormalisedMoveDirection);
-		double newY = y () + speed * sin (denormalisedMoveDirection);
+		double newY = y () - speed * sin (denormalisedMoveDirection);
 			
 		_points.push_back (Pt<double> (newX, newY));
-		while (_points.size () > 100)
+		while (_points.size () > 500)
 			_points.erase (_points.begin (), _points.begin () + 1);
 	
 		_state = newState;
@@ -186,9 +186,9 @@ public:
 	Movement chooseNextAction (const std::vector<Blob>& others)
 	{
 		std::vector <std::pair <double, Blob>> huntTargets;
-		for (auto b : others)
+		for (auto& b : others)
 		{
-			if ((b.name () != name ()) && canSmell (b))
+			if ((&b != this) && canSmell (b))
 			{
 				double weight = 1.0 - (distance (b) / _smell);
 				huntTargets.push_back (std::make_pair (weight, b));
