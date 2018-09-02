@@ -106,8 +106,8 @@ class Movement
 
 class Blob {
 public:
-	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double smell) :
-		_name (name), _rnd (rnd), _speed (speed), _smell (smell)
+	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double smell, double strength) :
+		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _smell (smell), _strength (strength), _dead (false)
 	{
 		_points.push_back (Pt<double> (x,y));
 	}
@@ -118,9 +118,11 @@ public:
 	std::string state () const {return _state;}
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
-	int speed () const {return _speed;}
-	int smell () const {return _smell;}
+	double speed () const {return _speed;}
+	double smell () const {return _smell;}
+	double strength () const {return _strength;}
 	std::vector<Pt<double>> history () const {return _points;}
+	bool dead () const {return _dead;}
 
 	double distance (const Blob& other) const
 	{
@@ -185,10 +187,13 @@ public:
 
 	Movement chooseNextAction (const std::vector<Blob>& others)
 	{
+		if (_dead)
+			return Movement (this, "dead", 0, 0);
+
 		std::vector <std::pair <double, Blob>> huntTargets;
 		for (auto& b : others)
 		{
-			if ((&b != this) && canSmell (b))
+			if ((&b != this) && canSmell (b) && !b.dead ())
 			{
 				double weight = 1.0 - (distance (b) / _smell);
 				huntTargets.push_back (std::make_pair (weight, b));
@@ -201,11 +206,38 @@ public:
 		return huntTargets.size () > 0 ? hunt (huntTargets.back ().second) : wander ();
 	}
 
+
+	void fight (std::vector <Blob>& others)
+	{
+		if (_dead) 
+			return;
+
+		for (auto& b : others)
+		{
+			if (b._dead) 
+				continue;
+
+			if ((&b != this) && sameSquare (b))
+			{
+				if (_strength > b._strength)
+				{
+					b._dead = true;
+					b._state = std::string ("dead");
+				}
+				else if (b._strength > _strength)
+				{
+					_dead = true;
+					_state = std::string ("dead");
+				}
+			}
+		}
+	}
+
 	std::string parms () const 
 	{
 		std::stringstream ss;
 
-		ss << _speed << "," << _smell << "," << 360 * _previousAngleInRadians / (2 * M_PI);
+		ss << (_dead ? "dead" : "alive") << "," <<_speed << "," << _smell << "," << _strength << "," << 360 * _previousAngleInRadians / (2 * M_PI);
 		
 		return ss.str ();
 	}
@@ -255,7 +287,9 @@ private:
 	std::string _state;
 	double _speed;
         double _smell;
+	double _strength;
 
+	bool _dead;
 	double _previousAngleInRadians = 0;
 };
 
