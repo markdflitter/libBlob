@@ -25,6 +25,9 @@ TEST(Movement, equal)
 	Movement m (&mm1, "a", 10, 20);
 	ASSERT_TRUE (m == m);
 
+	Movement m0 (&mm1, "a", 10, 20);
+	ASSERT_TRUE (m == m0);
+
 	Movement m1 (&mm1, "b", 10, 20);
 	ASSERT_FALSE (m == m1);
 

@@ -21,6 +21,9 @@ TEST(Attack, equal)
 	Attack a (&am1, 10);
 	ASSERT_TRUE (a == a);
 
+	Attack a0 (&am1, 10);
+	ASSERT_TRUE (a == a0);
+
 	Attack a1 (&am1, 20);
 	ASSERT_FALSE (a == a1);
 
