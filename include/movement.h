@@ -34,10 +34,7 @@ class Movement : public Action
 
 		bool operator!= (const Movement& m) const
 		{
-			return (_target != m._target) 
-				|| (_reason != m._reason)
-				|| (_speed != m._speed)
-				|| (_angleInRadians != m._angleInRadians);
+			return !(*this == m);
 		}
 
 		void apply ();
