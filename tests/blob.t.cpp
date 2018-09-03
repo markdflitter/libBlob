@@ -978,7 +978,7 @@ TEST (Blob, output)
 	ASSERT_EQ (s.str (), "30,40");
 }
 
-TEST (Rnd, independent)
+TEST (Blob, independent)
 {
 	Blob b1 {"mark", Rnd (1, 40), 0, 0, 10, 10, 0};
 	Blob b2 {"annette", Rnd (1, 40), 0, 0, 10, 10, 0};
