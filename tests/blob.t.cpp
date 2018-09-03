@@ -303,6 +303,15 @@ TEST (Blob, angleSW)
 	ASSERT_TRUE (fabs (angle - 5 * M_PI/4) < threshold);
 }
 
+TEST(Blob, kill)
+{
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 0, 0, 0};
+	b1.kill ();
+
+	ASSERT_TRUE (b1.dead ());
+	ASSERT_TRUE (b1.state () == "dead");
+}
+	
 TEST (Blob, moveN)
 {
 	Blob b1 {"mark", fixed_angle, 10.1, 15.2, 5, 0, 0};
@@ -698,7 +707,7 @@ TEST (Blob, choose_to_wander)
 
 TEST (Blob, choosesToHunt)
 {
-	Blob b1 {"mark", fixed_angle, 10, 10, 5, 100, 0};
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 100, 1};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 100, 0};
 	std::vector <Blob> blobs {b1, b2};
 	
@@ -709,7 +718,7 @@ TEST (Blob, choosesToHunt)
 
 TEST (Blob, choosesClosestToHunt)
 {
-	Blob b1 {"mark", fixed_angle, 10, 10, 5, 1000, 0};
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 1000, 1};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 1000, 0};
 	Blob b3 {"duncan", fixed_angle, 25, 25, 5, 1000, 0};
 	std::vector <Blob> blobs {b1, b2, b3};
@@ -718,6 +727,18 @@ TEST (Blob, choosesClosestToHunt)
 
 	ASSERT_TRUE (m == Movement (&blobs.front (), "hunting annette", 5, M_PI/4)); 
 }
+
+TEST (Blob, will_not_hunt_stronger_creatures)
+{
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 1000, 0};
+	Blob b2 {"annette", fixed_angle, 20, 20, 5, 0, 1};
+	std::vector <Blob> blobs {b1, b2};
+	
+	Movement m = blobs.front ().chooseNextAction (blobs); 
+
+	ASSERT_TRUE (m._reason == "wandering");
+}
+
 
 TEST (Blob, seededNormalDistributionInDegrees)
 {

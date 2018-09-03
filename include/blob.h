@@ -122,6 +122,12 @@ public:
 	double smell () const {return _smell;}
 	double strength () const {return _strength;}
 	std::vector<Pt<double>> history () const {return _points;}
+	void kill ()
+	{
+		_dead = true;
+		_state = "dead";
+	}
+
 	bool dead () const {return _dead;}
 
 	double distance (const Blob& other) const
@@ -221,13 +227,11 @@ public:
 			{
 				if (_strength > b._strength)
 				{
-					b._dead = true;
-					b._state = std::string ("dead");
+					b.kill ();
 				}
 				else if (b._strength > _strength)
 				{
-					_dead = true;
-					_state = std::string ("dead");
+					kill ();
 				}
 			}
 		}
