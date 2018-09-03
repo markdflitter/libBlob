@@ -4,6 +4,7 @@
 #include <action.h>
 #include <string>
 #include <iostream>
+#include <math.h>
 
 class Moveable
 {
@@ -21,42 +22,6 @@ class Movement : public Action
 			, _speed (speed)
 			, _angleInRadians (angleInRadians)
 		{
-		}
-
-		Movement (const Movement& m) :
-			_target (m._target)
-			, _reason (m._reason)
-			, _speed (m._speed)
-			, _angleInRadians (m._angleInRadians)
-		{
-		}
-
-		Movement (const Movement&& m) :
-			_target (m._target)
-			, _reason (m._reason)
-			, _speed (m._speed)
-			, _angleInRadians (m._angleInRadians)
-		{
-		}
-
-		Movement& operator= (const Movement& m)
-		{
-			_target  = m._target;
-			_reason = m._reason;
-			_speed = m._speed;
-			_angleInRadians = m._angleInRadians;
-
-			return *this;
-		}
-
-		Movement& operator= (const Movement&& m)
-		{
-			_target  = m._target;
-			_reason = m._reason;
-			_speed = m._speed;
-			_angleInRadians = m._angleInRadians;
-
-			return *this;
 		}
 
 		bool operator== (const Movement& m) const
