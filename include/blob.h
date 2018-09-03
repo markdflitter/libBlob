@@ -245,44 +245,6 @@ public:
 		
 		return ss.str ();
 	}
-
-/*
-	void move (const Blob& other) {
-		double dx = -_p.x () + other.x ();
-		double dy = -_p.y () + other.y ();
-		double d = sqrt ((dx * dx) + (dy * dy)) / 100.0;
-
-		if (_dead) {
-			return;
-		}
-
-		bool can_smell = d < (_smell);
-
-		if ((sqrt (d) < 1) && _c) {
-			_dead = true;    
-		}
-		else if (can_smell && _a) {
-			_previousAngleInRadians = atan2 (dy,dx); 
-
-			_p.x () += _speed * cos (_previousAngleInRadians);
-			_p.y () += _speed * sin (_previousAngleInRadians);
-		}
-		else if (can_smell && _c) {
-			_previousAngleInRadians = atan2 (dy,dx) + M_PI; 
-
-			_p.x () += _speed * cos (_previousAngleInRadians);
-			_p.y () += _speed * sin (_previousAngleInRadians);
-		}
-		else {	
-			float n = _rnd (_previousAngleInRadians);
-
-			_p.x () += _speed * cos (n);
-			_p.y () += _speed * sin(n);
-
-			_previousAngleInRadians = n;
-		}
-	}
-*/
 private:
 	std::function<double(double)> _rnd;
 	std::vector<Pt<double>> _points;
