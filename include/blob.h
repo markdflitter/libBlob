@@ -9,6 +9,7 @@
 #include <vector>
 #include <sstream>
 #include <random>
+#include <memory>
 
 class Rnd 
 {
@@ -28,9 +29,16 @@ private:
 	std::normal_distribution<> _dist;
 };
 
+class Action 
+{
+public:
+	virtual ~Action () {};
+	virtual void apply () = 0;
+};
+
 class Blob;
 
-class Movement 
+class Movement : public Action
 {
 	public:
 		Movement (Blob* blob, const std::string& reason, double speed, double angleInRadians) :
@@ -128,7 +136,7 @@ public:
 		_state = "dead";
 	}
 
-	bool dead () const {return _dead;}
+	bool isDead () const {return _dead;}
 
 	double distance (const Blob& other) const
 	{
@@ -177,29 +185,34 @@ public:
 		_state = newState;
 	}
 
-        Movement wander ()
+        std::shared_ptr <Action> die ()
+        {
+		return std::shared_ptr<Action> (new Movement (this, "dead", 0, 0));
+	}
+ 
+        std::shared_ptr <Action> wander ()
         {
 		double angle = _rnd (_previousAngleInRadians);
-		return Movement (this, "wandering", _speed, angle);
+		return std::shared_ptr<Action> (new Movement (this, "wandering", _speed, angle));
 	}
         
-	Movement hunt (const Blob& target)
+	std::shared_ptr <Action> hunt (const Blob& target)
         {
-		return Movement (this,
+		return std::shared_ptr <Action> (new Movement (this,
 				 "hunting " + target.name (),
 				std::min (_speed, distance (target)),
-				angle (target));
+				angle (target)));
 	}
 
-	Movement chooseNextAction (const std::vector<Blob>& others)
+	std::shared_ptr <Action> chooseNextAction (const std::vector<Blob>& others)
 	{
-		if (_dead)
-			return Movement (this, "dead", 0, 0);
+		if (isDead())
+			return die ();
 
 		std::vector <std::pair <double, Blob>> huntTargets;
 		for (auto& b : others)
 		{
-			if ((&b != this) && canSmell (b) && !b.dead () && (b.strength () < _strength))
+			if ((&b != this) && canSmell (b) && !b.isDead () && (b.strength () < _strength))
 			{
 				double weight = 1.0 - (distance (b) / _smell);
 				huntTargets.push_back (std::make_pair (weight, b));
@@ -215,12 +228,12 @@ public:
 
 	void fight (std::vector <Blob>& others)
 	{
-		if (_dead) 
+		if (isDead ()) 
 			return;
 
 		for (auto& b : others)
 		{
-			if (b._dead) 
+			if (b.isDead ()) 
 				continue;
 
 			if ((&b != this) && sameSquare (b))
@@ -241,7 +254,7 @@ public:
 	{
 		std::stringstream ss;
 
-		ss << (_dead ? "dead" : "alive") << "," <<_speed << "," << _smell << "," << _strength << "," << 360 * _previousAngleInRadians / (2 * M_PI);
+		ss << (isDead () ? "dead" : "alive") << "," <<_speed << "," << _smell << "," << _strength << "," << 360 * _previousAngleInRadians / (2 * M_PI);
 		
 		return ss.str ();
 	}

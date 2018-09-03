@@ -19,7 +19,7 @@ TEST (Blob, create)
 	ASSERT_EQ (b1.speed (), 100);
 	ASSERT_EQ (b1.smell (), 200);
 	ASSERT_EQ (b1.strength (), 300);
-	ASSERT_FALSE (b1.dead ());
+	ASSERT_FALSE (b1.isDead ());
 
 	Blob b2 {"annette", fixed_angle, -10.1, -20.2, 300, 400, 500};
 
@@ -29,7 +29,7 @@ TEST (Blob, create)
 	ASSERT_EQ (b2.speed (), 300);
 	ASSERT_EQ (b2.smell (), 400);
 	ASSERT_EQ (b2.strength (), 500);
-	ASSERT_FALSE (b2.dead ());
+	ASSERT_FALSE (b2.isDead ());
 }
 
 TEST(Movement, equal)
@@ -308,7 +308,7 @@ TEST(Blob, kill)
 	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 0, 0, 0};
 	b1.kill ();
 
-	ASSERT_TRUE (b1.dead ());
+	ASSERT_TRUE (b1.isDead ());
 	ASSERT_TRUE (b1.state () == "dead");
 }
 	
@@ -490,8 +490,8 @@ TEST (Blob, history_length)
 TEST (Blob, movement)
 {
 	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0, 0};
-	Movement m (&b1, "because", 5.0, 0.0);
-        m.apply ();
+	std::shared_ptr<Action> m (new Movement (&b1, "because", 5.0, 0.0));
+        m->apply ();
 	
 	ASSERT_EQ (b1.x (), 10.1);
 	ASSERT_EQ (b1.y (), 25.2);
@@ -512,12 +512,13 @@ TEST (Blob, usesFixedAngle)
 
 	for (int step = 1; step <= 8; step++)
 	{
-		Movement m = b.wander ();
-		ASSERT_EQ (m._reason, "wandering");
-		ASSERT_EQ (m._speed, 5);
-
-		ASSERT_TRUE (fabs (m._angleInRadians - step * (M_PI / 4)) < threshold);
-		m.apply ();
+		std::shared_ptr<Action> a = b.wander ();
+		ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+		std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+		ASSERT_EQ (m->_reason, "wandering");
+		ASSERT_EQ (m->_speed, 5);
+		ASSERT_TRUE (fabs (m->_angleInRadians - step * (M_PI / 4)) < threshold);
+		m->apply ();
 	}
 }
 
@@ -536,51 +537,67 @@ TEST (Blob, wandering)
 
 	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0.0, 0};
 
-	Movement m = b.wander ();
-	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI / 4));
-	m.apply ();
+	std::shared_ptr<Action> a = b.wander ();
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, M_PI / 4));
+	a->apply ();
         ASSERT_TRUE (fabs (b.x () - 13.6355339059327) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 23.7355339059327) < threshold);
 
-	m = b.wander ();
-       	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI / 2));
-	m.apply ();
+	a = b.wander ();
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
+	m = std::dynamic_pointer_cast <Movement> (a);
+       	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, M_PI / 2));
+	a->apply ();
 	ASSERT_TRUE (fabs (b.x () - 18.6355339059327) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 23.7355339059327) < threshold);
 
-	m = b.wander ();
-	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 3 * M_PI / 4));
-	m.apply ();
+	a = b.wander ();
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 3 * M_PI / 4));
+	a->apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 
-	m = b.wander ();
-	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, M_PI));
-	m.apply ();
+	a = b.wander ();
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, M_PI));
+	a->apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 
-	m = b.wander ();
-	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 5 * M_PI / 4));
-	m.apply ();
+	a = b.wander ();
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 5 * M_PI / 4));
+	m->apply ();
         ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 
-	m = b.wander ();
-	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 3 * M_PI / 2));
-	m.apply ();
+	a = b.wander ();
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 3 * M_PI / 2));
+	a->apply ();
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 	
-	m = b.wander ();
-	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 7 * M_PI / 4));
-	m.apply ();
+	a = b.wander ();
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 7 * M_PI / 4));
+	a->apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 
-	m = b.wander ();
-	ASSERT_TRUE (m  == Movement (&b, "wandering", 5, 2 * M_PI));
-	m.apply ();
+	a = b.wander ();
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 2 * M_PI));
+	a->apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 }
@@ -591,8 +608,10 @@ TEST (Blob, huntN)
 	Blob b1 {"mark", fixed_angle, 5, 5, 2, 0, 0};
 	Blob b2 {"annette", fixed_angle, 5, 10, 12, 0, 0};
 
-	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 2, 0));
+	std::shared_ptr<Action> a = b1.hunt (b2);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (*m == Movement (&b1, "hunting annette", 2, 0));
 }
 
 TEST (Blob, huntS)
@@ -600,8 +619,10 @@ TEST (Blob, huntS)
 	Blob b1 {"mark", fixed_angle, 5, 5, 2, 0, 0};
 	Blob b2 {"annette", fixed_angle, 5, -10, 12, 0, 0};
 
-	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 2, M_PI));
+	std::shared_ptr<Action> a = b1.hunt (b2);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (*m == Movement (&b1, "hunting annette", 2, M_PI));
 }
 
 TEST (Blob, huntE)
@@ -609,8 +630,10 @@ TEST (Blob, huntE)
 	Blob b1 {"mark", fixed_angle, 5, 5, 2, 0, 0};
 	Blob b2 {"annette", fixed_angle, 10, 5, 12, 0, 0};
 
-	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 2, M_PI/2));
+	std::shared_ptr<Action> a = b1.hunt (b2);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (*m == Movement (&b1, "hunting annette", 2, M_PI/2));
 }
 
 TEST (Blob, huntW)
@@ -618,8 +641,10 @@ TEST (Blob, huntW)
 	Blob b1 {"mark", fixed_angle, -5, 5, 2, 0, 0};
 	Blob b2 {"annette", fixed_angle, -10, 5, 12, 0, 0};
 
-	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m == Movement (&b1, "hunting annette", 2, 3 * M_PI / 2));
+	std::shared_ptr<Action> a = b1.hunt (b2);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (*m == Movement (&b1, "hunting annette", 2, 3 * M_PI / 2));
 }
 
 TEST (Blob, huntGetsCloser)
@@ -628,8 +653,8 @@ TEST (Blob, huntGetsCloser)
 	Blob b2 {"annette", fixed_angle, -10, 5, 12, 0, 0};
 
 	double d1 = b1.distance (b2);
-	Movement m = b1.hunt (b2);
-	m.apply ();
+	std::shared_ptr<Action> m = b1.hunt (b2);
+	m->apply ();
 
 	double d2 = b1.distance (b2);
 	ASSERT_TRUE (d2 < d1);
@@ -640,9 +665,11 @@ TEST (Blob, huntCatches)
 	Blob b1 {"mark", fixed_angle, -5, 5, 7, 0, 0};
 	Blob b2 {"annette", fixed_angle, -10, 5, 12, 0, 0};
 
-	Movement m = b1.hunt (b2);
-	ASSERT_TRUE (m._speed < 7);
-	m.apply ();
+	std::shared_ptr<Action> a = b1.hunt (b2);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr<Movement> m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (m->_speed < 7);
+	a->apply ();
 
 	ASSERT_TRUE (b1.sameSquare (b2));
 }
@@ -660,47 +687,45 @@ TEST (Blob, choose_to_wander)
 10.100000000000000	15.200000000000000
 10.100000000000000	20.200000000000000
 */
-
-
 	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 0, 0};
 
-	Movement m = b.chooseNextAction (std::vector <Blob> {});
-	m.apply ();
+	std::shared_ptr<Action> m = b.chooseNextAction (std::vector <Blob> {});
+	m->apply ();
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 23.73553390593270) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
-        m.apply ();
+        m->apply ();
 	ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 23.73553390593270) < threshold);
 	
 	m = b.chooseNextAction (std::vector <Blob> {});
-	m.apply ();
+	m->apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
-	m.apply ();
+	m->apply ();
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
-	m.apply ();
+	m->apply ();
         ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
-	m.apply ();
+	m->apply ();
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 
 	m = b.chooseNextAction (std::vector <Blob> {});
-	m.apply ();
+	m->apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 	
 	m = b.chooseNextAction (std::vector <Blob> {});
-	m.apply ();
+	m->apply ();
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 }
@@ -711,8 +736,10 @@ TEST (Blob, choosesToHunt)
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 100, 0};
 	std::vector <Blob> blobs {b1, b2};
 	
-	Movement m = blobs.front ().chooseNextAction (blobs);
-	ASSERT_TRUE (m == Movement (&blobs.front (), "hunting annette",5, M_PI/4)); 
+	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (*m == Movement (&blobs.front (), "hunting annette",5, M_PI/4)); 
 }
 
 
@@ -723,9 +750,11 @@ TEST (Blob, choosesClosestToHunt)
 	Blob b3 {"duncan", fixed_angle, 25, 25, 5, 1000, 0};
 	std::vector <Blob> blobs {b1, b2, b3};
 	
-	Movement m = blobs.front ().chooseNextAction (blobs); 
-
-	ASSERT_TRUE (m == Movement (&blobs.front (), "hunting annette", 5, M_PI/4)); 
+	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs); 
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	
+	ASSERT_TRUE (*m == Movement (&blobs.front (), "hunting annette", 5, M_PI/4)); 
 }
 
 TEST (Blob, will_not_hunt_stronger_creatures)
@@ -734,9 +763,11 @@ TEST (Blob, will_not_hunt_stronger_creatures)
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 0, 1};
 	std::vector <Blob> blobs {b1, b2};
 	
-	Movement m = blobs.front ().chooseNextAction (blobs); 
-
-	ASSERT_TRUE (m._reason == "wandering");
+	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs); 
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	
+	ASSERT_TRUE (m->_reason == "wandering");
 }
 
 
@@ -809,8 +840,10 @@ TEST (Blob, choose_move_random_wander)
 	ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 
-	Movement m = b.chooseNextAction (std::vector<Blob> {});
-	ASSERT_TRUE (fabs (m._angleInRadians - 0.783859) < threshold);
+	std::shared_ptr<Action> a = b.chooseNextAction (std::vector<Blob> {});
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (fabs (m->_angleInRadians - 0.783859) < threshold);
 }
 
 TEST (Blob, move_random_wander)
@@ -827,18 +860,18 @@ TEST (Blob, move_random_wander)
 	ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 
-	Movement m = b.chooseNextAction (std::vector<Blob> {});
-	m.apply ();
+	std::shared_ptr<Action> m = b.chooseNextAction (std::vector<Blob> {});
+	m->apply ();
 	ASSERT_TRUE (fabs (b.x () - 13.630087040) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 23.740972392) < threshold);
 
 	m = b.chooseNextAction (std::vector<Blob> {});
-	m.apply ();
+	m->apply ();
 	ASSERT_TRUE (fabs (b.x () - 17.824580716) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 26.462410339) < threshold);
 	
 	m = b.chooseNextAction (std::vector<Blob> {});
-	m.apply ();
+	m->apply ();
 	ASSERT_TRUE (fabs (b.x () - 22.148524241) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 28.97310591453995698) < threshold);
 }
@@ -856,7 +889,7 @@ TEST (Blob, do_not_fight)
 
 	for (auto& b : blobs)
 	{
-		ASSERT_FALSE (b.dead ());
+		ASSERT_FALSE (b.isDead ());
 	}
 }
 
@@ -872,7 +905,7 @@ TEST (Blob, do_not_fight_myself)
 
 	for (auto& b : blobs)
 	{
-		ASSERT_FALSE (b.dead ());
+		ASSERT_FALSE (b.isDead ());
 	}
 }
 
@@ -888,8 +921,8 @@ TEST (Blob, fight_first_wins)
  		b.fight (blobs);
 	}
 
-	ASSERT_FALSE (blobs.front ().dead ());
-	ASSERT_TRUE (blobs.back ().dead ());
+	ASSERT_FALSE (blobs.front ().isDead ());
+	ASSERT_TRUE (blobs.back ().isDead ());
 }
 
 TEST (Blob, fight_second_wins)
@@ -903,8 +936,8 @@ TEST (Blob, fight_second_wins)
  		b.fight (blobs);
 	}
 
-	ASSERT_TRUE (blobs.front ().dead ());
-	ASSERT_FALSE (blobs.back ().dead ());
+	ASSERT_TRUE (blobs.front ().isDead ());
+	ASSERT_FALSE (blobs.back ().isDead ());
 }
 
 TEST (Blob, fight_neither_wins)
@@ -918,8 +951,8 @@ TEST (Blob, fight_neither_wins)
  		b.fight (blobs);
 	}
 
-	ASSERT_FALSE (blobs.front ().dead ());
-	ASSERT_FALSE (blobs.back ().dead ());
+	ASSERT_FALSE (blobs.front ().isDead ());
+	ASSERT_FALSE (blobs.back ().isDead ());
 }
 
 TEST (Blob, fights_all_others)
@@ -934,9 +967,9 @@ TEST (Blob, fights_all_others)
  		b.fight (blobs);
 	}
 
-	ASSERT_TRUE (blobs[0].dead ());
-	ASSERT_TRUE (blobs[1].dead ());
-	ASSERT_FALSE (blobs[2].dead ());
+	ASSERT_TRUE (blobs[0].isDead ());
+	ASSERT_TRUE (blobs[1].isDead ());
+	ASSERT_FALSE (blobs[2].isDead ());
 }
 	
 TEST (Blob, do_not_fight_dead_blobs)
@@ -952,9 +985,9 @@ TEST (Blob, do_not_fight_dead_blobs)
  		b.fight (blobs);
 	}
 
-	ASSERT_TRUE (blobs[0].dead ());
-	ASSERT_FALSE (blobs[1].dead ());
-	ASSERT_FALSE (blobs[2].dead ());
+	ASSERT_TRUE (blobs[0].isDead ());
+	ASSERT_FALSE (blobs[1].isDead ());
+	ASSERT_FALSE (blobs[2].isDead ());
 
 	blobs[1].move (10,0,"");
 	blobs[2].move (10,0,"");
@@ -965,9 +998,9 @@ TEST (Blob, do_not_fight_dead_blobs)
 	blobs[0].fight (blobs);
 	blobs[2].fight (blobs);
 
-	ASSERT_TRUE (blobs[0].dead ());
-	ASSERT_FALSE (blobs[1].dead ());
-	ASSERT_FALSE (blobs[2].dead ());
+	ASSERT_TRUE (blobs[0].isDead ());
+	ASSERT_FALSE (blobs[1].isDead ());
+	ASSERT_FALSE (blobs[2].isDead ());
 }
 
 TEST (Blob, dead_blobs_do_not_move_or_hunt)
@@ -981,8 +1014,10 @@ TEST (Blob, dead_blobs_do_not_move_or_hunt)
  		b.fight (blobs);
 	}
 
-	Movement m = blobs[0].chooseNextAction (blobs);
-	ASSERT_TRUE (m == Movement (&blobs[0],"dead",0,0));
+	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (*m == Movement (&blobs[0],"dead",0,0));
 }
 
 TEST (Blob, dead_blobs_are_not_hunted)
@@ -996,15 +1031,17 @@ TEST (Blob, dead_blobs_are_not_hunted)
  		b.fight (blobs);
 	}
 
-	Movement m = blobs[1].chooseNextAction (blobs);
-	ASSERT_TRUE (m._reason == "wandering");
+	std::shared_ptr<Action> a = blobs[1].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (m->_reason == "wandering");
 }
 
 TEST (Blob, parms)
 {
 	Blob b {"mark", fixed_angle, 20, 40, 5, 100, 22};
-	Movement m (&b, "", 10.0, M_PI / 2);
-	m.apply ();
+	std::shared_ptr<Action> a (new Movement (&b, "", 10.0, M_PI / 2));
+	a->apply ();
 
 	ASSERT_EQ (b.parms (), "alive,5,100,22,90");
 }
@@ -1012,8 +1049,8 @@ TEST (Blob, parms)
 TEST (Blob, output)
 {
 	Blob b {"mark", fixed_angle, 20, 40, 5, 100, 0};
-	Movement m (&b, "", 10.0, M_PI / 2);
-	m.apply ();
+	std::shared_ptr<Action> a (new Movement (&b, "", 10.0, M_PI / 2));
+	a->apply ();
 
 	std::stringstream s;
 
@@ -1025,11 +1062,13 @@ TEST (Blob, output)
 TEST (Movement, output)
 {
 	Blob b {"mark", fixed_angle, 20, 40, 5, 100, 0};
-	Movement m (&b, "hello", 10.0, M_PI / 2);
-
+	std::shared_ptr<Action> a (new Movement (&b, "hello", 10.0, M_PI / 2));
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	
 	std::stringstream s;
 
-	s << m;
+	s << *m;
 
 	ASSERT_EQ (s.str (), "hello,10,90");
 }
@@ -1040,9 +1079,9 @@ TEST (Rnd, independent)
 	Blob b2 {"annette", Rnd (1, 40), 0, 0, 10, 10, 0};
 	Blob b3 {"grace", Rnd (2, 40), 0, 0, 10, 10, 0};
 
-	b1.chooseNextAction (std::vector<Blob> {}).apply ();
-	b2.chooseNextAction (std::vector<Blob> {}).apply ();
-	b3.chooseNextAction (std::vector<Blob> {}).apply ();
+	b1.chooseNextAction (std::vector<Blob> {})->apply ();
+	b2.chooseNextAction (std::vector<Blob> {})->apply ();
+	b3.chooseNextAction (std::vector<Blob> {})->apply ();
 
 	ASSERT_TRUE (fabs (b1.x () - b2.x ()) < threshold);
 	ASSERT_TRUE (fabs (b1.y () - b2.y ()) < threshold);
