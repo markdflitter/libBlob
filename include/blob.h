@@ -11,9 +11,10 @@
 #include <memory>
 #include <action.h>
 #include <movement.h>
+#include <attack.h>
 #include <rnd.h>
 
-class Blob : public Moveable
+class Blob : public Moveable, public Attackable
 {
 public:
 	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double smell, double strength) :
@@ -85,6 +86,15 @@ public:
 			_points.erase (_points.begin (), _points.begin () + 1);
 	
 		_state = newState;
+	}
+
+	void attacked (double strength)
+	{
+		_strength -= strength;
+		if (_strength <= 0)
+		{
+			kill ();
+		}
 	}
 
         std::shared_ptr <Action> die ()

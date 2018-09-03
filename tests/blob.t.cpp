@@ -795,6 +795,29 @@ TEST (Blob, move_random_wander)
 	ASSERT_TRUE (fabs (b.y () - 28.97310591453995698) < threshold);
 }
 
+
+TEST (Blob, attack_no_kill)
+{
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0, 100};
+	
+	b1.attacked (10);
+	ASSERT_TRUE (b1.strength () == 90);
+	ASSERT_TRUE (!b1.isDead ());
+}
+
+TEST (Blob, attack_and_kill)
+{
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 5, 0, 20};
+	
+	b1.attacked (10);
+	ASSERT_TRUE (b1.strength () == 10);
+	ASSERT_TRUE (!b1.isDead ());
+	
+	b1.attacked (10);
+	ASSERT_TRUE (b1.strength () == 0);
+	ASSERT_TRUE (b1.isDead ());
+}
+
 TEST (Blob, do_not_fight)
 {
 	Blob b1 {"mark", fixed_angle, 10, 10, 5, 100, 100};
