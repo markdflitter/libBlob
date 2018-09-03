@@ -8,111 +8,13 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <random>
 #include <memory>
+#include <action.h>
+#include <movement.h>
+#include <rnd.h>
 
-class Rnd 
+class Blob : public Moveable
 {
-public:
-	Rnd (unsigned int seed, int stddev) :
-		_gen (seed)
-	     ,  _dist (0, stddev) 
-	{
-	}
-
-	double operator ()(double previousMoveDirection) 
-	{
-		return previousMoveDirection + (2 * M_PI * _dist (_gen) / 360);
-	}
-private:
-	std::mt19937 _gen;
-	std::normal_distribution<> _dist;
-};
-
-class Action 
-{
-public:
-	virtual ~Action () {};
-	virtual void apply () = 0;
-};
-
-class Blob;
-
-class Movement : public Action
-{
-	public:
-		Movement (Blob* blob, const std::string& reason, double speed, double angleInRadians) :
-			_blob (blob)
-			, _reason (reason)
-			, _speed (speed)
-			, _angleInRadians (angleInRadians)
-		{
-		}
-
-		Movement (const Movement& m) :
-			_blob (m._blob)
-			, _reason (m._reason)
-			, _speed (m._speed)
-			, _angleInRadians (m._angleInRadians)
-		{
-		}
-
-		Movement (const Movement&& m) :
-			_blob (m._blob)
-			, _reason (m._reason)
-			, _speed (m._speed)
-			, _angleInRadians (m._angleInRadians)
-		{
-		}
-
-		Movement& operator= (const Movement& m)
-		{
-			_blob  = m._blob;
-			_reason = m._reason;
-			_speed = m._speed;
-			_angleInRadians = m._angleInRadians;
-
-			return *this;
-		}
-
-		Movement& operator= (const Movement&& m)
-		{
-			_blob  = m._blob;
-			_reason = m._reason;
-			_speed = m._speed;
-			_angleInRadians = m._angleInRadians;
-
-			return *this;
-		}
-
-		bool operator== (const Movement& m) const
-		{
-			return (_blob == m._blob) 
-				&& (_reason == m._reason)
-				&& (_speed == m._speed)
-				&& (_angleInRadians == m._angleInRadians);
-		}	
-
-		bool operator!= (const Movement& m) const
-		{
-			return (_blob != m._blob) 
-				|| (_reason != m._reason)
-				|| (_speed != m._speed)
-				|| (_angleInRadians != m._angleInRadians);
-		}
-
-		void apply ();
-
-		friend std::ostream& operator<< (std::ostream& s, const Movement& m);
-	public:
-		Blob* _blob;
-		std::string _reason; 
-		double _speed;
-		double _angleInRadians;
-};
-
-
-class Blob {
 public:
 	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double smell, double strength) :
 		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _smell (smell), _strength (strength), _dead (false)
@@ -277,17 +179,4 @@ inline std::ostream& operator<< (std::ostream& s, const Blob& b)
 	s << b.x () << "," << b.y ();
 	return s; 
 }
-
-inline std::ostream& operator<< (std::ostream& s, const Movement& m)
-{
-	s << m._reason << "," << m._speed << "," << 360 * m._angleInRadians / (2 * M_PI);
-	return s; 
-}
-
-
-inline void Movement::apply ()
-{
-	_blob->move (_speed, _angleInRadians, _reason);
-}
-
 #endif
