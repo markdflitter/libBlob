@@ -593,6 +593,17 @@ TEST (Blob, huntCatches)
 	ASSERT_TRUE (b1.sameSquare (b2));
 }
 
+TEST (Blob, attack)
+{
+	Blob b1 {"mark", fixed_angle, -5, 5, 7, 0, 100};
+	Blob b2 {"annette", fixed_angle, -10, 5, 12, 0, 10};
+
+	std::shared_ptr <Action> a = b2.attack (b1);
+	a->apply ();
+
+	ASSERT_TRUE (b1.strength () == 90);
+}
+
 
 TEST (Blob, choose_to_wander)
 {

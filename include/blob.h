@@ -115,6 +115,11 @@ public:
 				std::min (_speed, distance (target)),
 				angle (target)));
 	}
+        
+	std::shared_ptr <Action> attack (Blob& target)
+        {
+		return std::shared_ptr <Action> (new Attack (&target,_strength));
+	}
 
 	std::shared_ptr <Action> chooseNextAction (const std::vector<Blob>& others)
 	{
