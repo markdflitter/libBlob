@@ -3,6 +3,7 @@
 
 #include "pt.h"
 #include <functional>
+#include <algorithm>
 #include <iostream>
 #include <math.h>
 #include <string>
@@ -116,6 +117,14 @@ public:
 				angle (target)));
 	}
         
+	std::shared_ptr <Action> flee (const Blob& target)
+        {
+		return std::shared_ptr <Action> (new Movement (this,
+				 "running from " + target.name (),
+				_speed,
+				_rnd ((0.9 * _previousAngleInRadians + 0.1 * (angle (target) + M_PI)))));
+	}
+         
 	std::shared_ptr <Action> attack (Blob& target)
         {
 		return std::shared_ptr <Action> (new Attack (&target,_strength));
@@ -138,9 +147,9 @@ public:
 		std::vector <Pair> huntTargets;
 		for (auto& b : others)
 		{
-			if ((&b != this) && !b.isDead () && (b.strength () < _strength))
+			if ((&b != this) && !b.isDead ())
 			{
-				if (sameSquare (b))
+				if (sameSquare (b) && (b.strength () < _strength))
 				{
 					double weight = -b.strength ();
 					attackTargets.push_back (Pair {weight, &b});
@@ -167,7 +176,10 @@ public:
 
 		if (huntTargets.size () > 0)
 		{
- 			return hunt (*(huntTargets.back ()._blob));
+			if (huntTargets.back ()._blob->_strength > _strength)
+				return flee (*(huntTargets.back ()._blob));
+			else
+ 				return hunt (*(huntTargets.back ()._blob));
 		}
 
 		return wander ();
