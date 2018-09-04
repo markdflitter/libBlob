@@ -121,52 +121,58 @@ public:
 		return std::shared_ptr <Action> (new Attack (&target,_strength));
 	}
 
-	std::shared_ptr <Action> chooseNextAction (const std::vector<Blob>& others)
+	std::shared_ptr <Action> chooseNextAction (std::vector<Blob>& others)
 	{
 		if (isDead())
+		{
 			return die ();
-
-		std::vector <std::pair <double, Blob>> huntTargets;
-		for (auto& b : others)
-		{
-			if ((&b != this) && canSmell (b) && !b.isDead () && (b.strength () < _strength))
-			{
-				double weight = 1.0 - (distance (b) / _smell);
-				huntTargets.push_back (std::make_pair (weight, b));
-			}
-		}	
-		std::sort (huntTargets.begin (), huntTargets.end (),
-			   [] (const std::pair <double, Blob>& lhs,
-			       std::pair <double, Blob>& rhs) {return lhs.first < rhs.first;});
+		}
 		
-		return huntTargets.size () > 0 ? hunt (huntTargets.back ().second) : wander ();
-	}
+		struct Pair 
+		{
+			double _weight;
+			Blob* _blob;
+		};
 
-
-	void fight (std::vector <Blob>& others)
-	{
-		if (isDead ()) 
-			return;
-
+		std::vector <Pair> attackTargets;
+		std::vector <Pair> huntTargets;
 		for (auto& b : others)
 		{
-			if (b.isDead ()) 
-				continue;
-
-			if ((&b != this) && sameSquare (b))
+			if ((&b != this) && !b.isDead () && (b.strength () < _strength))
 			{
-				if (_strength > b._strength)
+				if (sameSquare (b))
 				{
-					b.kill ();
+					double weight = -b.strength ();
+					attackTargets.push_back (Pair {weight, &b});
 				}
-				else if (b._strength > _strength)
+				else if (canSmell (b))
 				{
-					kill ();
+					double weight = 1.0 - (distance (b) / _smell);
+					huntTargets.push_back (Pair {weight, &b});
 				}
 			}
 		}
-	}
 
+		std::sort (attackTargets.begin (), attackTargets.end (),
+			   [] (const Pair& lhs,
+			       const Pair& rhs) {return lhs._weight < rhs._weight;});
+		std::sort (huntTargets.begin (), huntTargets.end (),
+			   [] (const Pair&  lhs,
+			       const Pair& rhs) {return lhs._weight < rhs._weight;});
+		
+		if (attackTargets.size () > 0)
+		{
+			return attack (*(attackTargets.back ())._blob);
+		}
+
+		if (huntTargets.size () > 0)
+		{
+ 			return hunt (*(huntTargets.back ()._blob));
+		}
+
+		return wander ();
+	}
+	
 	std::string parms () const 
 	{
 		std::stringstream ss;
