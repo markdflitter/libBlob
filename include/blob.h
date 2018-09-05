@@ -122,7 +122,7 @@ public:
 		return std::shared_ptr <Action> (new Movement (this,
 				 "running from " + target.name (),
 				_speed,
-				_rnd ((0.95 * _previousAngleInRadians + 0.05 * (angle (target) + M_PI)))));
+				_rnd ((0.9 * _previousAngleInRadians + 0.1 * (angle (target) + M_PI)))));
 	}
          
 	std::shared_ptr <Action> attack (Blob& target)

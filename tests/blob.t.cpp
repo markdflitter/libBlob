@@ -955,7 +955,7 @@ TEST (Blob, flee)
 	ASSERT_TRUE (m->_target == &b1);
 	ASSERT_TRUE (m->_reason == "running from annette");
 	ASSERT_TRUE (m->_speed == 2);
-	ASSERT_TRUE (fabs (m->_angleInRadians) - ((0.95 * 3 * M_PI / 2) + (0.05 * M_PI) + M_PI / 4) < threshold);
+	ASSERT_TRUE (fabs (m->_angleInRadians) - ((0.9 * 3 * M_PI / 2) + (0.1 * M_PI) + M_PI / 4) < threshold);
 }
 
 TEST (Blob, does_not_run)
