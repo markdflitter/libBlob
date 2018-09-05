@@ -18,8 +18,8 @@
 class Blob : public Moveable, public Attackable
 {
 public:
-	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double smell, double strength) :
-		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _smell (smell), _strength (strength), _dead (false)
+	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double runningSpeed, double smell, double strength) :
+		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _runningSpeed (runningSpeed), _smell (smell), _strength (strength), _dead (false)
 	{
 		_points.push_back (Pt<double> (x,y));
 	}
@@ -31,6 +31,7 @@ public:
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
 	double speed () const {return _speed;}
+	double runningSpeed () const {return _runningSpeed;}
 	double smell () const {return _smell;}
 	double strength () const {return _strength;}
 	std::vector<Pt<double>> history () const {return _points;}
@@ -113,7 +114,7 @@ public:
         {
 		return std::shared_ptr <Action> (new Movement (this,
 				 "hunting " + target.name (),
-				std::min (_speed, distance (target)),
+				std::min (_runningSpeed, distance (target)),
 				angle (target)));
 	}
         
@@ -121,7 +122,7 @@ public:
         {
 		return std::shared_ptr <Action> (new Movement (this,
 				 "running from " + target.name (),
-				_speed,
+				_runningSpeed,
 				_rnd ((0.9 * _previousAngleInRadians + 0.1 * (angle (target) + M_PI)))));
 	}
          
@@ -189,7 +190,7 @@ public:
 	{
 		std::stringstream ss;
 
-		ss << (isDead () ? "dead" : "alive") << "," <<_speed << "," << _smell << "," << _strength << "," << 360 * _previousAngleInRadians / (2 * M_PI);
+		ss << (isDead () ? "dead" : "alive") << "," <<_speed << "," << _runningSpeed << "," << _smell << "," << _strength << "," << 360 * _previousAngleInRadians / (2 * M_PI);
 		
 		return ss.str ();
 	}
@@ -200,7 +201,8 @@ private:
 	std::string _name;
 	std::string _state;
 	double _speed;
-        double _smell;
+        double _runningSpeed;
+	double _smell;
 	double _strength;
 
 	bool _dead;
