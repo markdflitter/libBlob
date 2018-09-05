@@ -18,8 +18,8 @@
 class Blob : public Moveable, public Attackable
 {
 public:
-	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double runningSpeed, double smell, double strength) :
-		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _runningSpeed (runningSpeed), _smell (smell), _strength (strength), _dead (false)
+	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double runningSpeed, double smell, double strength, int endurance = 0) :
+		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _runningSpeed (runningSpeed), _smell (smell), _strength (strength), _endurance (endurance), _fatigue (0), _dead (false), _tired (false)
 	{
 		_points.push_back (Pt<double> (x,y));
 	}
@@ -34,6 +34,8 @@ public:
 	double runningSpeed () const {return _runningSpeed;}
 	double smell () const {return _smell;}
 	double strength () const {return _strength;}
+	double endurance () const {return _endurance;}
+	double fatigue () const {return _fatigue;}
 	std::vector<Pt<double>> history () const {return _points;}
 	void kill ()
 	{
@@ -42,6 +44,8 @@ public:
 	}
 
 	bool isDead () const {return _dead;}
+	
+	bool isTired () const {return _tired;} 
 
 	double distance (const Blob& other) const
 	{
@@ -88,6 +92,17 @@ public:
 			_points.erase (_points.begin (), _points.begin () + 1);
 	
 		_state = newState;
+
+		if (speed > _speed)
+		{
+			if (_fatigue < _endurance) _fatigue++;
+		}
+		else
+		{
+			if (_fatigue > 0) _fatigue--;
+		}
+		if (_fatigue == 0) _tired = false;
+		if (_fatigue == _endurance) _tired = true; 
 	}
 
 	void attacked (double strength)
@@ -113,16 +128,16 @@ public:
 	std::shared_ptr <Action> hunt (const Blob& target)
         {
 		return std::shared_ptr <Action> (new Movement (this,
-				 "hunting " + target.name (),
-				std::min (_runningSpeed, distance (target)),
+				 "hunting " + target.name () + (!isTired () ? " (fast)" : ""),
+				std::min (isTired() ? _speed : _runningSpeed, distance (target)),
 				angle (target)));
 	}
         
 	std::shared_ptr <Action> flee (const Blob& target)
         {
 		return std::shared_ptr <Action> (new Movement (this,
-				 "running from " + target.name (),
-				_runningSpeed,
+				 "running from " + target.name () + (!isTired () ? " (fast)" : ""),
+				isTired () ? _speed : _runningSpeed,
 				_rnd ((0.9 * _previousAngleInRadians + 0.1 * (angle (target) + M_PI)))));
 	}
          
@@ -204,6 +219,10 @@ private:
         double _runningSpeed;
 	double _smell;
 	double _strength;
+
+	double _fatigue;
+	double _endurance;
+	bool _tired;
 
 	bool _dead;
 	double _previousAngleInRadians = 0;

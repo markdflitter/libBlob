@@ -11,7 +11,7 @@ double fixed_angle (double previousMoveDirection)
 
 TEST (Blob, create) 
 {
-	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 100, 100, 200, 300};
+	Blob b1 {"mark", fixed_angle, 10.1, 20.2, 100, 100, 200, 300, 400};
 
 	ASSERT_EQ (b1.name (), "mark");
 	ASSERT_EQ (b1.x (), 10.1);
@@ -19,9 +19,13 @@ TEST (Blob, create)
 	ASSERT_EQ (b1.speed (), 100);
 	ASSERT_EQ (b1.smell (), 200);
 	ASSERT_EQ (b1.strength (), 300);
-	ASSERT_FALSE (b1.isDead ());
+	ASSERT_EQ (b1.endurance (), 400);
+	ASSERT_EQ (b1.fatigue(), 0);
 
-	Blob b2 {"annette", fixed_angle, -10.1, -20.2, 300, 300, 400, 500};
+	ASSERT_FALSE (b1.isDead ());
+	ASSERT_FALSE (b1.isTired ());
+
+	Blob b2 {"annette", fixed_angle, -10.1, -20.2, 300, 300, 400, 500, 600};
 
 	ASSERT_EQ (b2.name (), "annette");
 	ASSERT_EQ (b2.x (), -10.1);
@@ -29,7 +33,11 @@ TEST (Blob, create)
 	ASSERT_EQ (b2.speed (), 300);
 	ASSERT_EQ (b2.smell (), 400);
 	ASSERT_EQ (b2.strength (), 500);
+	ASSERT_EQ (b2.endurance (), 600);
+	ASSERT_EQ (b2.fatigue(), 0);
+
 	ASSERT_FALSE (b2.isDead ());
+	ASSERT_FALSE (b2.isTired ());
 }
 
 TEST (Blob, distance0)
@@ -523,46 +531,46 @@ TEST (Blob, wandering)
 
 TEST (Blob, huntN)
 {
-	Blob b1 {"mark", fixed_angle, 5, 5, 2, 4, 0, 0};
-	Blob b2 {"annette", fixed_angle, 5, 10, 12, 12, 0, 0};
+	Blob b1 {"mark", fixed_angle, 5, 5, 2, 4, 0, 0, 1};
+	Blob b2 {"annette", fixed_angle, 5, 10, 12, 12, 0, 0, 1};
 
 	std::shared_ptr<Action> a = b1.hunt (b2);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	ASSERT_TRUE (*m == Movement (&b1, "hunting annette", 4, 0));
+	ASSERT_TRUE (*m == Movement (&b1, "hunting annette (fast)", 4, 0));
 }
 
 TEST (Blob, huntS)
 {
-	Blob b1 {"mark", fixed_angle, 5, 5, 2, 4, 0, 0};
-	Blob b2 {"annette", fixed_angle, 5, -10, 12, 12, 0, 0};
+	Blob b1 {"mark", fixed_angle, 5, 5, 2, 4, 0, 0, 1};
+	Blob b2 {"annette", fixed_angle, 5, -10, 12, 12, 0, 0, 1};
 
 	std::shared_ptr<Action> a = b1.hunt (b2);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	ASSERT_TRUE (*m == Movement (&b1, "hunting annette", 4, M_PI));
+	ASSERT_TRUE (*m == Movement (&b1, "hunting annette (fast)", 4, M_PI));
 }
 
 TEST (Blob, huntE)
 {
-	Blob b1 {"mark", fixed_angle, 5, 5, 2, 4, 0, 0};
-	Blob b2 {"annette", fixed_angle, 10, 5, 12, 12, 0, 0};
+	Blob b1 {"mark", fixed_angle, 5, 5, 2, 4, 0, 0, 1};
+	Blob b2 {"annette", fixed_angle, 10, 5, 12, 12, 0, 0, 1};
 
 	std::shared_ptr<Action> a = b1.hunt (b2);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	ASSERT_TRUE (*m == Movement (&b1, "hunting annette", 4, M_PI/2));
+	ASSERT_TRUE (*m == Movement (&b1, "hunting annette (fast)", 4, M_PI/2));
 }
 
 TEST (Blob, huntW)
 {
-	Blob b1 {"mark", fixed_angle, -5, 5, 2, 4, 0, 0};
-	Blob b2 {"annette", fixed_angle, -10, 5, 12, 12, 0, 0};
+	Blob b1 {"mark", fixed_angle, -5, 5, 2, 4, 0, 0, 1};
+	Blob b2 {"annette", fixed_angle, -10, 5, 12, 12, 0, 0, 1};
 
 	std::shared_ptr<Action> a = b1.hunt (b2);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	ASSERT_TRUE (*m == Movement (&b1, "hunting annette", 4, 3 * M_PI / 2));
+	ASSERT_TRUE (*m == Movement (&b1, "hunting annette (fast)", 4, 3 * M_PI / 2));
 }
 
 TEST (Blob, huntGetsCloser)
@@ -662,20 +670,20 @@ TEST (Blob, choose_to_wander)
 
 TEST (Blob, choosesToHunt)
 {
-	Blob b1 {"mark", fixed_angle, 10, 10, 5, 10, 100, 1};
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 10, 100, 1, 1};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 5, 100, 0};
 	std::vector <Blob> blobs {b1, b2};
 	
 	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	ASSERT_TRUE (*m == Movement (&blobs.front (), "hunting annette", 10, M_PI/4)); 
+	ASSERT_TRUE (*m == Movement (&blobs.front (), "hunting annette (fast)", 10, M_PI/4)); 
 }
 
 
 TEST (Blob, choosesClosestToHunt)
 {
-	Blob b1 {"mark", fixed_angle, 10, 10, 5, 10, 1000, 1};
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 10, 1000, 1, 1};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 5, 1000, 0};
 	Blob b3 {"duncan", fixed_angle, 25, 25, 5, 5, 1000, 0};
 	std::vector <Blob> blobs {b1, b2, b3};
@@ -684,7 +692,7 @@ TEST (Blob, choosesClosestToHunt)
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
-	ASSERT_TRUE (*m == Movement (&blobs.front (), "hunting annette", 10, M_PI/4)); 
+	ASSERT_TRUE (*m == Movement (&blobs.front (), "hunting annette (fast)", 10, M_PI/4)); 
 }
 
 TEST (Blob, chooses_not_to_fight)
@@ -722,7 +730,7 @@ TEST (Blob, will_not_fight_stronger)
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
-	ASSERT_TRUE (m->_reason == "running from annette");
+	ASSERT_TRUE (m->_reason == "running from annette (fast)");
 }
 
 TEST (Blob, chooses_not_to_fight_dead)
@@ -943,7 +951,7 @@ TEST (Blob, dead_blobs_are_not_hunted)
 
 TEST (Blob, flee)
 {
-	Blob b1 {"mark", fixed_angle, 10, 5, 2, 4, 0, 0};
+	Blob b1 {"mark", fixed_angle, 10, 5, 5, 10, 0, 0, 2};
 	Blob b2 {"annette", fixed_angle, 5, 10, 12, 12, 0, 0};
 
 	b1.move (5, 3 * M_PI/2, "wandering");	
@@ -952,8 +960,8 @@ TEST (Blob, flee)
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	ASSERT_TRUE (m->_target == &b1);
-	ASSERT_TRUE (m->_reason == "running from annette");
-	ASSERT_TRUE (m->_speed == 4);
+	ASSERT_TRUE (m->_reason == "running from annette (fast)");
+	ASSERT_TRUE (m->_speed == 10);
 	ASSERT_TRUE (fabs (m->_angleInRadians) - ((0.9 * 3 * M_PI / 2) + (0.1 * M_PI) + M_PI / 4) < threshold);
 }
 
@@ -993,7 +1001,7 @@ TEST (Blob, runs)
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
-	ASSERT_TRUE (m->_reason == "running from annette");
+	ASSERT_TRUE (m->_reason == "running from annette (fast)");
 }
 
 TEST (Blob, runs_from_strongest)
@@ -1007,7 +1015,7 @@ TEST (Blob, runs_from_strongest)
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
-	ASSERT_TRUE (m->_reason == "running from duncan");
+	ASSERT_TRUE (m->_reason == "running from duncan (fast)");
 }
 
 TEST (Blob, parms)
@@ -1031,6 +1039,93 @@ TEST (Blob, output)
 
 	ASSERT_EQ (s.str (), "30,40");
 }
+
+TEST (Blob, gets_tired_when_hunting)
+{
+	Blob b1 {"mark", Rnd (1, 40), 0, 0, 10, 20, 10, 0, 2};
+	Blob b2 {"annette", Rnd (1, 40), 100, 100, 10, 10, 10, 0};
+	
+	ASSERT_FALSE (b1.isTired ());
+
+	std::shared_ptr<Action> a = b1.hunt (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_FALSE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 20);
+	a->apply ();
+
+	a = b1.hunt (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_FALSE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 20);
+	a->apply ();
+	
+	a = b1.hunt (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 10);
+	a->apply ();
+
+	a = b1.hunt (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 10);
+	a->apply ();
+
+	a = b1.hunt (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_FALSE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 20);
+	a->apply ();
+}
+
+TEST (Blob, gets_tired_when_fleeing)
+{
+	Blob b1 {"mark", Rnd (1, 40), 0, 0, 10, 20, 10, 0, 2};
+	Blob b2 {"annette", Rnd (1, 40), 100, 100, 10, 10, 10, 0};
+	
+	ASSERT_FALSE (b1.isTired ());
+
+	std::shared_ptr<Action> a = b1.flee (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_FALSE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 20);
+	a->apply ();
+
+	a = b1.flee (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_FALSE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 20);
+	a->apply ();
+	
+	a = b1.flee (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 10);
+	a->apply ();
+
+	a = b1.flee (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_TRUE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 10);
+	a->apply ();
+
+	a = b1.flee (b2);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	ASSERT_FALSE (b1.isTired ());
+	ASSERT_EQ (m->_speed, 20);
+	a->apply ();
+}
+
 
 TEST (Blob, independent)
 {
