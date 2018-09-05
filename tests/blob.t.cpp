@@ -688,19 +688,6 @@ TEST (Blob, choosesClosestToHunt)
 	ASSERT_TRUE (*m == Movement (&blobs.front (), "hunting annette", 5, M_PI/4)); 
 }
 
-TEST (Blob, will_not_hunt_stronger_creatures)
-{
-	Blob b1 {"mark", fixed_angle, 10, 10, 5, 1000, 0};
-	Blob b2 {"annette", fixed_angle, 20, 20, 5, 0, 1};
-	std::vector <Blob> blobs {b1, b2};
-	
-	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs); 
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	
-	ASSERT_TRUE (m->_reason == "wandering");
-}
-
 TEST (Blob, chooses_not_to_fight)
 {
 	Blob b1 {"mark", fixed_angle, 10, 10, 5, 0, 0};
@@ -736,7 +723,7 @@ TEST (Blob, will_not_fight_stronger)
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
-	ASSERT_TRUE (m->_reason == "wandering");
+	ASSERT_TRUE (m->_reason == "running from annette");
 }
 
 TEST (Blob, chooses_not_to_fight_dead)
@@ -927,7 +914,7 @@ TEST (Blob, attack_and_kill)
 	ASSERT_TRUE (b1.isDead ());
 }
 
-TEST (Blob, dead_blobs_do_not_move_or_hunt)
+TEST (Blob, dead_blobs_do_nothing)
 {
 	Blob b1 {"mark", fixed_angle, 10, 10, 5, 100, 0};
 	Blob b2 {"annette", fixed_angle, 10, 10, 5, 100, 100};
@@ -953,6 +940,75 @@ TEST (Blob, dead_blobs_are_not_hunted)
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	ASSERT_TRUE (m->_reason == "wandering");
+}
+
+TEST (Blob, flee)
+{
+	Blob b1 {"mark", fixed_angle, 10, 5, 2, 0, 0};
+	Blob b2 {"annette", fixed_angle, 5, 10, 12, 0, 0};
+
+	b1.move (5, 3 * M_PI/2, "wandering");	
+
+	std::shared_ptr<Action> a = b1.flee (b2);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (m->_target == &b1);
+	ASSERT_TRUE (m->_reason == "running from annette");
+	ASSERT_TRUE (m->_speed == 2);
+	ASSERT_TRUE (fabs (m->_angleInRadians) - ((0.95 * 3 * M_PI / 2) + (0.05 * M_PI) + M_PI / 4) < threshold);
+}
+
+TEST (Blob, does_not_run)
+{
+	Blob b1 {"mark", fixed_angle, 5, 5, 2, 0, 0};
+	Blob b2 {"annette", fixed_angle, 5, 10, 12, 0, 0};
+	std::vector<Blob> blobs {b1,b2};
+
+	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (m->_reason == "wandering");
+}
+
+TEST (Blob, does_not_run_from_dead_blobs)
+{
+	Blob b1 {"mark", fixed_angle, 5, 5, 2, 0, 0};
+	Blob b2 {"annette", fixed_angle, 5, 5, 12, 0, 10};
+	std::vector<Blob> blobs {b1,b2};
+	
+	blobs[1].kill ();
+
+	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	ASSERT_TRUE (m->_reason == "wandering");
+}
+
+TEST (Blob, runs)
+{
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 1000, 0};
+	Blob b2 {"annette", fixed_angle, 20, 20, 5, 0, 1};
+	std::vector <Blob> blobs {b1, b2};
+	
+	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs); 
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	
+	ASSERT_TRUE (m->_reason == "running from annette");
+}
+
+TEST (Blob, runs_from_strongest)
+{
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 1000, 0};
+	Blob b2 {"annette", fixed_angle, 20, 20, 5, 0, 1};
+	Blob b3 {"duncan", fixed_angle, 20, 20, 5, 0, 2};
+	std::vector <Blob> blobs {b1, b2, b3};
+
+	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs); 
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
+	
+	ASSERT_TRUE (m->_reason == "running from duncan");
 }
 
 TEST (Blob, parms)
