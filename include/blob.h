@@ -127,10 +127,13 @@ public:
         
 	std::shared_ptr <Action> hunt (const Blob& target)
         {
-		return std::shared_ptr <Action> (new Movement (this,
-				 "hunting " + target.name () + (!isTired () ? " (fast)" : ""),
-				std::min (isTired() ? _speed : _runningSpeed, distance (target)),
-				angle (target)));
+		//if (isTired ())
+		//	return wander ();
+		//else		
+			return std::shared_ptr <Action> (new Movement (this,
+					 "hunting " + target.name () + (!isTired () ? " (fast)" : ""),
+					std::min (isTired() ? _speed : _runningSpeed, distance (target)),
+					angle (target)));
 	}
         
 	std::shared_ptr <Action> flee (const Blob& target)
