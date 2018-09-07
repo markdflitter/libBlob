@@ -176,7 +176,6 @@ public:
 					double aggression_multiplier = _aggression;
 					if (b._strength > _strength)
 						aggression_multiplier = 1.0 - aggression_multiplier;
-						std::cout << _aggression << "," << aggression_multiplier << '\n';
 					double weight = (1.0 - (distance (b) / _smell)) * aggression_multiplier;
 					huntTargets.push_back (Pair {weight, &b});
 				}
@@ -197,7 +196,6 @@ public:
 
 		for (auto it = huntTargets.rbegin (); it != huntTargets.rend (); it++)
 		{
-std::cout << it->_weight << '\n';
 			if (it->_weight > 0)
 			{
 				if (it->_blob->_strength > _strength)
