@@ -722,7 +722,7 @@ TEST (Blob, will_not_fight_self)
 
 TEST (Blob, will_not_fight_stronger)
 {
-	Blob b1 {"mark", fixed_angle, 10, 10, 5, 5, 0, 0};
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 5, 1, 0, 0, 0.0};
 	Blob b2 {"annette", fixed_angle, 10, 10, 5, 5, 0, 100};
 	std::vector <Blob> blobs {b1, b2};
 	
@@ -993,7 +993,7 @@ TEST (Blob, does_not_run_from_dead_blobs)
 
 TEST (Blob, runs)
 {
-	Blob b1 {"mark", fixed_angle, 10, 10, 5, 5, 1000, 0};
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 5, 1000, 0, 0, 0.5};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 5,0, 1};
 	std::vector <Blob> blobs {b1, b2};
 	
@@ -1006,7 +1006,7 @@ TEST (Blob, runs)
 
 TEST (Blob, runs_from_strongest)
 {
-	Blob b1 {"mark", fixed_angle, 10, 10, 5, 5, 1000, 0};
+	Blob b1 {"mark", fixed_angle, 10, 10, 5, 5, 1000, 0, 0, 0.5};
 	Blob b2 {"annette", fixed_angle, 20, 20, 5, 5, 0, 1};
 	Blob b3 {"duncan", fixed_angle, 20, 20, 5, 5, 0, 2};
 	std::vector <Blob> blobs {b1, b2, b3};

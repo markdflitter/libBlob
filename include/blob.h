@@ -18,8 +18,8 @@
 class Blob : public Moveable, public Attackable
 {
 public:
-	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double runningSpeed, double smell, double strength, int endurance = 0) :
-		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _runningSpeed (runningSpeed), _smell (smell), _strength (strength), _endurance (endurance), _fatigue (0), _dead (false), _tired (false)
+	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double runningSpeed, double smell, double strength, int endurance = 0, double aggression = 1.0) :
+		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _runningSpeed (runningSpeed), _smell (smell), _strength (strength), _endurance (endurance), _aggression (aggression),_fatigue (0), _dead (false), _tired (false)
 	{
 		_points.push_back (Pt<double> (x,y));
 	}
@@ -35,6 +35,7 @@ public:
 	double smell () const {return _smell;}
 	double strength () const {return _strength;}
 	double endurance () const {return _endurance;}
+	double aggression () const {return _aggression;}
 	double fatigue () const {return _fatigue;}
 	std::vector<Pt<double>> history () const {return _points;}
 	void kill ()
@@ -127,13 +128,10 @@ public:
         
 	std::shared_ptr <Action> hunt (const Blob& target)
         {
-		//if (isTired ())
-		//	return wander ();
-		//else		
-			return std::shared_ptr <Action> (new Movement (this,
-					 "hunting " + target.name () + (!isTired () ? " (fast)" : ""),
-					std::min (isTired() ? _speed : _runningSpeed, distance (target)),
-					angle (target)));
+		return std::shared_ptr <Action> (new Movement (this,
+			 "hunting " + target.name () + (!isTired () ? " (fast)" : ""),
+			std::min (isTired() ? _speed : _runningSpeed, distance (target)),
+			angle (target)));
 	}
         
 	std::shared_ptr <Action> flee (const Blob& target)
@@ -175,7 +173,11 @@ public:
 				}
 				else if (canSmell (b))
 				{
-					double weight = 1.0 - (distance (b) / _smell);
+					double aggression_multiplier = _aggression;
+					if (b._strength > _strength)
+						aggression_multiplier = 1.0 - aggression_multiplier;
+						std::cout << _aggression << "," << aggression_multiplier << '\n';
+					double weight = (1.0 - (distance (b) / _smell)) * aggression_multiplier;
 					huntTargets.push_back (Pair {weight, &b});
 				}
 			}
@@ -193,12 +195,16 @@ public:
 			return attack (*(attackTargets.back ())._blob);
 		}
 
-		if (huntTargets.size () > 0)
+		for (auto it = huntTargets.rbegin (); it != huntTargets.rend (); it++)
 		{
-			if (huntTargets.back ()._blob->_strength > _strength)
-				return flee (*(huntTargets.back ()._blob));
-			else
- 				return hunt (*(huntTargets.back ()._blob));
+std::cout << it->_weight << '\n';
+			if (it->_weight > 0)
+			{
+				if (it->_blob->_strength > _strength)
+					return flee (*(it->_blob));
+				else
+ 					return hunt (*(it->_blob));
+			}
 		}
 
 		return wander ();
@@ -222,9 +228,10 @@ private:
         double _runningSpeed;
 	double _smell;
 	double _strength;
+	double _endurance;
+	double _aggression;
 
 	double _fatigue;
-	double _endurance;
 	bool _tired;
 
 	bool _dead;
