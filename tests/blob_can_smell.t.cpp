@@ -3,8 +3,8 @@
 
 TEST (Blob, can_not_smell)
 {
-	Blob b1 ("", [](double) {return 0;}, 3, 4, 0, 0, 4);
-	Blob b2 ("", [](double) {return 0;}, 6, 8, 0, 0, 4);
+	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 4.0);
+	Blob b2 ("", [](double) {return 0.0;}, 6.0, 8.0, 0.0, 0.0, 4.0);
 
 	ASSERT_FALSE (b1.canSmell (b2));
 	ASSERT_FALSE (b2.canSmell (b1));
@@ -12,8 +12,8 @@ TEST (Blob, can_not_smell)
 
 TEST (Blob, can_smell)
 {
-	Blob b1 {"", [](double) {return 0;}, 3, 4, 0, 0, 5};
-	Blob b2 {"", [](double) {return 0;}, 6, 8, 0, 0, 4};
+	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 5.0);
+	Blob b2 ("", [](double) {return 0.0;}, 6.0, 8.0, 0.0, 0.0, 4.0);
 
 	ASSERT_TRUE (b1.canSmell (b2));
 	ASSERT_FALSE (b2.canSmell (b1));
@@ -21,8 +21,8 @@ TEST (Blob, can_smell)
 
 TEST (Blob, can_smell_each_other)
 {
-	Blob b1 {"", [](double) {return 0;}, 3, 4, 0, 0, 5};
-	Blob b2 {"", [](double) {return 0;}, 6, 8, 0, 0, 5};
+	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 5.0);
+	Blob b2 ("", [](double) {return 0.0;}, 6.0, 8.0, 0.0, 0.0, 5.0);
 
 	ASSERT_TRUE (b1.canSmell (b2));
 	ASSERT_TRUE (b2.canSmell (b1));

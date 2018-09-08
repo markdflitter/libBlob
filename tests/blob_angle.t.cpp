@@ -3,76 +3,76 @@
 
 constexpr double threshold = 0.00001;
 
-TEST (Blob, angleN)
+TEST (Blob, angle_north)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 5, 5, 0, 0, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, 5, 10, 0, 0, 0, 0};
+	Blob b1 ("", [](double) {return 0.0;}, 5.0, 5.0);
+	Blob b2 ("", [](double) {return 0.0;}, 5.0, 10.0);
 
 	double angle = b1.angle (b2);
-	ASSERT_TRUE (fabs (angle - 0.0f) < threshold);
+	ASSERT_EQ (angle, 0.0);
 }
 
-TEST (Blob, angleS)
+TEST (Blob, angle_south)
 {
-	Blob b1 {"mark", [](double) {return 0;}, -5, -5, 0, 0, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, -5, -10, 0, 0, 0, 0};
+	Blob b1 ("", [](double) {return 0.0;}, -5.0, -5.0);
+	Blob b2 ("", [](double) {return 0.0;}, -5.0, -10.0);
 
 	double angle = b1.angle (b2);
-	ASSERT_TRUE (fabs (angle - M_PI) < threshold);
+	ASSERT_EQ (angle, M_PI);
 }
 
-TEST (Blob, angleE)
+TEST (Blob, angle_east)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 5, 5, 0, 0, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, 10, 5, 0, 0, 0, 0};
+	Blob b1 ("", [](double) {return 0.0;}, 5.0, 5.0);
+	Blob b2 ("", [](double) {return 0.0;}, 10.0, 5.0);
 
 	double angle = b1.angle (b2);
-	ASSERT_TRUE (fabs (angle - M_PI / 2) < threshold);
+	ASSERT_EQ (angle, M_PI / 2.0);
 }
 
-TEST (Blob, angleW)
+TEST (Blob, angle_west)
 {
-	Blob b1 {"mark", [](double) {return 0;}, -5, 5, 0, 0, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, -10, 5, 0, 0, 0, 0};
+	Blob b1 ("", [](double) {return 0;}, -5.0, 5.0);
+	Blob b2 ("", [](double) {return 0;}, -10.0, 5.0);
 
 	double angle = b1.angle (b2);
-	ASSERT_TRUE (fabs (angle - 3*M_PI/2) < threshold);
+	ASSERT_EQ (angle, 3.0 * M_PI / 2.0);
 }
 
-TEST (Blob, angleNE)
+TEST (Blob, angle_north_east)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 5, 5, 0, 0, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, 10, 10, 0, 0, 0, 0};
+	Blob b1 ("", [](double) {return 0.0;}, 5.0, 5.0);
+	Blob b2 ("", [](double) {return 0.0;}, 10.0, 10.0);
 
 	double angle = b1.angle (b2);
-	ASSERT_TRUE (fabs (angle - M_PI/4) < threshold);
+	ASSERT_EQ (angle, M_PI / 4);
 }
 
-TEST (Blob, angleNW)
+TEST (Blob, angle_north_west)
 {
-	Blob b1 {"mark", [](double) {return 0;}, -5, 5, 0, 0, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, -10, 10, 0, 0, 0, 0};
+	Blob b1 ("", [](double) {return 0.0;}, -5.0, 5.0);
+	Blob b2 ("", [](double) {return 0.0;}, -10.0, 10.0);
 
 	double angle = b1.angle (b2);
-	ASSERT_TRUE (fabs (angle - -M_PI/4) < threshold);
+	ASSERT_EQ (angle, -M_PI / 4);
 }
 
-TEST (Blob, angleSE)
+TEST (Blob, angle_south_east)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 5, -5, 0, 0, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, 10, -10, 0, 0, 0, 0};
+	Blob b1 ("", [](double) {return 0.0;}, 5.0, -5.0);
+	Blob b2 ("", [](double) {return 0.0;}, 10.0, -10.0);
 
 	double angle = b1.angle (b2);
-	ASSERT_TRUE (fabs (angle - 3 * M_PI/4) < threshold);
+	ASSERT_EQ (angle, 3 * M_PI / 4);
 }
 
-TEST (Blob, angleSW)
+TEST (Blob, angle_south_west)
 {
-	Blob b1 {"mark", [](double) {return 0;}, -5, -5, 0, 0, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, -10, -10, 0, 0, 0, 0};
+	Blob b1 ("", [](double) {return 0.0;}, -5.0, -5.0);
+	Blob b2 ("", [](double) {return 0.0;}, -10.0, -10.0);
 
 	double angle = b1.angle (b2);
-	ASSERT_TRUE (fabs (angle - 5 * M_PI/4) < threshold);
+	ASSERT_EQ (angle, 5 * M_PI / 4);
 }
 
 int main (int argc, char** argv) 
