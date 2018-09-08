@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-constexpr double threshold = 0.00001;
-
 TEST (Blob, angle_north)
 {
 	Blob b1 ("", [](double) {return 0.0;}, 5.0, 5.0);

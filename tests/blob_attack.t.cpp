@@ -5,7 +5,7 @@ TEST (Blob, attack_no_kill)
 {
 	Blob b1 {"mark", [](double) {return 0;}, 10.1, 20.2, 5, 5, 0, 100};
 	
-	b1.attacked (10);
+	b1.attack (10);
 	ASSERT_TRUE (b1.strength () == 90);
 	ASSERT_TRUE (!b1.isDead ());
 }
@@ -14,11 +14,11 @@ TEST (Blob, attack_and_kill)
 {
 	Blob b1 {"mark", [](double) {return 0;}, 10.1, 20.2, 5, 5, 0, 20};
 	
-	b1.attacked (10);
+	b1.attack (10);
 	ASSERT_TRUE (b1.strength () == 10);
 	ASSERT_TRUE (!b1.isDead ());
 	
-	b1.attacked (10);
+	b1.attack (10);
 	ASSERT_TRUE (b1.strength () == 0);
 	ASSERT_TRUE (b1.isDead ());
 }

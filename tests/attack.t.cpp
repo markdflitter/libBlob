@@ -5,7 +5,7 @@
 class AttackableMock : public Attackable
 {
 public:
-	void attacked (double strength)
+	void attack (double strength)
 	{
 		_strength = strength;
 	}

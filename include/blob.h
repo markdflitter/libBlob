@@ -97,13 +97,13 @@ public:
 		return atan2 (dy, -dx) + M_PI/2;
 	}
 
-       void kill ()
+        void kill ()
 	{
 		_dead = true;
 		_state = "dead";
 	}
 
- void move (double speed, double angleInRadians, const std::string& newState) 
+        void move (double speed, double angleInRadians, const std::string& newState) 
 	{
 		_previousAngleInRadians = angleInRadians;
 
@@ -129,7 +129,7 @@ public:
 		if (_fatigue == _endurance) _tired = true; 
 	}
 
-	void attacked (double strength)
+	void attack (double strength)
 	{
 		_strength -= strength;
 		if (_strength <= 0)

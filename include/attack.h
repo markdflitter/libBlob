@@ -8,7 +8,7 @@ class Attackable
 {
 public:
 	virtual ~Attackable () {}
-	virtual void attacked (double strength) = 0;
+	virtual void attack (double strength) = 0;
 };
 
 class Attack : public Action
@@ -47,7 +47,7 @@ inline std::ostream& operator<< (std::ostream& s, const Attack& a)
 
 inline void Attack::apply ()
 {
-	_target->attacked (_strength);
+	_target->attack (_strength);
 }
 
 #endif
