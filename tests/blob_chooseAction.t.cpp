@@ -3,7 +3,7 @@
 
 TEST (Blob, choosesToHunt)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10, 10, 5, 10, 100, 1, 1};
+	Blob b1 {"mark", [](double) {return 0;}, 10.0, 10.0, 5.0, 10.0, 100.0, 1, 1};
 	Blob b2 {"annette", [](double) {return 0;}, 20, 20, 5, 5, 100, 0};
 	std::vector <Blob> blobs {b1, b2};
 	

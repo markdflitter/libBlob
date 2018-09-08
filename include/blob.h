@@ -18,11 +18,21 @@
 class Blob : public Moveable, public Attackable
 {
 public:
-	Blob (const std::string& name, std::function<double (double)> rnd, double x, double y, double speed, double runningSpeed, double smell, double strength, int endurance = 0, double aggression = 1.0) :
+	Blob (const std::string& name = ""
+	      , std::function<double (double)> rnd = [](double) {return 0.0;}
+	      , double x = 0.0
+	      , double y = 0.0
+              , double speed = 0.0
+	      , double runningSpeed = 0.0
+              , double smell = 0.0
+              , double strength = 0.0
+	      , unsigned int endurance = 0
+	      , double aggression = 1.0) :
 		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _runningSpeed (runningSpeed), _smell (smell), _strength (strength), _endurance (endurance), _aggression (aggression),_fatigue (0), _dead (false), _tired (false)
 	{
 		_points.push_back (Pt<double> (x,y));
 	}
+
 
 	friend std::ostream& operator<<(std::ostream& s, const Blob& b);
 
@@ -34,7 +44,7 @@ public:
 	double runningSpeed () const {return _runningSpeed;}
 	double smell () const {return _smell;}
 	double strength () const {return _strength;}
-	double endurance () const {return _endurance;}
+	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
 	double fatigue () const {return _fatigue;}
 	std::vector<Pt<double>> history () const {return _points;}
@@ -226,10 +236,10 @@ private:
         double _runningSpeed;
 	double _smell;
 	double _strength;
-	double _endurance;
+	unsigned int _endurance;
 	double _aggression;
 
-	double _fatigue;
+	unsigned int _fatigue;
 	bool _tired;
 
 	bool _dead;
