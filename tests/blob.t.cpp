@@ -1,57 +1,93 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, create) 
+TEST (Blob, blob_createDefaultBlob)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10.1, 20.2, 100, 100, 200, 300, 400};
-
-	ASSERT_EQ (b1.name (), "mark");
-	ASSERT_EQ (b1.x (), 10.1);
-	ASSERT_EQ (b1.y (), 20.2);
-	ASSERT_EQ (b1.speed (), 100);
-	ASSERT_EQ (b1.smell (), 200);
-	ASSERT_EQ (b1.strength (), 300);
-	ASSERT_EQ (b1.endurance (), 400);
-	ASSERT_EQ (b1.fatigue(), 0);
-
-	ASSERT_FALSE (b1.isDead ());
-	ASSERT_FALSE (b1.isTired ());
-
-	Blob b2 {"annette", [](double) {return 0;}, -10.1, -20.2, 300, 300, 400, 500, 600};
-
-	ASSERT_EQ (b2.name (), "annette");
-	ASSERT_EQ (b2.x (), -10.1);
-	ASSERT_EQ (b2.y (), -20.2);
-	ASSERT_EQ (b2.speed (), 300);
-	ASSERT_EQ (b2.smell (), 400);
-	ASSERT_EQ (b2.strength (), 500);
-	ASSERT_EQ (b2.endurance (), 600);
-	ASSERT_EQ (b2.fatigue(), 0);
-
-	ASSERT_FALSE (b2.isDead ());
-	ASSERT_FALSE (b2.isTired ());
+	Blob b;
 }
 
-TEST (Blob, parms)
-{
-	Blob b {"mark", [](double) {return 0;}, 20, 40, 5, 10, 100, 22};
-	std::shared_ptr<Action> a (new Movement (&b, "", 10.0, M_PI / 2));
-	a->apply ();
 
-	ASSERT_EQ (b.parms (), "alive,5,10,100,22,90");
+TEST (Blob, blob_name)
+{
+	Blob b("mark");
+	ASSERT_EQ (b.name (), "mark");
+}
+
+TEST (Blob, blob_x)
+{
+	Blob b("", [](double) {return 0;}, 100.1);
+	ASSERT_EQ (b.x (), 100.1);
+}
+
+TEST (Blob, blob_y)
+{
+	Blob b("", [](double) {return 0;}, 0.0, 200.2);
+	ASSERT_EQ (b.y (), 200.2);
+}
+
+TEST (Blob, blob_speed)
+{
+	Blob b ("", [](double) {return 0;}, 0.0, 0.0, 300.3);
+	ASSERT_EQ (b.speed (), 300.3);
+}
+
+TEST (Blob, blob_running_speed)
+{
+	Blob b ("", [](double) {return 0;}, 0.0, 0.0, 0.0, 400.4);
+	ASSERT_EQ (b.runningSpeed (), 400.4);
+}
+
+TEST (Blob, blob_strength)
+{
+	Blob b ("", [](double) {return 0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 500.5);
+	ASSERT_EQ (b.strength (), 500.5);
+}
+
+TEST (Blob, blob_endurance)
+{
+	Blob b ("", [](double) {return 0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 600);
+	ASSERT_EQ (b.endurance (), 600);
+}
+
+TEST (Blob, blob_aggression)
+{
+	Blob b ("", [](double) {return 0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 700.7);
+	ASSERT_EQ (b.aggression (), 700.7);
+}
+
+TEST (Blob, blob_state)
+{
+	Blob b;
+	ASSERT_EQ (b.state (), "newborn");
+}
+
+TEST (Blob, blob_fatigue)
+{
+	Blob b;
+	ASSERT_EQ (b.fatigue (), 0);
+}
+
+TEST (Blob, blob_starts_untired)
+{
+	Blob b;
+	ASSERT_FALSE (b.isTired ());
+}
+
+TEST (Blob, blob_starts_alive)
+{
+	Blob b;
+	ASSERT_FALSE (b.isDead ());
 }
 
 TEST (Blob, output)
 {
-	Blob b {"mark", [](double) {return 0;}, 20, 40, 5, 5, 100, 0};
-	std::shared_ptr<Action> a (new Movement (&b, "", 10.0, M_PI / 2));
-	a->apply ();
-
+	Blob b ("", [](double) {return 0;}, 20, 40);
+	
 	std::stringstream s;
 
 	s << b;
 
-	ASSERT_EQ (s.str (), "30,40");
+	ASSERT_EQ (s.str (), "20,40");
 }
 
 int main (int argc, char** argv) 

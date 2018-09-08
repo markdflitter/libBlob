@@ -28,16 +28,23 @@ public:
               , double strength = 0.0
 	      , unsigned int endurance = 0
 	      , double aggression = 1.0) :
-		_name (name), _state ("newborn"), _rnd (rnd), _speed (speed), _runningSpeed (runningSpeed), _smell (smell), _strength (strength), _endurance (endurance), _aggression (aggression),_fatigue (0), _dead (false), _tired (false)
-	{
-		_points.push_back (Pt<double> (x,y));
-	}
-
-
-	friend std::ostream& operator<<(std::ostream& s, const Blob& b);
+		  _name (name)
+		, _rnd (rnd)
+		, _speed (speed)
+		, _runningSpeed (runningSpeed)
+		, _smell (smell)
+		, _strength (strength)
+		, _endurance (endurance)
+		, _aggression (aggression)
+		, _state ("newborn")
+ 		, _fatigue (0)
+		, _dead (false)
+		, _tired (false)
+			{
+				_points.push_back (Pt<double> (x,y));
+			}
 
 	std::string name () const {return _name;}
-	std::string state () const {return _state;}
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
 	double speed () const {return _speed;}
@@ -46,18 +53,18 @@ public:
 	double strength () const {return _strength;}
 	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
-	double fatigue () const {return _fatigue;}
-	std::vector<Pt<double>> history () const {return _points;}
-	void kill ()
-	{
-		_dead = true;
-		_state = "dead";
-	}
 
-	bool isDead () const {return _dead;}
-	
+	std::string state () const {return _state;}
+
+	double fatigue () const {return _fatigue;}
 	bool isTired () const {return _tired;} 
 
+	bool isDead () const {return _dead;}
+
+	friend std::ostream& operator<<(std::ostream& s, const Blob& b);
+
+	std::vector<Pt<double>> history () const {return _points;}
+	
 	double distance (const Blob& other) const
 	{
 		double dx = other.x () - x();
@@ -90,7 +97,13 @@ public:
 		return atan2 (dy, -dx) + M_PI/2;
 	}
 
-        void move (double speed, double angleInRadians, const std::string& newState) 
+       void kill ()
+	{
+		_dead = true;
+		_state = "dead";
+	}
+
+ void move (double speed, double angleInRadians, const std::string& newState) 
 	{
 		_previousAngleInRadians = angleInRadians;
 
@@ -218,14 +231,7 @@ public:
 		return wander ();
 	}
 	
-	std::string parms () const 
-	{
-		std::stringstream ss;
 
-		ss << (isDead () ? "dead" : "alive") << "," <<_speed << "," << _runningSpeed << "," << _smell << "," << _strength << "," << 360 * _previousAngleInRadians / (2 * M_PI);
-		
-		return ss.str ();
-	}
 private:
 	std::function<double(double)> _rnd;
 	std::vector<Pt<double>> _points;
