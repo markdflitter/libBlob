@@ -3,7 +3,9 @@
 
 TEST(Blob, kill)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10.1, 20.2, 0, 0, 0, 0};
+	Blob b1;
+	ASSERT_FALSE (b1.isDead ());
+	
 	b1.kill ();
 
 	ASSERT_TRUE (b1.isDead ());
