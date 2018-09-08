@@ -2,22 +2,22 @@
 
 #include <pt.h>
 
-TEST (pt, createEmpty) {
+TEST (Pt, createEmpty) {
   Pt<int> p;
 
   ASSERT_EQ (p.x (), 0);
   ASSERT_EQ (p.y (), 0);
 }
 
-TEST (pt, create) {
-  Pt<int> p {10,20};
+TEST (Pt, create) {
+  Pt<int> p (10, 20);
 
   ASSERT_EQ (p.x (), 10);
   ASSERT_EQ (p.y (), 20);
 }
 
-TEST (pt, update) {
-  Pt<int> p {10,20};
+TEST (Pt, update) {
+  Pt<int> p (10, 20);
 
   p.x () = 30;
   ASSERT_EQ (p.x (), 30);

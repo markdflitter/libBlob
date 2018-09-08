@@ -79,11 +79,11 @@ public:
 		return distance (other) <= range;
 	}
 
-	bool sameSquare (const Blob& other) const
+	bool isInSameSquare (const Blob& other) const
 	{
-		return isInRange (other, 1);
+		return isInRange (other, sqrt (2));
 	}
-
+	
 	bool canSmell (const Blob& other) const
 	{
 		return isInRange (other, _smell);
@@ -189,7 +189,7 @@ public:
 		{
 			if ((&b != this) && !b.isDead ())
 			{
-				if (sameSquare (b) && (b.strength () < _strength))
+				if (isInSameSquare (b) && (b.strength () < _strength))
 				{
 					double weight = -b.strength ();
 					attackTargets.push_back (Pair {weight, &b});

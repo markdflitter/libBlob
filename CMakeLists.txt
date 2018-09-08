@@ -21,20 +21,20 @@ target_link_libraries (attack_test ${GTEST_LIBRARIES} pthread)
 add_executable (blob_test tests/blob.t.cpp)
 target_link_libraries (blob_test ${GTEST_LIBRARIES} pthread)
 
+add_executable (blob_history_test tests/blob_history.t.cpp)
+target_link_libraries (blob_history_test ${GTEST_LIBRARIES} pthread)
+
 add_executable (blob_distance_test tests/blob_distance.t.cpp)
 target_link_libraries (blob_distance_test ${GTEST_LIBRARIES} pthread)
 
+add_executable (blob_is_in_range_test tests/blob_is_in_range.t.cpp)
+target_link_libraries (blob_is_in_range_test ${GTEST_LIBRARIES} pthread)
+
+add_executable (blob_is_in_same_square_test tests/blob_is_in_same_square.t.cpp)
+target_link_libraries (blob_is_in_same_square_test ${GTEST_LIBRARIES} pthread)
+
 add_executable (blob_canSmell_test tests/blob_canSmell.t.cpp)
 target_link_libraries (blob_canSmell_test ${GTEST_LIBRARIES} pthread)
-
-add_executable (blob_inRange_test tests/blob_inRange.t.cpp)
-target_link_libraries (blob_inRange_test ${GTEST_LIBRARIES} pthread)
-
-add_executable (blob_sameSquare_test tests/blob_sameSquare.t.cpp)
-target_link_libraries (blob_sameSquare_test ${GTEST_LIBRARIES} pthread)
-
-add_executable (blob_history_test tests/blob_history.t.cpp)
-target_link_libraries (blob_history_test ${GTEST_LIBRARIES} pthread)
 
 add_executable (blob_angle_test tests/blob_angle.t.cpp)
 target_link_libraries (blob_angle_test ${GTEST_LIBRARIES} pthread)
@@ -74,11 +74,11 @@ gtest_discover_tests (movement_test)
 gtest_discover_tests (attack_test)
 gtest_discover_tests (blob_test)
 gtest_discover_tests (blob_distance_test)
-gtest_discover_tests (blob_canSmell_test)
-gtest_discover_tests (blob_inRange_test)
-gtest_discover_tests (blob_sameSquare_test)
-gtest_discover_tests (blob_angle_test)
 gtest_discover_tests (blob_history_test)
+gtest_discover_tests (blob_is_in_range_test)
+gtest_discover_tests (blob_is_in_same_square_test)
+gtest_discover_tests (blob_canSmell_test)
+gtest_discover_tests (blob_angle_test)
 gtest_discover_tests (blob_kill_test)
 gtest_discover_tests (blob_attack_test)
 gtest_discover_tests (blob_move_test)

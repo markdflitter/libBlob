@@ -69,7 +69,7 @@ TEST (Blob, huntCatches)
 	ASSERT_TRUE (m->_speed < 7);
 	a->apply ();
 
-	ASSERT_TRUE (b1.sameSquare (b2));
+	ASSERT_TRUE (b1.isInSameSquare (b2));
 }
 
 
