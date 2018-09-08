@@ -74,19 +74,19 @@ public:
 		return d; 
 	}
 
-	bool inRange (const Blob& other, int range) const
+	bool isInRange (const Blob& other, double range) const
 	{
 		return distance (other) <= range;
 	}
 
 	bool sameSquare (const Blob& other) const
 	{
-		return inRange (other, 1);
+		return isInRange (other, 1);
 	}
 
 	bool canSmell (const Blob& other) const
 	{
-		return inRange (other, _smell);
+		return isInRange (other, _smell);
 	}
 
 	double angle (const Blob& other) const
