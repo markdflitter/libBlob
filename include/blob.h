@@ -25,7 +25,7 @@ public:
               , double speed = 0.0
 	      , double runningSpeed = 0.0
               , double smell = 0.0
-              , double strength = 0.0
+              , unsigned int strength = 0.0
 	      , unsigned int endurance = 0
 	      , double aggression = 1.0) :
 		  _name (name)
@@ -50,7 +50,7 @@ public:
 	double speed () const {return _speed;}
 	double runningSpeed () const {return _runningSpeed;}
 	double smell () const {return _smell;}
-	double strength () const {return _strength;}
+	unsigned int strength () const {return _strength;}
 	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
 
@@ -103,6 +103,23 @@ public:
 		_state = "dead";
 	}
 
+	void attack (unsigned int damage)
+	{
+		if (_strength >= damage)
+		{
+			_strength -= damage;
+		}
+		else
+		{
+			_strength = 0;
+		}
+
+		if (_strength == 0)
+		{
+			kill ();
+		}
+	}
+
         void move (double speed, double angleInRadians, const std::string& newState) 
 	{
 		_previousAngleInRadians = angleInRadians;
@@ -128,17 +145,8 @@ public:
 		if (_fatigue == 0) _tired = false;
 		if (_fatigue == _endurance) _tired = true; 
 	}
-
-	void attack (double strength)
-	{
-		_strength -= strength;
-		if (_strength <= 0)
-		{
-			kill ();
-		}
-	}
-
-        std::shared_ptr <Action> die ()
+        
+	std::shared_ptr <Action> die ()
         {
 		return std::shared_ptr<Action> (new Movement (this, "dead", 0, 0));
 	}
@@ -167,7 +175,7 @@ public:
          
 	std::shared_ptr <Action> attack (Blob& target)
         {
-		return std::shared_ptr <Action> (new Attack (&target,_strength));
+		return std::shared_ptr <Action> (new Attack (&target, _strength));
 	}
 
 	std::shared_ptr <Action> chooseNextAction (std::vector<Blob>& others)
@@ -241,7 +249,7 @@ private:
 	double _speed;
         double _runningSpeed;
 	double _smell;
-	double _strength;
+	unsigned int _strength;
 	unsigned int _endurance;
 	double _aggression;
 

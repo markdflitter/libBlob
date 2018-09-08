@@ -39,14 +39,14 @@ TEST (Blob, running_speed)
 
 TEST (Blob, strength)
 {
-	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 500.5);
-	ASSERT_EQ (b.strength (), 500.5);
+	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 500U);
+	ASSERT_EQ (b.strength (), 500U);
 }
 
 TEST (Blob, endurance)
 {
-	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 600);
-	ASSERT_EQ (b.endurance (), 600);
+	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 600U);
+	ASSERT_EQ (b.endurance (), 600U);
 }
 
 TEST (Blob, aggression)

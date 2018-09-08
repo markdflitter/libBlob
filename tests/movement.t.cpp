@@ -1,6 +1,7 @@
 #include <movement.h>
 #include <gtest/gtest.h>
 #include <memory>
+#include <blob.h>
 
 class MoveableMock : public Moveable
 {
@@ -86,6 +87,18 @@ TEST (Movement, apply)
 	ASSERT_TRUE (mm1._angleInRadians == M_PI/2);
 	ASSERT_TRUE (mm1._reason == "hello");
 }
+
+TEST (Blob, movement)
+{
+	Blob b1 {"mark", [](double) {return 0;}, 10.1, 20.2, 5, 5, 0, 0};
+	std::shared_ptr<Action> m (new Movement (&b1, "because", 5.0, 0.0));
+        m->apply ();
+	
+	ASSERT_DOUBLE_EQ (b1.x (), 10.1);
+	ASSERT_DOUBLE_EQ (b1.y (), 25.2);
+	ASSERT_TRUE (b1.state () == "because");
+}
+
 
 int main (int argc, char** argv) 
 {

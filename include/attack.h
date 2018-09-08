@@ -8,13 +8,13 @@ class Attackable
 {
 public:
 	virtual ~Attackable () {}
-	virtual void attack (double strength) = 0;
+	virtual void attack (unsigned int strength) = 0;
 };
 
 class Attack : public Action
 {
 	public:
-		Attack (Attackable* target, double strength) :
+		Attack (Attackable* target, unsigned int strength) :
 			_target (target)
 			, _strength (strength)
 		{
@@ -36,7 +36,7 @@ class Attack : public Action
 		friend std::ostream& operator<< (std::ostream& s, const Attack& a);
 	public:
 		Attackable* _target;
-		double _strength;
+		unsigned int _strength;
 };
 
 inline std::ostream& operator<< (std::ostream& s, const Attack& a)

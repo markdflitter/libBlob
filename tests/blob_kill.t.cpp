@@ -9,7 +9,7 @@ TEST(Blob, kill)
 	b1.kill ();
 
 	ASSERT_TRUE (b1.isDead ());
-	ASSERT_TRUE (b1.state () == "dead");
+	ASSERT_EQ (b1.state (), "dead");
 }
 
 int main (int argc, char** argv) 

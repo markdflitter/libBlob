@@ -1,37 +1,38 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, attack_no_kill)
+TEST (Blob, attack_without_killing)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10.1, 20.2, 5, 5, 0, 100};
+	Blob b1 ("", [](double) {return 0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 100U);
+	ASSERT_EQ (b1.strength (), 100U);
 	
-	b1.attack (10);
-	ASSERT_TRUE (b1.strength () == 90);
-	ASSERT_TRUE (!b1.isDead ());
+	b1.attack (10U);
+	ASSERT_EQ (b1.strength (), 90U);
+	ASSERT_FALSE (b1.isDead ());
 }
 
 TEST (Blob, attack_and_kill)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10.1, 20.2, 5, 5, 0, 20};
+	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 20U);
+	ASSERT_EQ (b1.strength (), 20U);
+		
+	b1.attack (10U);
+	ASSERT_EQ (b1.strength (), 10U);
+	ASSERT_FALSE (b1.isDead ());
 	
-	b1.attack (10);
-	ASSERT_TRUE (b1.strength () == 10);
-	ASSERT_TRUE (!b1.isDead ());
-	
-	b1.attack (10);
-	ASSERT_TRUE (b1.strength () == 0);
+	b1.attack (10U);
+	ASSERT_EQ (b1.strength (), 0U);
 	ASSERT_TRUE (b1.isDead ());
 }
 
-TEST (Blob, attack)
+TEST (Blob, attack_and_overkill)
 {
-	Blob b1 {"mark", [](double) {return 0;}, -5, 5, 7, 7, 0, 100};
-	Blob b2 {"annette", [](double) {return 0;}, -10, 5, 12, 12, 0, 10};
-
-	std::shared_ptr <Action> a = b2.attack (b1);
-	a->apply ();
-
-	ASSERT_TRUE (b1.strength () == 90);
+	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 20U);
+	ASSERT_EQ (b1.strength (), 20U);
+		
+	b1.attack (100U);
+	ASSERT_EQ (b1.strength (), 0U);
+	ASSERT_TRUE (b1.isDead ());
 }
 
 int main (int argc, char** argv) 

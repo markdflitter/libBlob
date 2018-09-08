@@ -107,6 +107,7 @@ TEST (Blob, actually_fights_and_kills)
 		std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs); 
 		a->apply ();
 	}
+std::cout << blobs[1].strength () << '\n';
 	ASSERT_TRUE (blobs[1].isDead ());
 }
 
