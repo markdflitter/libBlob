@@ -127,8 +127,8 @@ TEST (Blob, different_blobs_wander_independently)
 
 	EXPECT_DOUBLE_EQ (b1.x (), b2.x ());
 	EXPECT_DOUBLE_EQ (b1.y (), b2.y ());
-	//EXPECT_DOUBLE_NE (b1.x (), b3.x ());
-	//EXPECT_DOUBLE_NE (b1.y (), b3.y ());
+	EXPECT_NE (b1.x (), b3.x ());
+	EXPECT_NE (b1.y (), b3.y ());
 }
 
 int main (int argc, char** argv) 
