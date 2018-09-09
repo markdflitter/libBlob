@@ -13,90 +13,143 @@ public:
 		_reason = reason;	
 	}
 
-	double _speed = 0;
-	double _angleInRadians = 0;
+	double _speed = 0.0;
+	double _angleInRadians = 0.0;
 	std::string _reason;
 };
 
-TEST(Movement, equal)
+TEST(Movement, create)
 {
-	MoveableMock mm1;
-	MoveableMock mm2;	
-
-	Movement m (&mm1, "a", 10, 20);
-	ASSERT_TRUE (m == m);
-
-	Movement m0 (&mm1, "a", 10, 20);
-	ASSERT_TRUE (m == m0);
-
-	Movement m1 (&mm1, "b", 10, 20);
-	ASSERT_FALSE (m == m1);
-
-	Movement m2 (&mm1, "a", 30, 20);
-	ASSERT_FALSE (m == m2);
-
-	Movement m3 (&mm1, "a", 10, 40);
-	ASSERT_FALSE (m == m3);
-
-	Movement m4 (&mm2, "a", 10, 20);
-	ASSERT_FALSE (m == m4);
+	MoveableMock mm;
+	Movement m (&mm, "a", 10.0, 20.0);
+	EXPECT_EQ (m._target, &mm);
+	EXPECT_EQ (m._reason, "a");
+	EXPECT_EQ (m._speed, 10.0);
+	EXPECT_EQ (m._angleInRadians, 20);
 }
 
-TEST(Movement, not_equal)
+TEST(Movement, equal_to_self)
+{
+	MoveableMock mm;
+	Movement m (&mm, "a", 10.0, 20.0);
+	EXPECT_TRUE (m == m);
+}
+
+TEST (Movement, equal_to_other)
+{
+	MoveableMock mm;
+	Movement m1 (&mm, "a", 10.0, 20.0);
+	Movement m2 (&mm, "a", 10.0, 20.0);
+	EXPECT_TRUE (m1 == m2);
+}
+
+TEST (Movement, equal_false_different_moveable)
 {
 	MoveableMock mm1;
-	MoveableMock mm2;	
+	MoveableMock mm2;
+	Movement m1 (&mm1, "a", 10.0, 20.0);
+	Movement m2 (&mm2, "a", 10.0, 20.0);
+	EXPECT_FALSE (m1 == m2);
+}
 
-	Movement m (&mm1, "a", 10, 20);
-	ASSERT_FALSE (m != m);
+TEST (Movement, equal_false_different_reason)
+{
+	MoveableMock mm;
+	Movement m1 (&mm, "a", 10.0, 20.0);
+	Movement m2 (&mm, "b", 10.0, 20.0);
+	EXPECT_FALSE (m1 == m2);
+}
 
-	Movement m1 (&mm1, "b", 10, 20);
-	ASSERT_TRUE (m != m1);
+TEST (Movement, equal_false_different_speed)
+{
+	MoveableMock mm;
+	Movement m1 (&mm, "a", 10.0, 20.0);
+	Movement m2 (&mm, "a", 15.0, 20.0);
+	EXPECT_FALSE (m1 == m2);
+}
 
-	Movement m2 (&mm1, "a", 30, 20);
-	ASSERT_TRUE (m != m2);
+TEST (Movement, equal_false_different_angle)
+{
+	MoveableMock mm;
+	Movement m1 (&mm, "a", 10.0, 20.0);
+	Movement m2 (&mm, "a", 10.0, 25.0);
+	EXPECT_FALSE (m1 == m2);
+}
 
-	Movement m3 (&mm1, "a", 10, 40);
-	ASSERT_TRUE (m != m3);
+TEST(Movement, not_equal_equal_to_self)
+{
+	MoveableMock mm;
+	Movement m (&mm, "a", 10.0, 20.0);
+	EXPECT_FALSE (m != m);
+}
 
-	Movement m4 (&mm2, "a", 10, 20);
-	ASSERT_TRUE (m != m4);
+TEST(Movement, not_equal_different_moveable)
+{
+	MoveableMock mm1;
+	MoveableMock mm2;
+	Movement m1 (&mm1, "a", 10.0, 20.0);
+	Movement m2 (&mm2, "a", 10.0, 20.0);
+	EXPECT_TRUE (m1 != m2);
+}
+
+TEST(Movement, not_equal_different_reason)
+{
+	MoveableMock mm;
+	Movement m1 (&mm, "a", 10.0, 20.0);
+	Movement m2 (&mm, "b", 10.0, 20.0);
+	EXPECT_TRUE (m1 != m2);
+}
+
+TEST(Movement, not_equal_different_speed)
+{
+	MoveableMock mm;
+	Movement m1 (&mm, "", 10.0, 20.0);
+	Movement m2 (&mm, "", 30.0, 20.0);
+	EXPECT_TRUE (m1 != m2);
+}
+
+TEST(Movement, not_equal_different_angle)
+{
+	MoveableMock mm;
+	Movement m1 (&mm, "", 10.0, 20.0);
+	Movement m2 (&mm, "", 10.0, 30.0);
+	EXPECT_TRUE (m1 != m2);
 }
 
 TEST (Movement, output)
 {
-	MoveableMock mm1;
-	std::shared_ptr<Action> a (new Movement (&mm1, "hello", 10.0, M_PI / 2));
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	MoveableMock mm;
+	std::shared_ptr<Action> a (new Movement (&mm, "hello", 10.0, M_PI / 2));
+	EXPECT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
 	std::stringstream s;
 
 	s << *m;
 
-	ASSERT_EQ (s.str (), "hello,10,90");
+	EXPECT_EQ (s.str (), "hello,10.00000,90.00000");
 }
-
 TEST (Movement, apply)
 {
-	MoveableMock mm1;
-	std::shared_ptr<Action> a (new Movement (&mm1, "hello", 10.0, M_PI / 2));
+	MoveableMock mm;
+	std::shared_ptr<Action> a (new Movement (&mm, "hello", 10.0, M_PI / 2));
 	
 	a->apply ();
-	ASSERT_TRUE (mm1._speed = 10.0);
-	ASSERT_TRUE (mm1._angleInRadians == M_PI/2);
-	ASSERT_TRUE (mm1._reason == "hello");
+
+	EXPECT_EQ (mm._speed, 10.0);
+	EXPECT_DOUBLE_EQ (mm._angleInRadians, M_PI / 2.0);
+	EXPECT_EQ (mm._reason, "hello");
 }
 
-TEST (Blob, movement)
+TEST (Movement, applies_to_blob)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10.1, 20.2, 5, 5, 0, 0};
+	Blob b1 ("", [](double) {return 0.0;}, 10.1, 20.2);
 	std::shared_ptr<Action> m (new Movement (&b1, "because", 5.0, 0.0));
         m->apply ();
 	
-	ASSERT_DOUBLE_EQ (b1.x (), 10.1);
-	ASSERT_DOUBLE_EQ (b1.y (), 25.2);
-	ASSERT_TRUE (b1.state () == "because");
+	EXPECT_DOUBLE_EQ (b1.x (), 10.1);
+	EXPECT_DOUBLE_EQ (b1.y (), 25.2);
+	EXPECT_EQ (b1.state (), "because");
 }
 
 

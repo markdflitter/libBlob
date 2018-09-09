@@ -3,59 +3,79 @@
 
 TEST (Blob, dead_blobs_do_nothing)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10, 10, 5, 5, 100, 0};
-	Blob b2 {"annette", [](double) {return 0;}, 10, 10, 5, 5, 100, 100};
-	std::vector <Blob> blobs {b1, b2};
-	
+	std::vector<Blob> blobs {Blob ()};
+
+	std::shared_ptr<Action> a1 = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a1));
+	std::shared_ptr <Movement> m1 (std::dynamic_pointer_cast <Movement> (a1));
+	EXPECT_EQ (*m1, Movement (&blobs[0],"wandering", 0.0, 0.0));
+
 	blobs[0].kill ();
 	
-	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs);
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	ASSERT_TRUE (*m == Movement (&blobs[0],"dead",0,0));
+	std::shared_ptr<Action> a2 = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a2));
+	std::shared_ptr <Movement> m2 (std::dynamic_pointer_cast <Movement> (a2));
+	EXPECT_EQ (*m2, Movement (&blobs[0],"dead",0,0));
 }
 
-TEST (Blob, dead_blobs_are_not_hunted)
+TEST (Blob, does_not_hunt_dead_blobs)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10, 10, 5, 5, 100, 0};
-	Blob b2 {"annette", [](double) {return 0;}, 10, 10, 5, 5, 100, 100};
-	std::vector <Blob> blobs {b1, b2};
+	std::vector <Blob> blobs {
+		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 5.0, 5.0, 100U),
+		Blob ("", [](double) {return 0.0;}, 10.0, 12.0, 5.0, 5.0, 100, 0)};
 	
-	blobs[0].kill ();
+	std::shared_ptr<Action> a1 = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a1));
+	std::shared_ptr <Movement> m1 (std::dynamic_pointer_cast <Movement> (a1));
+	EXPECT_EQ (*m1, Movement (&blobs[0],"hunting  (fast)", 2.0, 0.0));
 
-	std::shared_ptr<Action> a = blobs[1].chooseNextAction (blobs);
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	ASSERT_TRUE (m->_reason == "wandering");
+	blobs[1].kill ();
+
+	std::shared_ptr<Action> a2 = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a2));
+	std::shared_ptr <Movement> m2 (std::dynamic_pointer_cast <Movement> (a2));
+	EXPECT_EQ (m2->_reason, "wandering");
 }
 
-TEST (Blob, does_not_run_from_dead_blobs)
+TEST (Blob, does_not_flee_dead_blobs)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 5, 5, 2, 2, 0, 0};
-	Blob b2 {"annette", [](double) {return 0;}, 5, 5, 12, 12, 0, 10};
-	std::vector<Blob> blobs {b1,b2};
+	std::vector<Blob> blobs {	
+		Blob ("", [](double) {return 0.0;}, 5.0, 5.0, 2.0, 4.0, 1.0, 0U, 0U, 0.0),
+		Blob ("", [](double) {return 0.0;}, 5.0, 4.5, 12.0, 12.0, 1.0, 10U)};
+
+	std::shared_ptr<Action> a1 = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a1));
+	std::shared_ptr <Movement> m1 (std::dynamic_pointer_cast <Movement> (a1));
+	EXPECT_EQ (*m1, Movement (&blobs[0], "running from  (fast)", 4.0, 0.0));
 	
 	blobs[1].kill ();
 
 	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	ASSERT_TRUE (m->_reason == "wandering");
+	EXPECT_EQ (m->_reason, "wandering");
 }
 
-TEST (Blob, chooses_not_to_fight_dead)
+TEST (Blob, does_not_attack_dead_blobs)
 {
-	Blob b1 {"mark", [](double) {return 0;}, 10, 10, 5, 5, 0, 10};
-	Blob b2 {"annette", [](double) {return 0;}, 10, 10, 5, 5, 0, 0};
-	std::vector <Blob> blobs {b1, b2};
-	
-	blobs.back().kill ();
-	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs); 
+	std::vector <Blob> blobs {
+		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 5.0, 0.0, 10U),
+		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 5.0, 0.0, 0U)};
+
+	std::shared_ptr<Action> a1 = blobs[0].chooseNextAction (blobs);
+	ASSERT_TRUE (std::dynamic_pointer_cast <Attack> (a1));
+	std::shared_ptr <Attack> atk1 (std::dynamic_pointer_cast <Attack> (a1));
+	EXPECT_EQ (*atk1, Attack (&blobs[1], 10U));
+
+	blobs[1].kill ();
+	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs); 
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
-	ASSERT_TRUE (m->_reason == "wandering");
-}int main (int argc, char** argv) 
+	EXPECT_EQ (m->_reason, "wandering");
+}
+
+int main (int argc, char** argv) 
 {
 	testing::InitGoogleTest (&argc, argv);
 	return RUN_ALL_TESTS();

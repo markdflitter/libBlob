@@ -4,12 +4,12 @@
 TEST(Blob, kill)
 {
 	Blob b1;
-	ASSERT_FALSE (b1.isDead ());
+	EXPECT_FALSE (b1.isDead ());
 	
 	b1.kill ();
 
-	ASSERT_TRUE (b1.isDead ());
-	ASSERT_EQ (b1.state (), "dead");
+	EXPECT_TRUE (b1.isDead ());
+	EXPECT_EQ (b1.state (), "dead");
 }
 
 int main (int argc, char** argv) 

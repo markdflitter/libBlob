@@ -4,6 +4,7 @@
 #include <action.h>
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <math.h>
 
 class Moveable
@@ -49,7 +50,7 @@ class Movement : public Action
 
 inline std::ostream& operator<< (std::ostream& s, const Movement& m)
 {
-	s << m._reason << "," << m._speed << "," << 360 * m._angleInRadians / (2 * M_PI);
+	s << std::fixed << std::setprecision (5) << m._reason << "," << m._speed << "," << 360 * m._angleInRadians / (2 * M_PI);
 	return s; 
 }
 

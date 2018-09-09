@@ -10,73 +10,73 @@ TEST (Blob, createDefaultBlob)
 TEST (Blob, name)
 {
 	Blob b("mark");
-	ASSERT_EQ (b.name (), "mark");
+	EXPECT_EQ (b.name (), "mark");
 }
 
 TEST (Blob, x)
 {
 	Blob b("", [](double) {return 0.0;}, 100.1);
-	ASSERT_EQ (b.x (), 100.1);
+	EXPECT_DOUBLE_EQ (b.x (), 100.1);
 }
 
 TEST (Blob, y)
 {
 	Blob b("", [](double) {return 0.0;}, 0.0, 200.2);
-	ASSERT_EQ (b.y (), 200.2);
+	EXPECT_DOUBLE_EQ (b.y (), 200.2);
 }
 
 TEST (Blob, speed)
 {
 	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 300.3);
-	ASSERT_EQ (b.speed (), 300.3);
+	EXPECT_DOUBLE_EQ (b.speed (), 300.3);
 }
 
 TEST (Blob, running_speed)
 {
 	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 400.4);
-	ASSERT_EQ (b.runningSpeed (), 400.4);
+	EXPECT_DOUBLE_EQ (b.runningSpeed (), 400.4);
 }
 
 TEST (Blob, strength)
 {
 	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 500U);
-	ASSERT_EQ (b.strength (), 500U);
+	EXPECT_EQ (b.strength (), 500U);
 }
 
 TEST (Blob, endurance)
 {
 	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 600U);
-	ASSERT_EQ (b.endurance (), 600U);
+	EXPECT_EQ (b.endurance (), 600U);
 }
 
 TEST (Blob, aggression)
 {
 	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 700.7);
-	ASSERT_EQ (b.aggression (), 700.7);
+	EXPECT_DOUBLE_EQ (b.aggression (), 700.7);
 }
 
 TEST (Blob, state)
 {
 	Blob b;
-	ASSERT_EQ (b.state (), "newborn");
+	EXPECT_EQ (b.state (), "newborn");
 }
 
 TEST (Blob, fatigue)
 {
 	Blob b;
-	ASSERT_EQ (b.fatigue (), 0.0);
+	EXPECT_EQ (b.fatigue (), 0U);
 }
 
 TEST (Blob, starts_untired)
 {
 	Blob b;
-	ASSERT_FALSE (b.isTired ());
+	EXPECT_FALSE (b.isTired ());
 }
 
 TEST (Blob, starts_alive)
 {
 	Blob b;
-	ASSERT_FALSE (b.isDead ());
+	EXPECT_FALSE (b.isDead ());
 }
 
 TEST (Blob, output)
@@ -87,7 +87,7 @@ TEST (Blob, output)
 
 	s << b;
 
-	ASSERT_EQ (s.str (), "20.2,40.4");
+	EXPECT_EQ (s.str (), "20.2,40.4");
 }
 
 int main (int argc, char** argv) 

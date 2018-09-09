@@ -14,73 +14,103 @@ public:
 	double _strength = 0;
 };
 
-TEST(Attack, equal)
+TEST(Attack, create)
 {
-	AttackableMock am1;
-	AttackableMock am2;	
-
-	Attack a (&am1, 10);
-	ASSERT_TRUE (a == a);
-
-	Attack a0 (&am1, 10);
-	ASSERT_TRUE (a == a0);
-
-	Attack a1 (&am1, 20);
-	ASSERT_FALSE (a == a1);
-
-	Attack a2 (&am2, 10);
-	ASSERT_FALSE (a == a2);
+	AttackableMock am;
+	Attack a (&am, 10U);
+	EXPECT_EQ (a._target, &am);
+	EXPECT_EQ (a._strength, 10U);
 }
 
-TEST(Attack, not_equal)
+TEST(Attack, equal_to_self)
+{
+	AttackableMock am;
+	Attack a (&am, 10U);
+	EXPECT_TRUE (a == a);
+}
+
+TEST (Attack, equal_to_other)
+{
+	AttackableMock am;
+	Attack a1 (&am, 10U);
+	Attack a2 (&am, 10U);
+	EXPECT_TRUE (a1 == a2);
+}
+
+TEST (Attack, equal_false_different_attackable)
 {
 	AttackableMock am1;
-	AttackableMock am2;	
+	AttackableMock am2;
+	Attack a1 (&am1, 10U);
+	Attack a2 (&am2, 10U);
+	EXPECT_FALSE (a1 == a2);
+}
 
-	Attack a (&am1, 10);
-	ASSERT_FALSE (a != a);
+TEST (Attack, equal_false_different_strength)
+{
+	AttackableMock am;
+	Attack a1 (&am, 10U);
+	Attack a2 (&am, 20U);
+	EXPECT_FALSE (a1 == a2);
+}
 
-	Attack a1 (&am1, 20);
-	ASSERT_TRUE (a != a1);
+TEST(Attack, not_equal_equal_to_self)
+{
+	AttackableMock am;
+	Attack a (&am, 10U);
+	EXPECT_FALSE (a != a);
+}
 
-	Attack a2 (&am2, 10);
-	ASSERT_TRUE (a != a2);
+TEST(Attack, not_equal_different_attackable)
+{
+	AttackableMock am1;
+	AttackableMock am2;
+	Attack a1 (&am1, 10U);
+	Attack a2 (&am2, 10U);
+	EXPECT_TRUE (a1 != a2);
+}
+
+TEST(Attack, not_equal_different_strength)
+{
+	AttackableMock am;
+	Attack a1 (&am, 10U);
+	Attack a2 (&am, 20U);
+	EXPECT_TRUE (a1 != a2);
 }
 
 TEST (Attack, output)
 {
 	AttackableMock am1;
-	std::shared_ptr<Action> a (new Attack (&am1, 10.0));
-	ASSERT_TRUE (std::dynamic_pointer_cast <Attack> (a));
+	std::shared_ptr<Action> a (new Attack (&am1, 10U));
+	EXPECT_TRUE (std::dynamic_pointer_cast <Attack> (a));
 	std::shared_ptr <Attack> m (std::dynamic_pointer_cast <Attack> (a));
 	
 	std::stringstream s;
 
 	s << *m;
 
-	ASSERT_EQ (s.str (), "10");
+	EXPECT_EQ (s.str (), "10");
 }
 
 TEST (Attack, apply)
 {
 	AttackableMock am1;
-	std::shared_ptr<Action> a (new Attack (&am1, 10.0));
+	std::shared_ptr<Action> a (new Attack (&am1, 10));
 	
 	a->apply ();
-	ASSERT_TRUE (am1._strength = 10.0);
+	EXPECT_EQ (am1._strength, 10U);
 }
 
-TEST (Attack, attack)
+TEST (Attack, applies_to_blob)
 {
-	Blob b1 {"mark", [](double) {return 0;}, -5, 5, 7, 7, 0, 100};
-	Blob b2 {"annette", [](double) {return 0;}, -10, 5, 12, 12, 0, 10};
+	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 100);
+	Blob b2 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 10);
 
 	std::shared_ptr <Action> a = b2.createActionAttack (b1);
 	a->apply ();
 
-	ASSERT_TRUE (b1.strength () == 90);
+	EXPECT_EQ (b1.strength (), 90);
 }
-
 
 int main (int argc, char** argv) 
 {

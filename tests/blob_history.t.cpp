@@ -9,15 +9,15 @@ TEST (Blob, history)
 	b1.move (5.0, M_PI / 2, "");
 
 	std::vector<Pt<double>> history = b1.history ();
-	ASSERT_EQ (history.size (), 4);
-	ASSERT_EQ (history[0].x (), 10.0);
- 	ASSERT_EQ (history[0].y (), 20.0);
-	ASSERT_EQ (history[1].x (), 10.0);
- 	ASSERT_EQ (history[1].y (), 15.0);
-	ASSERT_EQ (history[2].x (), 10.0);
- 	ASSERT_EQ (history[2].y (), 10.0);
-	ASSERT_EQ (history[3].x (), 15.0);
- 	ASSERT_EQ (history[3].y (), 10.0);
+	EXPECT_EQ (history.size (), 4U);
+	EXPECT_DOUBLE_EQ (history[0].x (), 10.0);
+ 	EXPECT_DOUBLE_EQ (history[0].y (), 20.0);
+	EXPECT_DOUBLE_EQ (history[1].x (), 10.0);
+ 	EXPECT_DOUBLE_EQ (history[1].y (), 15.0);
+	EXPECT_DOUBLE_EQ (history[2].x (), 10.0);
+ 	EXPECT_DOUBLE_EQ (history[2].y (), 10.0);
+	EXPECT_DOUBLE_EQ (history[3].x (), 15.0);
+ 	EXPECT_DOUBLE_EQ (history[3].y (), 10.0);
 }
 
 TEST (Blob, history_length)
@@ -29,13 +29,13 @@ TEST (Blob, history_length)
 	}
 	
 	std::vector<Pt<double>> history = b1.history ();
-	ASSERT_EQ (history.size (), 500);
+	EXPECT_EQ (history.size (), 500U);
 	
-	ASSERT_EQ (history[0].x (), 10.0);
- 	ASSERT_EQ (history[0].y (), 2525);
+	EXPECT_DOUBLE_EQ (history[0].x (), 10.0);
+ 	EXPECT_DOUBLE_EQ (history[0].y (), 2525.0);
 	
-	ASSERT_EQ (history[499].x (), 10.0);
- 	ASSERT_EQ (history[499].y (), 5020);
+	EXPECT_DOUBLE_EQ (history[499].x (), 10.0);
+ 	EXPECT_DOUBLE_EQ (history[499].y (), 5020.0);
 }
 
 int main (int argc, char** argv) 
