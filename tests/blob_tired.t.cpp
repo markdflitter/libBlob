@@ -8,35 +8,35 @@ TEST (Blob, gets_tired_when_hunting)
 	
 	ASSERT_FALSE (b1.isTired ());
 
-	std::shared_ptr<Action> a = b1.hunt (b2);	
+	std::shared_ptr<Action> a = b1.createActionHunt (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	ASSERT_FALSE (b1.isTired ());
 	ASSERT_EQ (m->_speed, 20);
 	a->apply ();
 
-	a = b1.hunt (b2);	
+	a = b1.createActionHunt (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_FALSE (b1.isTired ());
 	ASSERT_EQ (m->_speed, 20);
 	a->apply ();
 	
-	a = b1.hunt (b2);	
+	a = b1.createActionHunt (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (b1.isTired ());
 	ASSERT_EQ (m->_speed, 10);
 	a->apply ();
 
-	a = b1.hunt (b2);	
+	a = b1.createActionHunt (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (b1.isTired ());
 	ASSERT_EQ (m->_speed, 10);
 	a->apply ();
 
-	a = b1.hunt (b2);	
+	a = b1.createActionHunt (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_FALSE (b1.isTired ());
@@ -51,35 +51,35 @@ TEST (Blob, gets_tired_when_fleeing)
 	
 	ASSERT_FALSE (b1.isTired ());
 
-	std::shared_ptr<Action> a = b1.flee (b2);	
+	std::shared_ptr<Action> a = b1.createActionFlee (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	ASSERT_FALSE (b1.isTired ());
 	ASSERT_EQ (m->_speed, 20);
 	a->apply ();
 
-	a = b1.flee (b2);	
+	a = b1.createActionFlee (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_FALSE (b1.isTired ());
 	ASSERT_EQ (m->_speed, 20);
 	a->apply ();
 	
-	a = b1.flee (b2);	
+	a = b1.createActionFlee (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (b1.isTired ());
 	ASSERT_EQ (m->_speed, 10);
 	a->apply ();
 
-	a = b1.flee (b2);	
+	a = b1.createActionFlee (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (b1.isTired ());
 	ASSERT_EQ (m->_speed, 10);
 	a->apply ();
 
-	a = b1.flee (b2);	
+	a = b1.createActionFlee (b2);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_FALSE (b1.isTired ());

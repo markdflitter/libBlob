@@ -75,7 +75,7 @@ TEST (Attack, attack)
 	Blob b1 {"mark", [](double) {return 0;}, -5, 5, 7, 7, 0, 100};
 	Blob b2 {"annette", [](double) {return 0;}, -10, 5, 12, 12, 0, 10};
 
-	std::shared_ptr <Action> a = b2.attack (b1);
+	std::shared_ptr <Action> a = b2.createActionAttack (b1);
 	a->apply ();
 
 	ASSERT_TRUE (b1.strength () == 90);

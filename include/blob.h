@@ -1,7 +1,6 @@
 #ifndef INCLUDED_BLOB_H
 #define INCLUDED_BLOB_H
 
-#include "pt.h"
 #include <functional>
 #include <algorithm>
 #include <iostream>
@@ -10,6 +9,7 @@
 #include <vector>
 #include <sstream>
 #include <memory>
+#include <pt.h>
 #include <action.h>
 #include <movement.h>
 #include <attack.h>
@@ -146,18 +146,18 @@ public:
 		if (_fatigue == _endurance) _tired = true; 
 	}
         
-	std::shared_ptr <Action> die ()
+	std::shared_ptr <Action> createActionDead ()
         {
 		return std::shared_ptr<Action> (new Movement (this, "dead", 0, 0));
 	}
  
-        std::shared_ptr <Action> wander ()
+        std::shared_ptr <Action> createActionWander ()
         {
 		double angle = _rnd (_previousAngleInRadians);
 		return std::shared_ptr<Action> (new Movement (this, "wandering", _speed, angle));
 	}
         
-	std::shared_ptr <Action> hunt (const Blob& target)
+	std::shared_ptr <Action> createActionHunt (const Blob& target)
         {
 		return std::shared_ptr <Action> (new Movement (this,
 			 "hunting " + target.name () + (!isTired () ? " (fast)" : ""),
@@ -165,7 +165,7 @@ public:
 			angle (target)));
 	}
         
-	std::shared_ptr <Action> flee (const Blob& target)
+	std::shared_ptr <Action> createActionFlee (const Blob& target)
         {
 		return std::shared_ptr <Action> (new Movement (this,
 				 "running from " + target.name () + (!isTired () ? " (fast)" : ""),
@@ -173,7 +173,7 @@ public:
 				_rnd ((0.9 * _previousAngleInRadians + 0.1 * (angle (target) + M_PI)))));
 	}
          
-	std::shared_ptr <Action> attack (Blob& target)
+	std::shared_ptr <Action> createActionAttack (Blob& target)
         {
 		return std::shared_ptr <Action> (new Attack (&target, _strength));
 	}
@@ -182,7 +182,7 @@ public:
 	{
 		if (isDead())
 		{
-			return die ();
+			return createActionDead ();
 		}
 		
 		struct Pair 
@@ -222,7 +222,7 @@ public:
 		
 		if (attackTargets.size () > 0)
 		{
-			return attack (*(attackTargets.back ())._blob);
+			return createActionAttack (*(attackTargets.back ())._blob);
 		}
 
 		for (auto it = huntTargets.rbegin (); it != huntTargets.rend (); it++)
@@ -230,16 +230,14 @@ public:
 			if (it->_weight > 0)
 			{
 				if (it->_blob->_strength > _strength)
-					return flee (*(it->_blob));
+					return createActionFlee (*(it->_blob));
 				else
- 					return hunt (*(it->_blob));
+ 					return createActionHunt (*(it->_blob));
 			}
 		}
 
-		return wander ();
+		return createActionWander ();
 	}
-	
-
 private:
 	std::function<double(double)> _rnd;
 	std::vector<Pt<double>> _points;
@@ -265,4 +263,6 @@ inline std::ostream& operator<< (std::ostream& s, const Blob& b)
 	s << b.x () << "," << b.y ();
 	return s; 
 }
+
 #endif
+

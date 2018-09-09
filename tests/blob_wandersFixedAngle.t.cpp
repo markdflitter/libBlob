@@ -23,7 +23,7 @@ TEST (Blob, usesFixedAngle)
 
 	for (int step = 1; step <= 8; step++)
 	{
-		std::shared_ptr<Action> a = b.wander ();
+		std::shared_ptr<Action> a = b.createActionWander ();
 		ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 		std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 		ASSERT_EQ (m->_reason, "wandering");
@@ -48,7 +48,7 @@ TEST (Blob, wandering)
 
 	Blob b {"mark", fixed_angle, 10.1, 20.2, 5, 5, 0.0, 0};
 
-	std::shared_ptr<Action> a = b.wander ();
+	std::shared_ptr<Action> a = b.createActionWander ();
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, M_PI / 4));
@@ -56,7 +56,7 @@ TEST (Blob, wandering)
         ASSERT_TRUE (fabs (b.x () - 13.6355339059327) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 23.7355339059327) < threshold);
 
-	a = b.wander ();
+	a = b.createActionWander ();
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
 	m = std::dynamic_pointer_cast <Movement> (a);
        	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, M_PI / 2));
@@ -64,7 +64,7 @@ TEST (Blob, wandering)
 	ASSERT_TRUE (fabs (b.x () - 18.6355339059327) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 23.7355339059327) < threshold);
 
-	a = b.wander ();
+	a = b.createActionWander ();
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 3 * M_PI / 4));
@@ -72,7 +72,7 @@ TEST (Blob, wandering)
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 20.2) < threshold);
 
-	a = b.wander ();
+	a = b.createActionWander ();
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, M_PI));
@@ -80,7 +80,7 @@ TEST (Blob, wandering)
         ASSERT_TRUE (fabs (b.x () - 22.17106781186550) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 
-	a = b.wander ();
+	a = b.createActionWander ();
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 5 * M_PI / 4));
@@ -88,7 +88,7 @@ TEST (Blob, wandering)
         ASSERT_TRUE (fabs (b.x () - 18.63553390593270) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 
-	a = b.wander ();
+	a = b.createActionWander ();
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 3 * M_PI / 2));
@@ -96,7 +96,7 @@ TEST (Blob, wandering)
         ASSERT_TRUE (fabs (b.x () - 13.63553390593273) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 11.66446609406730) < threshold);
 	
-	a = b.wander ();
+	a = b.createActionWander ();
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 7 * M_PI / 4));
@@ -104,7 +104,7 @@ TEST (Blob, wandering)
         ASSERT_TRUE (fabs (b.x () - 10.1) < threshold);
 	ASSERT_TRUE (fabs (b.y () - 15.2) < threshold);
 
-	a = b.wander ();
+	a = b.createActionWander ();
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (m));
 	m = std::dynamic_pointer_cast <Movement> (a);
 	ASSERT_TRUE (*m  == Movement (&b, "wandering", 5, 2 * M_PI));

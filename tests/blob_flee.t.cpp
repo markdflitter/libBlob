@@ -10,7 +10,7 @@ TEST (Blob, flee)
 
 	b1.move (5, 3 * M_PI/2, "wandering");	
 
-	std::shared_ptr<Action> a = b1.flee (b2);
+	std::shared_ptr<Action> a = b1.createActionFlee (b2);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	ASSERT_TRUE (m->_target == &b1);
