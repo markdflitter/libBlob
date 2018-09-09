@@ -27,7 +27,7 @@ public:
               , double smell = 0.0
               , unsigned int strength = 0
 	      , unsigned int endurance = 0
-	      , double aggression = 1.0) :
+	      , double aggression = 0.5) :
 		  _name (name)
 		, _rnd (rnd)
 		, _speed (speed)

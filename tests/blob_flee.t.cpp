@@ -40,7 +40,7 @@ TEST (Blob, chooses_not_to_flee_because_out_of_range)
 TEST (Blob, chooses_not_to_flee_because_aggressive)
 {
 	std::vector<Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 5.0, 5.0, 2.0, 2.0, 1000.0),
+		Blob ("", [](double) {return 0.0;}, 5.0, 5.0, 2.0, 2.0, 1000.0, 0U, 0U, 1.0),
 		Blob ("", [](double) {return 0.0;}, 5.0, 10.0, 12.0, 12.0, 0.0, 10U)};
 
 	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs);
