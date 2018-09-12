@@ -64,7 +64,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& s, const Blob& b);
 
 	std::vector<Pt<double>> history () const {return _points;}
-	
+
 	double distance (const Blob& other) const
 	{
 		double dx = other.x () - x();
@@ -127,7 +127,10 @@ public:
 		double denormalisedMoveDirection = _previousAngleInRadians - M_PI / 2;
 		double newX = x () + speed * cos (denormalisedMoveDirection);
 		double newY = y () - speed * sin (denormalisedMoveDirection);
-			
+	
+		newX = std::max (-2000.0, std::min (2000.0, newX));
+		newY = std::max (-2000.0, std::min (2000.0, newY));
+		
 		_points.push_back (Pt<double> (newX, newY));
 		while (_points.size () > 500)
 			_points.erase (_points.begin (), _points.begin () + 1);
