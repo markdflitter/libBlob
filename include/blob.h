@@ -128,8 +128,8 @@ public:
 		double newX = x () + speed * cos (denormalisedMoveDirection);
 		double newY = y () - speed * sin (denormalisedMoveDirection);
 	
-		newX = std::max (-2000.0, std::min (2000.0, newX));
-		newY = std::max (-2000.0, std::min (2000.0, newY));
+		newX = std::max (-1000.0, std::min (1000.0, newX));
+		newY = std::max (-1000.0, std::min (1000.0, newY));
 		
 		_points.push_back (Pt<double> (newX, newY));
 		while (_points.size () > 500)
