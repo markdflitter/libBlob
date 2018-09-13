@@ -128,8 +128,8 @@ public:
 		double newX = x () + speed * cos (denormalisedMoveDirection);
 		double newY = y () - speed * sin (denormalisedMoveDirection);
 	
-		newX = std::max (-1000.0, std::min (1000.0, newX));
-		newY = std::max (-1000.0, std::min (1000.0, newY));
+		newX = std::max (-WORLD_SIZE, std::min (WORLD_SIZE, newX));
+		newY = std::max (-WORLD_SIZE, std::min (WORLD_SIZE, newY));
 		
 		_points.push_back (Pt<double> (newX, newY));
 		while (_points.size () > 500)
@@ -256,6 +256,8 @@ private:
 
 	unsigned int _fatigue;
 	bool _tired;
+
+	const double WORLD_SIZE = 1000.0;
 
 	bool _dead;
 	double _previousAngleInRadians = 0;
