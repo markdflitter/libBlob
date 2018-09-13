@@ -148,7 +148,7 @@ TEST (Blob, move_negative_y)
 	EXPECT_EQ (b1.state (), "-y");
 }
 
-TEST (Blob, moveFast)
+TEST (Blob, move_fast)
 {
 	Blob b1 ("", [](double) {return 0.0;}, 10.1, 20.2);
 	b1.move (10.0, 0.0, "move fast");
@@ -157,6 +157,51 @@ TEST (Blob, moveFast)
 	EXPECT_DOUBLE_EQ (b1.y (), 30.2);
 	EXPECT_EQ (b1.state (), "move fast");
 }
+
+TEST (Blob, move_limit_minx)
+{
+	Blob b1 ("", [](double) {return 0.0;});
+	b1.move (1200.0, 3.0 * M_PI / 2.0, "");
+
+	EXPECT_DOUBLE_EQ (b1.x (), -1000.0);
+}
+
+TEST (Blob, move_limit_maxx)
+{
+	Blob b1 ("", [](double) {return 0.0;});
+	b1.move (1200.0, M_PI / 2.0, "");
+
+	EXPECT_DOUBLE_EQ (b1.x (), 1000.0);
+}
+
+TEST (Blob, move_limit_maxy)
+{
+	Blob b1 ("", [](double) {return 0.0;});
+	b1.move (1200.0, 0.0, "");
+
+	EXPECT_DOUBLE_EQ (b1.y (), 1000.0);
+}
+
+TEST (Blob, move_limit_miny)
+{
+	Blob b1 ("", [](double) {return 0.0;});
+	b1.move (1200.0, M_PI, "");
+
+	EXPECT_DOUBLE_EQ (b1.y (), -1000.0);
+}
+
+
+
+TEST (Blob, move_limit_mix)
+{
+	Blob b1 ("", [](double) {return 0.0;});
+	b1.move (1200.0, 3.0 * M_PI / 2.0, "");
+
+	EXPECT_DOUBLE_EQ (b1.x (), -1000.0);
+}
+
+
+
 
 int main (int argc, char** argv) 
 {
