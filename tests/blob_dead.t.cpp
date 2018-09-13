@@ -65,7 +65,7 @@ TEST (Blob, does_not_attack_dead_blobs)
 	std::shared_ptr<Action> a1 = blobs[0].chooseNextAction (blobs);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Attack> (a1));
 	std::shared_ptr <Attack> atk1 (std::dynamic_pointer_cast <Attack> (a1));
-	EXPECT_EQ (*atk1, Attack (&blobs[1], 10U));
+	EXPECT_EQ (*atk1, Attack (&blobs[1], &blobs[0]));
 
 	blobs[1].kill ();
 	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs); 

@@ -37,11 +37,18 @@ TEST (Blob, running_speed)
 	EXPECT_DOUBLE_EQ (b.runningSpeed (), 400.4);
 }
 
+TEST (Blob, initialStrength)
+{
+	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 500U);
+	EXPECT_EQ (b.initialStrength (), 500U);
+}
+
 TEST (Blob, strength)
 {
 	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 500U);
 	EXPECT_EQ (b.strength (), 500U);
 }
+
 
 TEST (Blob, endurance)
 {

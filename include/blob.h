@@ -15,7 +15,7 @@
 #include <attack.h>
 #include <rnd.h>
 
-class Blob : public Moveable, public Attackable
+class Blob : public Moveable, public Target
 {
 public:
 	Blob (const std::string& name = ""
@@ -33,6 +33,7 @@ public:
 		, _speed (speed)
 		, _runningSpeed (runningSpeed)
 		, _smell (smell)
+		, _initialStrength (strength)
 		, _strength (strength)
 		, _endurance (endurance)
 		, _aggression (aggression)
@@ -51,6 +52,8 @@ public:
 	double runningSpeed () const {return _runningSpeed;}
 	double smell () const {return _smell;}
 	unsigned int strength () const {return _strength;}
+	unsigned int initialStrength () const {return _initialStrength;}
+	unsigned int damage () const {return _strength;}
 	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
 
@@ -178,7 +181,7 @@ public:
          
 	std::shared_ptr <Action> createActionAttack (Blob& target)
         {
-		return std::shared_ptr <Action> (new Attack (&target, _strength));
+		return std::shared_ptr <Action> (new Attack (&target, this));
 	}
 
 	std::shared_ptr <Action> chooseNextAction (std::vector<Blob>& others)
@@ -200,7 +203,7 @@ public:
 		{
 			if ((&b != this) && !b.isDead ())
 			{
-				if (isInSameSquare (b) && (b.strength () < _strength))
+				if (isInSameSquare (b) && (b.damage () < strength ()))
 				{
 					double weight = -b.strength ();
 					attackTargets.push_back (Pair {weight, &b});
@@ -208,7 +211,7 @@ public:
 				else if (canSmell (b))
 				{
 					double aggression_multiplier = _aggression;
-					if (b._strength > _strength)
+					if (b.damage () > _strength)
 						aggression_multiplier = 1.0 - aggression_multiplier;
 					double weight = (1.0 - (distance (b) / _smell)) * aggression_multiplier;
 					huntTargets.push_back (Pair {weight, &b});
@@ -250,6 +253,7 @@ private:
 	double _speed;
         double _runningSpeed;
 	double _smell;
+	unsigned int _initialStrength;
 	unsigned int _strength;
 	unsigned int _endurance;
 	double _aggression;

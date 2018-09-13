@@ -4,26 +4,26 @@
 #include <action.h>
 #include <iostream>
 
-class Attackable
+class Target
 {
 public:
-	virtual ~Attackable () {}
-	virtual void attack (unsigned int strength) = 0;
+	virtual ~Target () {}
+	virtual void attack (unsigned int damage) = 0;
+	virtual unsigned int damage () const = 0;
 };
 
 class Attack : public Action
 {
 	public:
-		Attack (Attackable* target, unsigned int strength) :
+		Attack (Target* target, Target* attacker) :
 			_target (target)
-			, _strength (strength)
+		      , _attacker (attacker)
 		{
 		}
 
 		bool operator== (const Attack& a) const
 		{
-			return (_target == a._target) 
-			    && (_strength == a._strength);
+			return (_target == a._target) && (_attacker == a._attacker); 
 		}	
 
 		bool operator!= (const Attack& a) const
@@ -35,19 +35,20 @@ class Attack : public Action
 
 		friend std::ostream& operator<< (std::ostream& s, const Attack& a);
 	public:
-		Attackable* _target;
-		unsigned int _strength;
+		Target* _target;
+		Target* _attacker;
 };
 
 inline std::ostream& operator<< (std::ostream& s, const Attack& a)
 {
-	s << a._strength;
+	s << a._attacker->damage ();
 	return s; 
 }
 
 inline void Attack::apply ()
 {
-	_target->attack (_strength);
+	_target->attack (_attacker->damage ());
+	_attacker->attack (_target->damage ());
 }
 
 #endif

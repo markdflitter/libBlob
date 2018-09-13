@@ -83,7 +83,7 @@ TEST (Blob, chooses_to_attack)
 	std::shared_ptr <Attack> m (std::dynamic_pointer_cast <Attack> (a));
 	
 	EXPECT_EQ (m->_target,  &blobs[1]);
-	EXPECT_EQ (m->_strength, 10U);
+	EXPECT_EQ (m->_attacker, &blobs[0]);
 }
 
 TEST (Blob, chooses_to_attack_weakest)
@@ -98,7 +98,7 @@ TEST (Blob, chooses_to_attack_weakest)
 	std::shared_ptr <Attack> m (std::dynamic_pointer_cast <Attack> (a));
 	
 	EXPECT_EQ (m->_target, &blobs[1]);
-	EXPECT_EQ (m->_strength, 10.0);
+	EXPECT_EQ (m->_attacker, &blobs[0]);
 }
 
 TEST (Blob, actually_attacks_and_kills)
