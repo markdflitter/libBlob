@@ -200,6 +200,15 @@ TEST (Blob, move_limit_mix)
 	EXPECT_DOUBLE_EQ (b1.x (), -1000.0);
 }
 
+TEST (Blob, move_strength_recovers)
+{
+	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 1.0, 100.0, 100U);
+	b1.attack (20U);
+
+	EXPECT_EQ (b1.strength (), 80U);
+	b1.move (0.0, 0.0, "");
+	EXPECT_EQ (b1.strength (), 81U);
+}
 
 
 

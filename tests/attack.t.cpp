@@ -133,13 +133,13 @@ TEST (Attack, apply_attacker_is_damaged)
 
 TEST (Attack, applies_to_blobs)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 100);
-	Blob b2 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 5);
+	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 7U);
+	Blob b2 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 5U);
 
 	std::shared_ptr <Action> a = b2.createActionAttack (b1);
 	a->apply ();
 
-	EXPECT_EQ (b1.strength (), 95U);
+	EXPECT_EQ (b1.strength (), 2U);
 	EXPECT_EQ (b2.strength (), 0U);
 }
 

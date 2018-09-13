@@ -147,6 +147,7 @@ public:
 		else
 		{
 			if (_fatigue > 0) _fatigue--;
+			if (_strength < _initialStrength) _strength++;
 		}
 		if (_fatigue == 0) _tired = false;
 		if (_fatigue == _endurance) _tired = true; 

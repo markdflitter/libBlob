@@ -47,8 +47,9 @@ inline std::ostream& operator<< (std::ostream& s, const Attack& a)
 
 inline void Attack::apply ()
 {
+	unsigned int retaliation = _target->damage ();
 	_target->attack (_attacker->damage ());
-	_attacker->attack (_target->damage ());
+	_attacker->attack (retaliation);
 }
 
 #endif
