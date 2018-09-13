@@ -62,6 +62,19 @@ TEST (Blob, aggression)
 	EXPECT_DOUBLE_EQ (b.aggression (), 700.7);
 }
 
+TEST (Blob, longevity)
+{
+	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 800);
+	EXPECT_EQ (b.longevity (), 800);
+}
+
+TEST (Blob, age)
+{
+	Blob b ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0);
+	EXPECT_EQ (b.age (), 0U);
+}
+
+
 TEST (Blob, state)
 {
 	Blob b;

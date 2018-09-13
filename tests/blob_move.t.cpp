@@ -161,25 +161,17 @@ TEST (Blob, move_fast)
 TEST (Blob, move_limit_minx)
 {
 	Blob b1 ("", [](double) {return 0.0;});
-	b1.move (1200.0, 3.0 * M_PI / 2.0, "");
+	b1.move (2400.0, 3.0 * M_PI / 2.0, "");
 
-	EXPECT_DOUBLE_EQ (b1.x (), -1000.0);
+	EXPECT_DOUBLE_EQ (b1.x (), -2000.0);
 }
 
 TEST (Blob, move_limit_maxx)
 {
 	Blob b1 ("", [](double) {return 0.0;});
-	b1.move (1200.0, M_PI / 2.0, "");
+	b1.move (2400.0, M_PI / 2.0, "");
 
-	EXPECT_DOUBLE_EQ (b1.x (), 1000.0);
-}
-
-TEST (Blob, move_limit_maxy)
-{
-	Blob b1 ("", [](double) {return 0.0;});
-	b1.move (1200.0, 0.0, "");
-
-	EXPECT_DOUBLE_EQ (b1.y (), 1000.0);
+	EXPECT_DOUBLE_EQ (b1.x (), 2000.0);
 }
 
 TEST (Blob, move_limit_miny)
@@ -190,14 +182,12 @@ TEST (Blob, move_limit_miny)
 	EXPECT_DOUBLE_EQ (b1.y (), -1000.0);
 }
 
-
-
-TEST (Blob, move_limit_mix)
+TEST (Blob, move_limit_maxy)
 {
 	Blob b1 ("", [](double) {return 0.0;});
-	b1.move (1200.0, 3.0 * M_PI / 2.0, "");
+	b1.move (1200.0, 0.0, "");
 
-	EXPECT_DOUBLE_EQ (b1.x (), -1000.0);
+	EXPECT_DOUBLE_EQ (b1.y (), 1000.0);
 }
 
 TEST (Blob, move_strength_recovers)

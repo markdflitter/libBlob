@@ -75,6 +75,15 @@ TEST (Blob, does_not_attack_dead_blobs)
 	EXPECT_EQ (m->_reason, "wandering");
 }
 
+TEST (Blob, dead_blobs_do_not_age)
+{
+	std::vector<Blob> blobs {Blob ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0U, 0U, 0.0, 2U)};
+	EXPECT_EQ (blobs[0].age (), 0U);
+	blobs[0].kill ();	
+	blobs[0].chooseNextAction (blobs);
+	EXPECT_EQ (blobs[0].age (), 0U);
+}
+
 int main (int argc, char** argv) 
 {
 	testing::InitGoogleTest (&argc, argv);

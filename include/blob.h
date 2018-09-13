@@ -27,7 +27,8 @@ public:
               , double smell = 0.0
               , unsigned int strength = 0
 	      , unsigned int endurance = 0
-	      , double aggression = 0.5) :
+	      , double aggression = 0.5
+	      , unsigned int longevity = 100) :
 		  _name (name)
 		, _rnd (rnd)
 		, _speed (speed)
@@ -37,10 +38,12 @@ public:
 		, _strength (strength)
 		, _endurance (endurance)
 		, _aggression (aggression)
+		, _longevity (longevity)
 		, _state ("newborn")
  		, _fatigue (0)
-		, _dead (false)
 		, _tired (false)
+		, _age (0)
+		, _dead (false)
 			{
 				_points.push_back (Pt<double> (x,y));
 			}
@@ -56,7 +59,8 @@ public:
 	unsigned int damage () const {return _strength;}
 	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
-
+ 	unsigned int longevity () const {return _longevity;}
+	unsigned int age () const {return _age;}
 	std::string state () const {return _state;}
 
 	double fatigue () const {return _fatigue;}
@@ -131,8 +135,8 @@ public:
 		double newX = x () + speed * cos (denormalisedMoveDirection);
 		double newY = y () - speed * sin (denormalisedMoveDirection);
 	
-		newX = std::max (-WORLD_SIZE, std::min (WORLD_SIZE, newX));
-		newY = std::max (-WORLD_SIZE, std::min (WORLD_SIZE, newY));
+		newX = std::max (-WORLD_SIZE.x (), std::min (WORLD_SIZE.x (), newX));
+		newY = std::max (-WORLD_SIZE.y (), std::min (WORLD_SIZE.y (), newY));
 		
 		_points.push_back (Pt<double> (newX, newY));
 		while (_points.size () > 500)
@@ -187,6 +191,16 @@ public:
 
 	std::shared_ptr <Action> chooseNextAction (std::vector<Blob>& others)
 	{
+		if (age () >= longevity ())
+		{
+			kill ();
+		}
+		else if (!isDead ())
+		{
+			_age++;
+		}
+
+
 		if (isDead())
 		{
 			return createActionDead ();
@@ -246,6 +260,8 @@ public:
 		return createActionWander ();
 	}
 private:
+	Pt<double> WORLD_SIZE = Pt<double>(2000.0, 1000.0);
+
 	std::function<double(double)> _rnd;
 	std::vector<Pt<double>> _points;
 
@@ -258,12 +274,13 @@ private:
 	unsigned int _strength;
 	unsigned int _endurance;
 	double _aggression;
+	unsigned int _longevity;
 
 	unsigned int _fatigue;
 	bool _tired;
 
-	double WORLD_SIZE = 1000.0;
-
+	unsigned int _age;
+	
 	bool _dead;
 	double _previousAngleInRadians = 0;
 };
