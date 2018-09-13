@@ -22,20 +22,20 @@ TEST (Blob, history)
 
 TEST (Blob, history_length)
 {
-	Blob b1 ("", [](double) {return 0;}, 10.0, 20.0);
+	Blob b1 ("", [](double) {return 0;}, 10.0, -20.0);
 	for (int i = 0; i < 1000; i++)
 	{
-		b1.move (5.0, 0, "");
+		b1.move (1.0, 0, "");
 	}
 	
 	std::vector<Pt<double>> history = b1.history ();
 	EXPECT_EQ (history.size (), 500U);
 	
 	EXPECT_DOUBLE_EQ (history[0].x (), 10.0);
- 	EXPECT_DOUBLE_EQ (history[0].y (), 2525.0);
+ 	EXPECT_DOUBLE_EQ (history[0].y (), 481.0);
 	
 	EXPECT_DOUBLE_EQ (history[499].x (), 10.0);
- 	EXPECT_DOUBLE_EQ (history[499].y (), 5020.0);
+ 	EXPECT_DOUBLE_EQ (history[499].y (), 980.0);
 }
 
 int main (int argc, char** argv) 
