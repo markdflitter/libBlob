@@ -257,7 +257,7 @@ private:
 	unsigned int _fatigue;
 	bool _tired;
 
-	const double WORLD_SIZE = 1000.0;
+	double WORLD_SIZE = 1000.0;
 
 	bool _dead;
 	double _previousAngleInRadians = 0;
