@@ -15,7 +15,7 @@ TEST (Blob, flee)
 TEST (Blob, chooses_to_flee)
 {
 	std::vector <Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 5.0, 1000.0, 0U, 0U, 0.5),
+		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 5.0, 1000.0, 0U, 0U, 0.4),
 		Blob ("", [](double) {return 0.0;}, 20.0, 20.0, 5.0, 5.0, 0.0, 1U)};
 	
 	std::shared_ptr<Action> a = blobs [0].chooseNextAction (blobs); 
@@ -46,7 +46,7 @@ TEST (Blob, chooses_not_to_flee_because_aggressive)
 	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_EQ (m->_reason, "wandering");
+	EXPECT_EQ (m->_reason, "hunting  (fast)");
 }
 
 TEST (Blob, chooses_not_to_flee_because_stronger)
@@ -64,7 +64,7 @@ TEST (Blob, chooses_not_to_flee_because_stronger)
 TEST (Blob, chooses_to_flee_from_strongest)
 {
 	std::vector <Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 5.0, 1000.0, 0U, 0U, 0.5),
+		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 5.0, 1000.0, 0U, 0U, 0.4),
 		Blob ("", [](double) {return 0.0;}, 20.0, 20.0, 5.0, 5.0, 0.0, 1U),
 		Blob ("", [](double) {return 0.0;}, 20.0, 20.0, 5.0, 5.0, 0.0, 2U)};
 	

@@ -106,7 +106,7 @@ TEST (Blob, chooses_not_to_hunt_because_not_aggressive)
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
-	EXPECT_EQ (m->_reason, "wandering");
+	EXPECT_EQ (m->_reason, "running from  (fast)");
 }
 
 TEST (Blob, chooses_not_to_hunt_because_weaker)

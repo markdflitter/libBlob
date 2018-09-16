@@ -59,17 +59,17 @@ TEST (Blob, will_not_attack_self)
 	EXPECT_EQ (m->_reason, "wandering");
 }
 
-TEST (Blob, will_not_attack_stronger)
+TEST (Blob, will_not_attack_stronger_unless_aggressive)
 {
 	std::vector <Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 0.0, 0.0, 0.0, 0U),
+		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 0.0, 0.0, 0.0, 0U, 0U, 0.4),
 		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 0.0, 0.0, 0.0, 100U)};
 
 	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs); 
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
 	
-	ASSERT_EQ (m->_reason, "wandering");
+	ASSERT_EQ (m->_reason, "running from  (fast)");
 }
 
 TEST (Blob, chooses_to_attack)

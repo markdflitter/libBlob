@@ -22,4 +22,22 @@ private:
 	std::normal_distribution<> _dist;
 };
 
+class Rnd2 
+{
+public:
+	Rnd2 (unsigned int seed) :
+		_gen (seed)
+	     ,  _dist (0.0, 0.5) 
+	{
+	}
+
+	double operator ()(double aggression) 
+	{
+		return std::max (0.0, std::min (1.0, aggression + _dist (_gen)));
+	}
+private:
+	std::mt19937 _gen;
+	std::normal_distribution<> _dist;
+};
+
 #endif

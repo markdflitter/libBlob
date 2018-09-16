@@ -28,7 +28,8 @@ public:
               , unsigned int strength = 0
 	      , unsigned int endurance = 0
 	      , double aggression = 0.5
-	      , unsigned int longevity = 100) :
+	      , unsigned int longevity = 100
+	      , std::function<double (double)> aggression_rnd = [](double aggression) {return aggression;}) :
 		  _name (name)
 		, _rnd (rnd)
 		, _speed (speed)
@@ -39,6 +40,7 @@ public:
 		, _endurance (endurance)
 		, _aggression (aggression)
 		, _longevity (longevity)
+		, _aggression_rnd (aggression_rnd)
 		, _state ("newborn")
  		, _fatigue (0)
 		, _tired (false)
@@ -200,7 +202,6 @@ public:
 			_age++;
 		}
 
-
 		if (isDead())
 		{
 			return createActionDead ();
@@ -208,55 +209,103 @@ public:
 		
 		struct Pair 
 		{
+			enum {attack, hunt, flee} _action;
 			double _weight;
+			double _aggression_multiplier;
 			Blob* _blob;
 		};
 
-		std::vector <Pair> attackTargets;
-		std::vector <Pair> huntTargets;
+		std::vector <Pair> targets;
 		for (auto& b : others)
 		{
 			if ((&b != this) && !b.isDead ())
 			{
-				if (isInSameSquare (b) && (b.damage () < strength ()))
+				double aggression_multiplier = _aggression_rnd (_aggression);
+					
+				// if two blobs are in the same square, consider attacking
+				if (isInSameSquare (b))
 				{
-					double weight = -b.strength ();
-					attackTargets.push_back (Pair {weight, &b});
+					//std::cout << "same sq" << '\n';
+					// only consider attacking weaker blobs
+					// weaker means my damage is more than their strength
+					// OR their damage is less than my strength
+					// (it doesn't mean their damage is less than mine, because that could still kill me
+					// it also doesn't mean their strength is less than mine for the same reason)
+					// ie ((damage () > b.strength ()) || (b.damage () < strength ()))
+					// at the moment, this reduces to:
+					// ((strength () > b.strength ()) || (b.strength () < strength ()))
+					// which is clearly redundant, but when we separate strength and hit points, it won't b
+ 					if ((damage () > b.strength ()) || (b.damage () < strength ()))
+					{
+						//std::cout << "weaker" << '\n';
+						// we want to favour attacking the weakest, so use calculate
+						// the two differentials and take the biggest
+						//std::cout << damage () << " " << b.strength () << '\n';
+						//std::cout << b.damage () << " " << strength () << '\n';
+						//std::cout << ((double) damage () - b.strength ()) / (damage () + b.strength ()) << '\n';
+						//std::cout << ((double) strength () - b.damage ()) / (strength () + b.damage ()) << '\n';
+						double weight = (std::max (
+							((double) damage () - b.strength ()) / (damage () + b.strength ()),
+							((double) strength () - b.damage ()) / (strength () + b.damage ())) + 1) / 2;
+						//std::cout << weight << '\n';
+						// we also use the aggression multipler, to randomise choice
+						// whether to attack
+						//std::cout << aggression_multiplier << '\n';
+						if (aggression_multiplier >= 0.5)
+						{
+							//std::cout << "adding target" << '\n';
+							targets.push_back (Pair {Pair::attack, weight, aggression_multiplier, &b});
+						}
+					}
 				}
-				else if (canSmell (b))
+				// if another blob is in sense range, consider attacking or fleeing
+				if (canSmell (b))
 				{
-					double aggression_multiplier = _aggression;
-					if (b.damage () > _strength)
-						aggression_multiplier = 1.0 - aggression_multiplier;
-					double weight = (1.0 - (distance (b) / _smell)) * aggression_multiplier;
-					huntTargets.push_back (Pair {weight, &b});
+					// we want to favour closer blobs, so calculate a distance percentage
+					double distance_multiplier = 1.0 - (distance (b) / _smell);
+					if (_smell == 0.0)
+					{
+						distance_multiplier = 0.0;
+					}
+					// we also want to favour weaker blobs (by the above definition)
+					double damage_differential = (std::max (
+						((double) damage () - b.strength ()) / (damage () + b.strength ()),
+						((double) strength () - b.damage ()) / (strength () + b.damage ())) + 1) / 2;
+					//std::cout << damage_differential << " " << distance_multiplier << '\n';
+					//std::cout << "adding target2, weight =" << distance_multiplier * damage_differential << '\n';
+					if (aggression_multiplier >= 0.5)
+					{
+						targets.push_back (Pair {Pair::hunt, distance_multiplier * damage_differential, aggression_multiplier, &b});
+					}
+					else
+					{
+						targets.push_back (Pair {Pair::flee, distance_multiplier * damage_differential, aggression_multiplier, &b});
+					}
 				}
 			}
 		}
 
-		std::sort (attackTargets.begin (), attackTargets.end (),
+		if (targets.size () > 0)
+		{
+			std::sort (targets.begin (), targets.end (),
 			   [] (const Pair& lhs,
-			       const Pair& rhs) {return lhs._weight < rhs._weight;});
-		std::sort (huntTargets.begin (), huntTargets.end (),
-			   [] (const Pair&  lhs,
-			       const Pair& rhs) {return lhs._weight < rhs._weight;});
+			       const Pair& rhs) {
+			return lhs._weight  * lhs._aggression_multiplier < rhs._weight * rhs._aggression_multiplier;});
 		
-		if (attackTargets.size () > 0)
-		{
-			return createActionAttack (*(attackTargets.back ())._blob);
-		}
-
-		for (auto it = huntTargets.rbegin (); it != huntTargets.rend (); it++)
-		{
-			if (it->_weight > 0)
+			// decide what to do
+			// same Square => attack or flee, depending on aggression
+			// else hunt or flee, depending on aggression
+			Pair option = (targets.back ());
+			switch (option._action)
 			{
-				if (it->_blob->_strength > _strength)
-					return createActionFlee (*(it->_blob));
-				else
- 					return createActionHunt (*(it->_blob));
+				case Pair::attack:
+					return createActionAttack (*(option._blob));
+				case Pair::hunt:
+ 					return createActionHunt (*(option._blob));
+				case Pair::flee:
+					return createActionFlee (*(option._blob));
 			}
 		}
-
 		return createActionWander ();
 	}
 private:
@@ -275,7 +324,7 @@ private:
 	unsigned int _endurance;
 	double _aggression;
 	unsigned int _longevity;
-
+	std::function<double(double)> _aggression_rnd;
 	unsigned int _fatigue;
 	bool _tired;
 
