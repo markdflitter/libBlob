@@ -112,8 +112,22 @@ public:
 		_state = "dead";
 	}
 
+	void growOlder ()
+	{
+		if (!isDead ())
+		{
+			_age++;
+
+			if (_age >= longevity ())
+			{
+				kill ();
+			}
+		}
+	}
+
 	void attack (unsigned int damage)
 	{
+		growOlder ();
 		if (_strength >= damage)
 		{
 			_strength -= damage;
@@ -131,6 +145,8 @@ public:
 
         void move (double speed, double angleInRadians, const std::string& newState) 
 	{
+		growOlder ();
+
 		_previousAngleInRadians = angleInRadians;
 
 		double denormalisedMoveDirection = _previousAngleInRadians - M_PI / 2;
@@ -191,122 +207,127 @@ public:
 		return std::shared_ptr <Action> (new Attack (&target, this));
 	}
 
-	std::shared_ptr <Action> chooseNextAction (std::vector<Blob>& others)
+	struct ActionPossibility 
 	{
-		if (age () >= longevity ())
-		{
-			kill ();
-		}
-		else if (!isDead ())
-		{
-			_age++;
-		}
+		enum {attack, hunt, flee} action;
+		double weight;
+		Blob* target;
+	};
 
-		if (isDead())
+	ActionPossibility findPossibleActionForBlobInSameSquare (Blob& b, double weight, bool aggressive_action)
+	{
+		// if another blob is in sense range, consider attacking or fleeing
+		// only consider attacking weaker blobs
+		// weaker means my damage is more than their strength
+		// OR their damage is less than my strength
+		// (it doesn't mean their damage is less than mine, because that could still kill me
+		// it also doesn't mean their strength is less than mine for the same reason)
+		// ie ((damage () > b.strength ()) || (b.damage () < strength ()))
+		// at the moment, this reduces to:
+		// ((strength () > b.strength ()) || (b.strength () < strength ()))
+		// which is clearly redundant, but when we separate strength and hit points, it won't b
+ 		if ((damage () > b.strength ()) || (b.damage () < strength ()))
 		{
-			return createActionDead ();
-		}
-		
-		struct Pair 
-		{
-			enum {attack, hunt, flee} _action;
-			double _weight;
-			double _aggression_multiplier;
-			Blob* _blob;
-		};
+			// we want to favour attacking the weakest, so use calculate
+			// the two differentials and take the biggest
+			// we also use the aggression multipler, to randomise choice
+			// whether to attack
+			if (aggressive_action)
+			{
+				return ActionPossibility {ActionPossibility::attack, weight, &b};
+			}
+		}	
+		return ActionPossibility {ActionPossibility::flee, weight, &b};
+	}
 
-		std::vector <Pair> targets;
+	ActionPossibility findPossibleActionForBlobInSmellRange (Blob& b, double weight, bool aggressive_action)
+	{
+		// we want to favour closer blobs, so calculate a distance percentage
+		// we also want to favour weaker blobs (by the above definition)
+		if (aggressive_action)
+		{
+			return ActionPossibility {ActionPossibility::hunt, weight, &b};
+		}	
+		else
+		{
+			return ActionPossibility {ActionPossibility::flee, weight, &b};
+		}
+	}
+			
+			
+	ActionPossibility findPossibleActionForBlob (Blob& b)
+	{	
+		double aggression_multiplier = _aggression_rnd (_aggression);
+		double damage_differential = (std::max (
+			((double) damage () - b.strength ()) / (damage () + b.strength ()),
+			((double) strength () - b.damage ()) / (strength () + b.damage ())) + 1) / 2;
+		double weight = damage_differential * aggression_multiplier;
+	
+		if (isInSameSquare (b))
+		{
+			// if two blobs are in the same square, consider attacking
+			return findPossibleActionForBlobInSameSquare (b, weight, aggression_multiplier >= 0.5);
+		}
+		else if (canSmell (b))
+		{
+			double distance_multiplier = 1.0 - (distance (b) / _smell);
+			if (_smell == 0.0)
+			{
+				distance_multiplier = 0.0;
+			}		
+			return findPossibleActionForBlobInSmellRange (b, weight, aggression_multiplier >= 0.5);
+		}
+	}
+	
+	std::vector<ActionPossibility> findPossibleActions (std::vector<Blob>& others)
+	{	
+		std::vector <ActionPossibility> possibilities;
+
 		for (auto& b : others)
 		{
 			if ((&b != this) && !b.isDead ())
 			{
-				double aggression_multiplier = _aggression_rnd (_aggression);
-					
-				// if two blobs are in the same square, consider attacking
-				if (isInSameSquare (b))
-				{
-					//std::cout << "same sq" << '\n';
-					// only consider attacking weaker blobs
-					// weaker means my damage is more than their strength
-					// OR their damage is less than my strength
-					// (it doesn't mean their damage is less than mine, because that could still kill me
-					// it also doesn't mean their strength is less than mine for the same reason)
-					// ie ((damage () > b.strength ()) || (b.damage () < strength ()))
-					// at the moment, this reduces to:
-					// ((strength () > b.strength ()) || (b.strength () < strength ()))
-					// which is clearly redundant, but when we separate strength and hit points, it won't b
- 					if ((damage () > b.strength ()) || (b.damage () < strength ()))
-					{
-						//std::cout << "weaker" << '\n';
-						// we want to favour attacking the weakest, so use calculate
-						// the two differentials and take the biggest
-						//std::cout << damage () << " " << b.strength () << '\n';
-						//std::cout << b.damage () << " " << strength () << '\n';
-						//std::cout << ((double) damage () - b.strength ()) / (damage () + b.strength ()) << '\n';
-						//std::cout << ((double) strength () - b.damage ()) / (strength () + b.damage ()) << '\n';
-						double weight = (std::max (
-							((double) damage () - b.strength ()) / (damage () + b.strength ()),
-							((double) strength () - b.damage ()) / (strength () + b.damage ())) + 1) / 2;
-						//std::cout << weight << '\n';
-						// we also use the aggression multipler, to randomise choice
-						// whether to attack
-						//std::cout << aggression_multiplier << '\n';
-						if (aggression_multiplier >= 0.5)
-						{
-							//std::cout << "adding target" << '\n';
-							targets.push_back (Pair {Pair::attack, weight, aggression_multiplier, &b});
-						}
-					}
-				}
-				// if another blob is in sense range, consider attacking or fleeing
-				if (canSmell (b))
-				{
-					// we want to favour closer blobs, so calculate a distance percentage
-					double distance_multiplier = 1.0 - (distance (b) / _smell);
-					if (_smell == 0.0)
-					{
-						distance_multiplier = 0.0;
-					}
-					// we also want to favour weaker blobs (by the above definition)
-					double damage_differential = (std::max (
-						((double) damage () - b.strength ()) / (damage () + b.strength ()),
-						((double) strength () - b.damage ()) / (strength () + b.damage ())) + 1) / 2;
-					//std::cout << damage_differential << " " << distance_multiplier << '\n';
-					//std::cout << "adding target2, weight =" << distance_multiplier * damage_differential << '\n';
-					if (aggression_multiplier >= 0.5)
-					{
-						targets.push_back (Pair {Pair::hunt, distance_multiplier * damage_differential, aggression_multiplier, &b});
-					}
-					else
-					{
-						targets.push_back (Pair {Pair::flee, distance_multiplier * damage_differential, aggression_multiplier, &b});
-					}
-				}
+				possibilities.push_back (findPossibleActionForBlob (b));
 			}
 		}
+	
+		return possibilities;
+	}
 
-		if (targets.size () > 0)
+	std::shared_ptr<Action> selectAction (std::vector <ActionPossibility> possibilities)
+	{
+		if (possibilities.size () > 0)
 		{
-			std::sort (targets.begin (), targets.end (),
-			   [] (const Pair& lhs,
-			       const Pair& rhs) {
-			return lhs._weight  * lhs._aggression_multiplier < rhs._weight * rhs._aggression_multiplier;});
+			std::sort (possibilities.begin (), possibilities.end (),
+			   [] (const ActionPossibility& lhs,
+			       const ActionPossibility& rhs) {
+			return lhs.weight < rhs.weight;});
 		
-			// decide what to do
-			// same Square => attack or flee, depending on aggression
-			// else hunt or flee, depending on aggression
-			Pair option = (targets.back ());
-			switch (option._action)
+			ActionPossibility selected_option = (possibilities.back ());
+			switch (selected_option.action)
 			{
-				case Pair::attack:
-					return createActionAttack (*(option._blob));
-				case Pair::hunt:
- 					return createActionHunt (*(option._blob));
-				case Pair::flee:
-					return createActionFlee (*(option._blob));
+				case ActionPossibility::attack:
+					return createActionAttack (*(selected_option.target));
+				case ActionPossibility::hunt:
+ 					return createActionHunt (*(selected_option.target));
+				case ActionPossibility::flee:
+					return createActionFlee (*(selected_option.target));
 			}
 		}
 		return createActionWander ();
+
+	}
+
+	std::shared_ptr <Action> chooseNextAction (std::vector<Blob>& blobs)
+	{
+		if (isDead())
+		{
+			return createActionDead ();
+		}
+		else
+		{
+			return selectAction (findPossibleActions (blobs));
+		}
 	}
 private:
 	Pt<double> WORLD_SIZE = Pt<double>(2000.0, 1000.0);

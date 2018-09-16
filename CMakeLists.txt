@@ -66,6 +66,9 @@ target_link_libraries (blob_tired_test ${GTEST_LIBRARIES} pthread)
 add_executable (blob_dead_test tests/blob_dead.t.cpp)
 target_link_libraries (blob_dead_test ${GTEST_LIBRARIES} pthread)
 
+add_executable (blob_age_test tests/blob_age.t.cpp)
+target_link_libraries (blob_age_test ${GTEST_LIBRARIES} pthread)
+
 gtest_discover_tests (pt_test)
 gtest_discover_tests (movement_test)
 gtest_discover_tests (attack_test)
@@ -85,4 +88,5 @@ gtest_discover_tests (blob_hunt_test)
 gtest_discover_tests (blob_flee_test)
 gtest_discover_tests (blob_tired_test)
 gtest_discover_tests (blob_dead_test)
+gtest_discover_tests (blob_age_test)
 
