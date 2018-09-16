@@ -207,6 +207,41 @@ public:
 		return std::shared_ptr <Action> (new Attack (&target, this));
 	}
 
+	double relativeDifference (double v1, double v2)
+	{
+		if (v1 == 0.0 && v2 == 0.0)
+		{
+			return 0.0;
+		}
+		else
+		{
+			double differential = (v1 - v2) / (v1 + v2); 
+			return (differential + 1) / 2;
+		}
+	}
+
+	double relativeDifferenceBetweenMyDamageAndHisStrength (const Blob& b)
+	{
+		return relativeDifference (damage (), b.strength ());
+	}
+
+	double relativeDifferenceBetweenMyStrengthAndHisDamage (const Blob& b)
+	{
+		return relativeDifference (strength (), b.damage ());
+	}
+
+	double calculateAttackDifferential (const Blob& b)
+	{
+		return std::max (
+			relativeDifferenceBetweenMyDamageAndHisStrength (b),
+			relativeDifferenceBetweenMyStrengthAndHisDamage (b));
+	}	
+	
+	double distanceMultiplier (const Blob& b)
+	{
+		return _smell > 0.0 ? 1.0 - (distance (b) / _smell) : 0.0;
+	}
+
 	struct ActionPossibility 
 	{
 		enum {attack, hunt, flee} action;
@@ -216,22 +251,8 @@ public:
 
 	ActionPossibility findPossibleActionForBlobInSameSquare (Blob& b, double weight, bool aggressive_action)
 	{
-		// if another blob is in sense range, consider attacking or fleeing
-		// only consider attacking weaker blobs
-		// weaker means my damage is more than their strength
-		// OR their damage is less than my strength
-		// (it doesn't mean their damage is less than mine, because that could still kill me
-		// it also doesn't mean their strength is less than mine for the same reason)
-		// ie ((damage () > b.strength ()) || (b.damage () < strength ()))
-		// at the moment, this reduces to:
-		// ((strength () > b.strength ()) || (b.strength () < strength ()))
-		// which is clearly redundant, but when we separate strength and hit points, it won't b
  		if ((damage () > b.strength ()) || (b.damage () < strength ()))
 		{
-			// we want to favour attacking the weakest, so use calculate
-			// the two differentials and take the biggest
-			// we also use the aggression multipler, to randomise choice
-			// whether to attack
 			if (aggressive_action)
 			{
 				return ActionPossibility {ActionPossibility::attack, weight, &b};
@@ -242,8 +263,6 @@ public:
 
 	ActionPossibility findPossibleActionForBlobInSmellRange (Blob& b, double weight, bool aggressive_action)
 	{
-		// we want to favour closer blobs, so calculate a distance percentage
-		// we also want to favour weaker blobs (by the above definition)
 		if (aggressive_action)
 		{
 			return ActionPossibility {ActionPossibility::hunt, weight, &b};
@@ -254,28 +273,20 @@ public:
 		}
 	}
 			
-			
 	ActionPossibility findPossibleActionForBlob (Blob& b)
 	{	
 		double aggression_multiplier = _aggression_rnd (_aggression);
-		double damage_differential = (std::max (
-			((double) damage () - b.strength ()) / (damage () + b.strength ()),
-			((double) strength () - b.damage ()) / (strength () + b.damage ())) + 1) / 2;
-		double weight = damage_differential * aggression_multiplier;
-	
+		double attackDifferential = calculateAttackDifferential (b);
+		double weight = attackDifferential * aggression_multiplier;
+		bool takeAggressiveAction = aggression_multiplier >= 0.5;	
+		
 		if (isInSameSquare (b))
 		{
-			// if two blobs are in the same square, consider attacking
-			return findPossibleActionForBlobInSameSquare (b, weight, aggression_multiplier >= 0.5);
+			return findPossibleActionForBlobInSameSquare (b, weight, takeAggressiveAction);
 		}
 		else if (canSmell (b))
 		{
-			double distance_multiplier = 1.0 - (distance (b) / _smell);
-			if (_smell == 0.0)
-			{
-				distance_multiplier = 0.0;
-			}		
-			return findPossibleActionForBlobInSmellRange (b, weight, aggression_multiplier >= 0.5);
+			return findPossibleActionForBlobInSmellRange (b, weight * distanceMultiplier (b), takeAggressiveAction);
 		}
 	}
 	
