@@ -244,7 +244,7 @@ public:
 
 	struct ActionPossibility 
 	{
-		enum {attack, hunt, flee} action;
+		enum {none, attack, hunt, flee} action;
 		double weight;
 		Blob* target;
 	};
@@ -288,6 +288,7 @@ public:
 		{
 			return findPossibleActionForBlobInSmellRange (b, weight * distanceMultiplier (b), takeAggressiveAction);
 		}
+		return ActionPossibility {ActionPossibility::none};
 	}
 	
 	std::vector<ActionPossibility> findPossibleActions (std::vector<Blob>& others)
@@ -298,10 +299,14 @@ public:
 		{
 			if ((&b != this) && !b.isDead ())
 			{
-				possibilities.push_back (findPossibleActionForBlob (b));
+				ActionPossibility possibility = findPossibleActionForBlob (b);
+				if (possibility.action != ActionPossibility::none)
+				{
+					possibilities.push_back (possibility);
+				}
 			}
 		}
-	
+		
 		return possibilities;
 	}
 
@@ -313,7 +318,7 @@ public:
 			   [] (const ActionPossibility& lhs,
 			       const ActionPossibility& rhs) {
 			return lhs.weight < rhs.weight;});
-		
+	
 			ActionPossibility selected_option = (possibilities.back ());
 			switch (selected_option.action)
 			{
