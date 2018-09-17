@@ -207,34 +207,28 @@ public:
 		return std::shared_ptr <Action> (new Attack (&target, this));
 	}
 
-	double relativeDifference (double v1, double v2)
+	double rDiff (double v1, double v2)
 	{
-		if (v1 == 0.0 && v2 == 0.0)
-		{
-			return 0.0;
-		}
-		else
-		{
-			double differential = (v1 - v2) / (v1 + v2); 
-			return (differential + 1) / 2;
-		}
+		assert (v1 >= 0.0);
+		assert (v2 >= 0.0);
+		return (v1 - v2) / (v1 + v2) / 2; 
 	}
 
-	double relativeDifferenceBetweenMyDamageAndHisStrength (const Blob& b)
+	double relativeDamageInflicted (const Blob& b)
 	{
-		return relativeDifference (damage (), b.strength ());
+		return rDiff (damage (), b.strength ()) * 2.0;
 	}
 
-	double relativeDifferenceBetweenMyStrengthAndHisDamage (const Blob& b)
+	double relativeDamageTaken (const Blob& b)
 	{
-		return relativeDifference (strength (), b.damage ());
+		return rDiff (strength (), b.damage ()) * 2.0;
 	}
 
 	double calculateAttackDifferential (const Blob& b)
 	{
 		return std::max (
-			relativeDifferenceBetweenMyDamageAndHisStrength (b),
-			relativeDifferenceBetweenMyStrengthAndHisDamage (b));
+			relativeDamageInflicted (b),
+			relativeDamageTaken (b));
 	}	
 	
 	double distanceMultiplier (const Blob& b)
