@@ -69,9 +69,17 @@ target_link_libraries (blob_dead_test ${GTEST_LIBRARIES} pthread)
 add_executable (blob_age_test tests/blob_age.t.cpp)
 target_link_libraries (blob_age_test ${GTEST_LIBRARIES} pthread)
 
-add_executable (blob_choose_test tests/blob_choose.t.cpp)
-target_link_libraries (blob_choose_test ${GTEST_LIBRARIES} pthread)
+add_executable (blob_relativeDifference_test tests/blob_relativeDifference.t.cpp)
+target_link_libraries (blob_relativeDifference_test ${GTEST_LIBRARIES} pthread)
 
+add_executable (blob_inflictDamageWeight_test tests/blob_inflictDamageWeight.t.cpp)
+target_link_libraries (blob_inflictDamageWeight_test ${GTEST_LIBRARIES} pthread)
+
+add_executable (blob_avoidDamageWeight_test tests/blob_avoidDamageWeight.t.cpp)
+target_link_libraries (blob_avoidDamageWeight_test ${GTEST_LIBRARIES} pthread)
+
+add_executable (blob_chooseNextAction_test tests/blob_chooseNextAction.t.cpp)
+target_link_libraries (blob_chooseNextAction_test ${GTEST_LIBRARIES} pthread)
 
 gtest_discover_tests (pt_test)
 gtest_discover_tests (movement_test)
@@ -93,5 +101,8 @@ gtest_discover_tests (blob_flee_test)
 gtest_discover_tests (blob_tired_test)
 gtest_discover_tests (blob_dead_test)
 gtest_discover_tests (blob_age_test)
-gtest_discover_tests (blob_choose_test)
+gtest_discover_tests (blob_relativeDifference_test)
+gtest_discover_tests (blob_inflictDamageWeight_test)
+gtest_discover_tests (blob_avoidDamageWeight_test)
+gtest_discover_tests (blob_chooseNextAction_test)
 

@@ -207,28 +207,26 @@ public:
 		return std::shared_ptr <Action> (new Attack (&target, this));
 	}
 
-	double rDiff (double v1, double v2)
+	double relativeDifference (double v1, double v2)
 	{
 		assert (v1 >= 0.0);
 		assert (v2 >= 0.0);
 		return (v1 - v2) / (v1 + v2) / 2; 
 	}
 
-	double relativeDamageInflicted (const Blob& b)
+	double inflictDamageWeight (const Blob& b)
 	{
-		return rDiff (damage (), b.strength ()) * 2.0;
+		return relativeDifference (damage (), b.strength ()) * 2.0;
 	}
 
-	double relativeDamageTaken (const Blob& b)
+	double avoidDamageWeight (const Blob& b)
 	{
-		return rDiff (strength (), b.damage ()) * 2.0;
+		return relativeDifference (strength (), b.damage ()) * 2.0;
 	}
 
-	double calculateAttackDifferential (const Blob& b)
+	double attackWeight (const Blob& b)
 	{
-		return std::max (
-			relativeDamageInflicted (b),
-			relativeDamageTaken (b));
+		return std::max (inflictDamageWeight (b), avoidDamageWeight (b));
 	}	
 	
 	double distanceMultiplier (const Blob& b)
@@ -270,7 +268,7 @@ public:
 	ActionPossibility findPossibleActionForBlob (Blob& b)
 	{	
 		double aggression_multiplier = _aggression_rnd (_aggression);
-		double attackDifferential = calculateAttackDifferential (b);
+		double attackDifferential = attackWeight (b);
 		double weight = attackDifferential * aggression_multiplier;
 		bool takeAggressiveAction = aggression_multiplier >= 0.5;	
 		
