@@ -212,12 +212,10 @@ public:
         {
 		if (isInSameSquare (target))
 		{
-			std::cout << "in same sq" << std::endl;
 			return createActionFight (target);
 		}
 		else
 		{
-			std::cout << "not in same sq" << std::endl;
 			return createActionHunt (target);
 		}
 	}
