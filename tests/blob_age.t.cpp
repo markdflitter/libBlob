@@ -28,11 +28,11 @@ TEST (Blob, blob_gets_older_when_moving)
 	EXPECT_EQ (b1.age (), 1U);
 }
 
-TEST (Blob, blob_gets_older_when_attacking)
+TEST (Blob, blob_gets_older_when_taking_damage)
 {
 	Blob b1;
 	EXPECT_EQ (b1.age (), 0U);
-	b1.attack (100);
+	b1.takeDamage (100);
 	EXPECT_EQ (b1.age (), 1U);
 }
 

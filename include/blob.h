@@ -12,7 +12,7 @@
 #include <pt.h>
 #include <action.h>
 #include <movement.h>
-#include <attack.h>
+#include <fight.h>
 #include <rnd.h>
 
 class Blob : public Moveable, public Target
@@ -125,7 +125,7 @@ public:
 		}
 	}
 
-	void attack (unsigned int damage)
+	void takeDamage (unsigned int damage)
 	{
 		growOlder ();
 		if (_strength >= damage)
@@ -186,14 +186,6 @@ public:
 		return std::shared_ptr<Action> (new Movement (this, "wandering", _speed, angle));
 	}
         
-	std::shared_ptr <Action> createActionHunt (const Blob& target)
-        {
-		return std::shared_ptr <Action> (new Movement (this,
-			 "hunting " + target.name () + (!isTired () ? " (fast)" : ""),
-			std::min (isTired() ? _speed : _runningSpeed, distance (target)),
-			angle (target)));
-	}
-        
 	std::shared_ptr <Action> createActionFlee (const Blob& target)
         {
 		return std::shared_ptr <Action> (new Movement (this,
@@ -201,10 +193,32 @@ public:
 				isTired () ? _speed : _runningSpeed,
 				_rnd ((0.9 * _previousAngleInRadians + 0.1 * (angle (target) + M_PI)))));
 	}
-         
+       
+	std::shared_ptr <Action> createActionHunt (const Blob& target)
+        {
+		return std::shared_ptr <Action> (new Movement (this,
+			 "hunting " + target.name () + (!isTired () ? " (fast)" : ""),
+			std::min (isTired() ? _speed : _runningSpeed, distance (target)),
+			angle (target)));
+	}  
+	
+	std::shared_ptr <Action> createActionFight (Blob& target)
+        {
+		return std::shared_ptr <Action> (new Fight (&target, this));
+	}
+
 	std::shared_ptr <Action> createActionAttack (Blob& target)
         {
-		return std::shared_ptr <Action> (new Attack (&target, this));
+		if (isInSameSquare (target))
+		{
+			std::cout << "in same sq" << std::endl;
+			return createActionFight (target);
+		}
+		else
+		{
+			std::cout << "not in same sq" << std::endl;
+			return createActionHunt (target);
+		}
 	}
 
 	double relativeDifference (double v1, double v2)
@@ -214,75 +228,54 @@ public:
 		return (v1 - v2) / (v1 + v2) / 2; 
 	}
 
-	double inflictDamageWeight (const Blob& b)
+	double inflictDamageWeightForAttacking (const Blob& b)
 	{
 		return relativeDifference (damage (), b.strength ()) * 2.0;
 	}
 
-	double avoidDamageWeight (const Blob& b)
+	double avoidDamageWeightForAttacking (const Blob& b)
 	{
 		return relativeDifference (strength (), b.damage ()) * 2.0;
 	}
 
-	double attackWeight (const Blob& b)
+	double avoidDamageWeightForFleeing (const Blob& b)
 	{
-		return std::max (inflictDamageWeight (b), avoidDamageWeight (b));
-	}	
-	
-	double distanceMultiplier (const Blob& b)
-	{
-		return _smell > 0.0 ? 1.0 - (distance (b) / _smell) : 0.0;
+		return relativeDifference (b.damage (), strength ()) * 2.0;
 	}
 
+	double distanceWeight (const Blob& b)
+	{
+		if (isInSameSquare (b))
+		{
+			return 1.0;
+		}
+		else if (canSmell (b)) 
+		{
+			return 1.0 - (distance (b) / _smell);
+		}
+		else
+		{
+			return 0.0;
+		}
+	}
+
+	double attackWeight (const Blob& b)
+	{
+		return distanceWeight (b) * std::max (inflictDamageWeightForAttacking (b), avoidDamageWeightForAttacking (b));
+	}	
+	
+	double fleeWeight (const Blob& b)
+	{
+		return distanceWeight (b) * avoidDamageWeightForFleeing (b);
+	}
+	
 	struct ActionPossibility 
 	{
-		enum {none, attack, hunt, flee} action;
+		enum {attack, flee} action;
 		double weight;
 		Blob* target;
 	};
 
-	ActionPossibility findPossibleActionForBlobInSameSquare (Blob& b, double weight, bool aggressive_action)
-	{
- 		if ((damage () > b.strength ()) || (b.damage () < strength ()))
-		{
-			if (aggressive_action)
-			{
-				return ActionPossibility {ActionPossibility::attack, weight, &b};
-			}
-		}	
-		return ActionPossibility {ActionPossibility::flee, weight, &b};
-	}
-
-	ActionPossibility findPossibleActionForBlobInSmellRange (Blob& b, double weight, bool aggressive_action)
-	{
-		if (aggressive_action)
-		{
-			return ActionPossibility {ActionPossibility::hunt, weight, &b};
-		}	
-		else
-		{
-			return ActionPossibility {ActionPossibility::flee, weight, &b};
-		}
-	}
-			
-	ActionPossibility findPossibleActionForBlob (Blob& b)
-	{	
-		double aggression_multiplier = _aggression_rnd (_aggression);
-		double attackDifferential = attackWeight (b);
-		double weight = attackDifferential * aggression_multiplier;
-		bool takeAggressiveAction = aggression_multiplier >= 0.5;	
-		
-		if (isInSameSquare (b))
-		{
-			return findPossibleActionForBlobInSameSquare (b, weight, takeAggressiveAction);
-		}
-		else if (canSmell (b))
-		{
-			return findPossibleActionForBlobInSmellRange (b, weight * distanceMultiplier (b), takeAggressiveAction);
-		}
-		return ActionPossibility {ActionPossibility::none};
-	}
-	
 	std::vector<ActionPossibility> findPossibleActions (std::vector<Blob>& others)
 	{	
 		std::vector <ActionPossibility> possibilities;
@@ -291,10 +284,14 @@ public:
 		{
 			if ((&b != this) && !b.isDead ())
 			{
-				ActionPossibility possibility = findPossibleActionForBlob (b);
-				if (possibility.action != ActionPossibility::none)
+				double a = _aggression_rnd (_aggression);
+
+				if (isInSameSquare (b) || canSmell (b))
 				{
-					possibilities.push_back (possibility);
+					possibilities.push_back (
+						ActionPossibility {ActionPossibility::attack, attackWeight (b) + a, &b});
+					possibilities.push_back (
+						ActionPossibility {ActionPossibility::flee, fleeWeight (b) - a, &b});
 				}
 			}
 		}
@@ -315,15 +312,12 @@ public:
 			switch (selected_option.action)
 			{
 				case ActionPossibility::attack:
-					return createActionAttack (*(selected_option.target));
-				case ActionPossibility::hunt:
- 					return createActionHunt (*(selected_option.target));
+ 					return createActionAttack (*(selected_option.target));
 				case ActionPossibility::flee:
 					return createActionFlee (*(selected_option.target));
 			}
 		}
 		return createActionWander ();
-
 	}
 
 	std::shared_ptr <Action> chooseNextAction (std::vector<Blob>& blobs)
