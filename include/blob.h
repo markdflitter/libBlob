@@ -14,6 +14,7 @@
 #include <movement.h>
 #include <fight.h>
 #include <rnd.h>
+#include <assert.h>
 
 class Blob : public Moveable, public Target
 {
