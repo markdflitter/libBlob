@@ -99,7 +99,7 @@ TEST (Blob, chooses_to_hunt)
 TEST (Blob, chooses_not_to_hunt_because_not_aggressive)
 {
 	std::vector <Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 10.0, 1000.0, 1U, 0U, 0.0),
+		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 10.0, 1000.0, 1U, 0U, -1.0),
 		Blob ("", [](double) {return 0.0;}, 20.0, 20.0, 5.0, 5.0, 1000.0, 0U)};
 
 	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs); 

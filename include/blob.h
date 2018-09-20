@@ -308,12 +308,15 @@ public:
 			return lhs.weight < rhs.weight;});
 	
 			ActionPossibility selected_option = (possibilities.back ());
-			switch (selected_option.action)
+			if (selected_option.weight > 0.0)
 			{
-				case ActionPossibility::attack:
- 					return createActionAttack (*(selected_option.target));
-				case ActionPossibility::flee:
-					return createActionFlee (*(selected_option.target));
+				switch (selected_option.action)
+				{
+					case ActionPossibility::attack:
+ 						return createActionAttack (*(selected_option.target));
+					case ActionPossibility::flee:
+						return createActionFlee (*(selected_option.target));
+				}
 			}
 		}
 		return createActionWander ();
