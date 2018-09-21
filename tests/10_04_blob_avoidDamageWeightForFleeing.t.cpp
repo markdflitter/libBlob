@@ -6,14 +6,14 @@
 //	return relativeDifference (b.damage (), hitPoints ()) * 2.0;
 //}
 
-TEST (test_10_04_blob_avoidDamageWeightForFleeing, peer)
+TEST (test_10_04_blob_avoidDamageWeightForFleeing_t, peer)
 {
 	Blob b1 = CreateBlob ().HP (100U).damage (100U);
 
 	EXPECT_DOUBLE_EQ (b1.avoidDamageWeightForFleeing (b1), 0.0);
 }
 
-TEST (test_10_04_blob_avoidDamageWeightForFleeing, positive)
+TEST (test_10_04_blob_avoidDamageWeightForFleeing_t, positive)
 {
 	Blob Attacker = CreateBlob ().damage (100U);
 	Blob runner = CreateBlob ().HP (50U);
@@ -21,7 +21,7 @@ TEST (test_10_04_blob_avoidDamageWeightForFleeing, positive)
 	EXPECT_DOUBLE_EQ (runner.avoidDamageWeightForFleeing (Attacker), 1.0 / 3.0);
 }
 
-TEST (test_10_04_blob_avoidDamageWeightForFleeing, negative)
+TEST (test_10_04_blob_avoidDamageWeightForFleeing_t, negative)
 {
 	Blob Attacker = CreateBlob ().damage (50U);
 	Blob runner = CreateBlob ().HP (100U);
@@ -29,7 +29,7 @@ TEST (test_10_04_blob_avoidDamageWeightForFleeing, negative)
 	EXPECT_DOUBLE_EQ (runner.avoidDamageWeightForFleeing (Attacker), -1.0 / 3.0);
 }
 
-TEST (test_10_04_blob_avoidDamageWeightForFleeing, increasesForStrongerAttackers)
+TEST (test_10_04_blob_avoidDamageWeightForFleeing_t, increasesForStrongerAttackers)
 {
 	Blob runner = CreateBlob ().HP (100U);
 	Blob weakAttacker  = CreateBlob ().damage (50U);
@@ -39,7 +39,7 @@ TEST (test_10_04_blob_avoidDamageWeightForFleeing, increasesForStrongerAttackers
 		   runner.avoidDamageWeightForFleeing (weakAttacker));
 }
 
-TEST (test_10_04_blob_avoidDamageWeightForFleeing, increasesForWeakerDefenders)
+TEST (test_10_04_blob_avoidDamageWeightForFleeing_t, increasesForWeakerDefenders)
 {
 	Blob weakRunner = CreateBlob ().HP (50U);
 	Blob strongRunner  = CreateBlob ().HP (100U);

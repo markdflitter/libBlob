@@ -6,7 +6,7 @@
 //	return relativeDifference (damage (), b.hitPoints ()) * 2.0;
 //}
 
-TEST (test_10_02_blob_inflictDamageWeightForAttacking, peer)
+TEST (test_10_02_blob_inflictDamageWeightForAttacking_t, peer)
 {
 	Blob b1 = CreateBlob ().HP (100U).damage (100U);
 
@@ -14,7 +14,7 @@ TEST (test_10_02_blob_inflictDamageWeightForAttacking, peer)
 }
 
 
-TEST (test_10_02_blob_inflictDamageWeightForAttacking, positive)
+TEST (test_10_02_blob_inflictDamageWeightForAttacking_t, positive)
 {
 	Blob attacker = CreateBlob ().damage (110U);
 	Blob target = CreateBlob ().HP (100U);
@@ -22,7 +22,7 @@ TEST (test_10_02_blob_inflictDamageWeightForAttacking, positive)
 	EXPECT_DOUBLE_EQ (attacker.inflictDamageWeightForAttacking (target), 10.0 / 210.0);	
 }
 
-TEST (test_10_02_blob_inflictDamageWeightForAttacking, negative)
+TEST (test_10_02_blob_inflictDamageWeightForAttacking_t, negative)
 {
 	Blob attacker = CreateBlob ().damage (90U);
 	Blob target = CreateBlob ().HP (100U);
@@ -30,7 +30,7 @@ TEST (test_10_02_blob_inflictDamageWeightForAttacking, negative)
 	EXPECT_DOUBLE_EQ (attacker.inflictDamageWeightForAttacking (target), -10.0 / 190.0);
 }
 
-TEST (test_10_02_blob_inflictDamageWeightForAttacking, increasesForStrongerAttackers)
+TEST (test_10_02_blob_inflictDamageWeightForAttacking_t, increasesForStrongerAttackers)
 {
 	Blob target = CreateBlob ().HP (500U);
 	Blob weakAttacker = CreateBlob ().damage (50U);
@@ -40,7 +40,7 @@ TEST (test_10_02_blob_inflictDamageWeightForAttacking, increasesForStrongerAttac
 		   weakAttacker.inflictDamageWeightForAttacking (target));
 }
 
-TEST (test_10_02_blob_inflictDamageWeightForAttacking, increasesForWeakerDefenders)
+TEST (test_10_02_blob_inflictDamageWeightForAttacking_t, increasesForWeakerDefenders)
 {
 	Blob weakTarget = CreateBlob ().HP (50U);
 	Blob strongTarget = CreateBlob ().HP (100U);

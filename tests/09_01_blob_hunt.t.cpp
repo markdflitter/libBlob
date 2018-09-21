@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (test_09_01_blob_hunt, north)
+TEST (test_09_01_blob_hunt_t, north)
 {
 	Blob hunter = CreateBlob ().position (make_pt (5.0, 5.0)).runningSpeed (4.0);
 	Blob huntee = CreateBlob ().position (make_pt (5.0, 10.0));
@@ -15,7 +15,7 @@ TEST (test_09_01_blob_hunt, north)
 	EXPECT_DOUBLE_EQ (hunter.y (), 9.0);
 }
 
-TEST (test_09_01_blob_hunt, south)
+TEST (test_09_01_blob_hunt_t, south)
 {
 	Blob hunter = CreateBlob ().position (make_pt (5.0, 5.0)).runningSpeed (4.0);
 	Blob huntee = CreateBlob ().position (make_pt (5.0, -10.0));
@@ -29,7 +29,7 @@ TEST (test_09_01_blob_hunt, south)
 	EXPECT_DOUBLE_EQ (hunter.y (), 1.0);
 }
 
-TEST (test_09_01_blob_hunt, east)
+TEST (test_09_01_blob_hunt_t, east)
 {
 	Blob hunter = CreateBlob ().position (make_pt (5.0, 5.0)).runningSpeed (4.0);
 	Blob huntee = CreateBlob ().position (make_pt (10.0, 5.0));
@@ -43,7 +43,7 @@ TEST (test_09_01_blob_hunt, east)
 	EXPECT_DOUBLE_EQ (hunter.x (), 9.0);
 }
 
-TEST (test_09_01_blob_hunt, west)
+TEST (test_09_01_blob_hunt_t, west)
 {
 	Blob hunter = CreateBlob ().position (make_pt (-5.0, 5.0)).runningSpeed (4.0);
 	Blob huntee = CreateBlob ().position (make_pt (-10.0, 5.0));
@@ -57,7 +57,7 @@ TEST (test_09_01_blob_hunt, west)
 	EXPECT_DOUBLE_EQ (hunter.x (), -9.0);
 }
 
-TEST (test_09_01_blob_hunt, gets_closer)
+TEST (test_09_01_blob_hunt_t, gets_closer)
 {
 	Blob hunter = CreateBlob ().position (make_pt (-5.0, 5.0)).runningSpeed (7.0);
 	Blob huntee = CreateBlob ().position (make_pt (-10.0, 10.0));
@@ -70,7 +70,7 @@ TEST (test_09_01_blob_hunt, gets_closer)
 	EXPECT_LT (d2, d1);
 }
 
-TEST (test_09_01_blob_hunt, catches)
+TEST (test_09_01_blob_hunt_t, catches)
 {
 	Blob hunter = CreateBlob ().position (make_pt (-5.0, 5.0)).runningSpeed (7.0);
 	Blob huntee = CreateBlob ().position (make_pt (-10.0, 5.0));

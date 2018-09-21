@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (test_09_00_blob_flee, flee)
+TEST (test_09_00_blob_flee_t, flee)
 {
 	Blob runner = CreateBlob ().runningSpeed (13.0);
 	Blob runningFrom = CreateBlob ();

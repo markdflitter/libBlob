@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (test_08_00_blob_age, grows_older)
+TEST (test_08_00_blob_age_t, grows_older)
 {
 	Blob b1 = CreateBlob ();
 	EXPECT_EQ (b1.age (), 0U);
@@ -10,7 +10,7 @@ TEST (test_08_00_blob_age, grows_older)
 	EXPECT_EQ (b1.age (), 1U);
 }
 
-TEST (test_08_00_blob_age, dies_of_old_age)
+TEST (test_08_00_blob_age_t, dies_of_old_age)
 {
 	Blob b1 = CreateBlob ().lifespan (2U);
 	
@@ -24,7 +24,7 @@ TEST (test_08_00_blob_age, dies_of_old_age)
 	EXPECT_TRUE (b1.isDead ());
 }
 
-TEST (test_08_00_blob_age, gets_older_when_moving)
+TEST (test_08_00_blob_age_t, gets_older_when_moving)
 {
 	Blob b1 = CreateBlob ();
 	EXPECT_EQ (b1.age (), 0U);
@@ -33,7 +33,7 @@ TEST (test_08_00_blob_age, gets_older_when_moving)
 	EXPECT_EQ (b1.age (), 1U);
 }
 
-TEST (test_08_00_blob_age, gets_older_when_taking_damage)
+TEST (test_08_00_blob_age_t, gets_older_when_taking_damage)
 {
 	Blob b1 = CreateBlob ();
 	EXPECT_EQ (b1.age (), 0U);
