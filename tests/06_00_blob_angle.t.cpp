@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (test_6_0_blob_angle_t, north)
+TEST (test_06_00_blob_angle_t, north)
 {
 	Blob b1 = CreateBlob ().position (make_pt (5.0, 5.0));
 	Blob b2 = CreateBlob ().position (make_pt (5.0, 10.0));
@@ -10,7 +10,7 @@ TEST (test_6_0_blob_angle_t, north)
 	EXPECT_DOUBLE_EQ (angle, 0.0);
 }
 
-TEST (test_6_0_blob_angle_t, south)
+TEST (test_06_00_blob_angle_t, south)
 {
 	Blob b1 = CreateBlob ().position (make_pt (-5.0, -5.0));
 	Blob b2 = CreateBlob ().position (make_pt (-5.0, -10.0));
@@ -19,7 +19,7 @@ TEST (test_6_0_blob_angle_t, south)
 	EXPECT_DOUBLE_EQ (angle, M_PI);
 }
 
-TEST (test_6_0_blob_angle_t, east)
+TEST (test_06_00_blob_angle_t, east)
 {
 	Blob b1 = CreateBlob ().position (make_pt (5.0, 5.0));
 	Blob b2 = CreateBlob ().position (make_pt (10.0, 5.0));
@@ -28,7 +28,7 @@ TEST (test_6_0_blob_angle_t, east)
 	EXPECT_DOUBLE_EQ (angle, M_PI / 2.0);
 }
 
-TEST (test_6_0_blob_angle_t, west)
+TEST (test_06_00_blob_angle_t, west)
 {
 	Blob b1 = CreateBlob ().position (make_pt (-5.0, 5.0));
 	Blob b2 = CreateBlob ().position (make_pt (-10.0, 5.0));
@@ -37,7 +37,7 @@ TEST (test_6_0_blob_angle_t, west)
 	EXPECT_DOUBLE_EQ (angle, 3.0 * M_PI / 2.0);
 }
 
-TEST (test_6_0_blob_angle_t, north_east)
+TEST (test_06_00_blob_angle_t, north_east)
 {
 	Blob b1 = CreateBlob ().position (make_pt (5.0, 5.0));
 	Blob b2 = CreateBlob ().position (make_pt (10.0, 10.0));
@@ -46,7 +46,7 @@ TEST (test_6_0_blob_angle_t, north_east)
 	EXPECT_DOUBLE_EQ (angle, M_PI / 4);
 }
 
-TEST (test_6_0_blob_angle_t, north_west)
+TEST (test_06_00_blob_angle_t, north_west)
 {
 	Blob b1 = CreateBlob ().position (make_pt (-5.0, 5.0));
 	Blob b2 = CreateBlob ().position (make_pt (-10.0, 10.0));
@@ -55,7 +55,7 @@ TEST (test_6_0_blob_angle_t, north_west)
 	EXPECT_DOUBLE_EQ (angle, -M_PI / 4);
 }
 
-TEST (test_6_0_blob_angle_t, south_east)
+TEST (test_06_00_blob_angle_t, south_east)
 {
 	Blob b1 = CreateBlob ().position (make_pt (5.0, -5.0));
 	Blob b2 = CreateBlob ().position (make_pt (10.0, -10.0));
@@ -64,7 +64,7 @@ TEST (test_6_0_blob_angle_t, south_east)
 	EXPECT_DOUBLE_EQ (angle, 3 * M_PI / 4);
 }
 
-TEST (test_6_0_blob_angle_t, south_west)
+TEST (test_06_00_blob_angle_t, south_west)
 {
 	Blob b1 = CreateBlob ().position (make_pt (-5.0, -5.0));
 	Blob b2 = CreateBlob ().position (make_pt (-10.0, -10.0));

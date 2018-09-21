@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST(test_7_0_blob_kill_t, is_dead_after_being_killed)
+TEST(test_07_00_blob_kill_t, is_dead_after_being_killed)
 {
 	Blob b1 = CreateBlob ();
 	EXPECT_FALSE (b1.isDead ());

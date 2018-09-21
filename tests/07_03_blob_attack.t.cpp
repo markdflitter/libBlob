@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (test_7_3_blob_attack, hunts_if_not_in_same_square)
+TEST (test_07_03_blob_attack, hunts_if_not_in_same_square)
 {
 	Blob attacker = CreateBlob ().position (make_pt (10.0, 10.0));
 	Blob target = CreateBlob ().position (make_pt (20.0, 20.0));
@@ -13,7 +13,7 @@ TEST (test_7_3_blob_attack, hunts_if_not_in_same_square)
 	EXPECT_EQ (m->_reason, "hunting  (fast)");
 }
 
-TEST (test_7_3_blob_attack, fights_if_in_same_square)
+TEST (test_07_03_blob_attack, fights_if_in_same_square)
 {
 	Blob attacker = CreateBlob ().position (make_pt (10.0, 10.0));
 	Blob target = CreateBlob ().position (make_pt (10.0, 10.0));

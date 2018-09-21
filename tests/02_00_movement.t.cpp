@@ -18,7 +18,7 @@ public:
 	std::string _reason;
 };
 
-TEST(test_2_0_movement_t, create)
+TEST(test_02_00_movement_t, create)
 {
 	MoveableMock mm;
 	Movement m (&mm, "a", 10.0, 20.0);
@@ -28,14 +28,14 @@ TEST(test_2_0_movement_t, create)
 	EXPECT_EQ (m._angleInRadians, 20);
 }
 
-TEST(test_2_0_movement_t, equal_to_self)
+TEST(test_02_00_movement_t, equal_to_self)
 {
 	MoveableMock mm;
 	Movement m (&mm, "a", 10.0, 20.0);
 	EXPECT_TRUE (m == m);
 }
 
-TEST (test_2_0_movement_t, equal_to_other)
+TEST (test_02_00_movement_t, equal_to_other)
 {
 	MoveableMock mm;
 	Movement m1 (&mm, "a", 10.0, 20.0);
@@ -43,7 +43,7 @@ TEST (test_2_0_movement_t, equal_to_other)
 	EXPECT_TRUE (m1 == m2);
 }
 
-TEST (test_2_0_movement_t, equal_false_different_moveable)
+TEST (test_02_00_movement_t, equal_false_different_moveable)
 {
 	MoveableMock mm1;
 	MoveableMock mm2;
@@ -52,7 +52,7 @@ TEST (test_2_0_movement_t, equal_false_different_moveable)
 	EXPECT_FALSE (m1 == m2);
 }
 
-TEST (test_2_0_movement_t, equal_false_different_reason)
+TEST (test_02_00_movement_t, equal_false_different_reason)
 {
 	MoveableMock mm;
 	Movement m1 (&mm, "a", 10.0, 20.0);
@@ -60,7 +60,7 @@ TEST (test_2_0_movement_t, equal_false_different_reason)
 	EXPECT_FALSE (m1 == m2);
 }
 
-TEST (test_2_0_movement_t, equal_false_different_speed)
+TEST (test_02_00_movement_t, equal_false_different_speed)
 {
 	MoveableMock mm;
 	Movement m1 (&mm, "a", 10.0, 20.0);
@@ -68,7 +68,7 @@ TEST (test_2_0_movement_t, equal_false_different_speed)
 	EXPECT_FALSE (m1 == m2);
 }
 
-TEST (test_2_0_movement_t, equal_false_different_angle)
+TEST (test_02_00_movement_t, equal_false_different_angle)
 {
 	MoveableMock mm;
 	Movement m1 (&mm, "a", 10.0, 20.0);
@@ -76,14 +76,14 @@ TEST (test_2_0_movement_t, equal_false_different_angle)
 	EXPECT_FALSE (m1 == m2);
 }
 
-TEST(test_2_0_movement_t, not_equal_equal_to_self)
+TEST(test_02_00_movement_t, not_equal_equal_to_self)
 {
 	MoveableMock mm;
 	Movement m (&mm, "a", 10.0, 20.0);
 	EXPECT_FALSE (m != m);
 }
 
-TEST(test_2_0_movement_t, not_equal_different_moveable)
+TEST(test_02_00_movement_t, not_equal_different_moveable)
 {
 	MoveableMock mm1;
 	MoveableMock mm2;
@@ -92,7 +92,7 @@ TEST(test_2_0_movement_t, not_equal_different_moveable)
 	EXPECT_TRUE (m1 != m2);
 }
 
-TEST(test_2_0_movement_t, not_equal_different_reason)
+TEST(test_02_00_movement_t, not_equal_different_reason)
 {
 	MoveableMock mm;
 	Movement m1 (&mm, "a", 10.0, 20.0);
@@ -100,7 +100,7 @@ TEST(test_2_0_movement_t, not_equal_different_reason)
 	EXPECT_TRUE (m1 != m2);
 }
 
-TEST(test_2_0_movement_t, not_equal_different_speed)
+TEST(test_02_00_movement_t, not_equal_different_speed)
 {
 	MoveableMock mm;
 	Movement m1 (&mm, "", 10.0, 20.0);
@@ -108,7 +108,7 @@ TEST(test_2_0_movement_t, not_equal_different_speed)
 	EXPECT_TRUE (m1 != m2);
 }
 
-TEST(test_2_0_movement_t, not_equal_different_angle)
+TEST(test_02_00_movement_t, not_equal_different_angle)
 {
 	MoveableMock mm;
 	Movement m1 (&mm, "", 10.0, 20.0);
@@ -116,7 +116,7 @@ TEST(test_2_0_movement_t, not_equal_different_angle)
 	EXPECT_TRUE (m1 != m2);
 }
 
-TEST (test_2_0_movement_t, output)
+TEST (test_02_00_movement_t, output)
 {
 	MoveableMock mm;
 	std::shared_ptr<Action> a (new Movement (&mm, "hello", 10.0, M_PI / 2));
@@ -129,7 +129,7 @@ TEST (test_2_0_movement_t, output)
 
 	EXPECT_EQ (s.str (), "hello,10.00000,90.00000");
 }
-TEST (test_2_0_movement_t, apply)
+TEST (test_02_00_movement_t, apply)
 {
 	MoveableMock mm;
 	std::shared_ptr<Action> a (new Movement (&mm, "hello", 10.0, M_PI / 2));
@@ -141,7 +141,7 @@ TEST (test_2_0_movement_t, apply)
 	EXPECT_EQ (mm._reason, "hello");
 }
 
-TEST (test_2_0_movement_t, applies_to_blob)
+TEST (test_02_00_movement_t, applies_to_blob)
 {
 	Blob b1 = CreateBlob ().position (make_pt (10.1, 20.2));
 	std::shared_ptr<Action> m (new Movement (&b1, "because", 5.0, 0.0));

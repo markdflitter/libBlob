@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (test_3_1_blob_history_t, history)
+TEST (test_03_01_blob_history_t, history)
 {
 	Blob b1 = CreateBlob ().position (make_pt (10.0, 20.0));
 	b1.move (5.0, M_PI, "");
@@ -20,7 +20,7 @@ TEST (test_3_1_blob_history_t, history)
  	EXPECT_DOUBLE_EQ (history[3].y (), 10.0);
 }
 
-TEST (test_3_1_blob_history_t, history_length)
+TEST (test_03_01_blob_history_t, history_length)
 {
 	Blob b1 = CreateBlob ().position (make_pt (10.0, -20.0));
 	for (int i = 0; i < 1000; i++)

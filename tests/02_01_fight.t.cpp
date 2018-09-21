@@ -25,7 +25,7 @@ public:
 	unsigned int _damage = 0;
 };
 
-TEST(test_2_1_fight_t, create)
+TEST(test_02_01_fight_t, create)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -34,7 +34,7 @@ TEST(test_2_1_fight_t, create)
 	EXPECT_EQ (a._attacker, &tm2);
 }
 
-TEST(test_2_1_fight_t, equal_to_self)
+TEST(test_02_01_fight_t, equal_to_self)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -42,7 +42,7 @@ TEST(test_2_1_fight_t, equal_to_self)
 	EXPECT_TRUE (a == a);
 }
 
-TEST (test_2_1_fight_t, equal_to_other)
+TEST (test_02_01_fight_t, equal_to_other)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -51,7 +51,7 @@ TEST (test_2_1_fight_t, equal_to_other)
 	EXPECT_TRUE (a1 == a2);
 }
 
-TEST (test_2_1_fight_t, equal_false_different_target)
+TEST (test_02_01_fight_t, equal_false_different_target)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -60,7 +60,7 @@ TEST (test_2_1_fight_t, equal_false_different_target)
 	EXPECT_FALSE (a1 == a2);
 }
 
-TEST (test_2_1_fight_t, equal_false_different_attacker)
+TEST (test_02_01_fight_t, equal_false_different_attacker)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -69,7 +69,7 @@ TEST (test_2_1_fight_t, equal_false_different_attacker)
 	EXPECT_FALSE (a1 == a2);
 }
 
-TEST(test_2_1_fight_t, not_equal_equal_to_self)
+TEST(test_02_01_fight_t, not_equal_equal_to_self)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -77,7 +77,7 @@ TEST(test_2_1_fight_t, not_equal_equal_to_self)
 	EXPECT_FALSE (a != a);
 }
 
-TEST(test_2_1_fight_t, not_equal_different_target)
+TEST(test_02_01_fight_t, not_equal_different_target)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -86,7 +86,7 @@ TEST(test_2_1_fight_t, not_equal_different_target)
 	EXPECT_TRUE (a1 != a2);
 }
 
-TEST(test_2_1_fight_t, not_equal_different_attacker)
+TEST(test_02_01_fight_t, not_equal_different_attacker)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -95,7 +95,7 @@ TEST(test_2_1_fight_t, not_equal_different_attacker)
 	EXPECT_TRUE (a1 != a2);
 }
 
-TEST (test_2_1_fight_t, output)
+TEST (test_02_01_fight_t, output)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -110,7 +110,7 @@ TEST (test_2_1_fight_t, output)
 	EXPECT_EQ (s.str (), "20");
 }
 
-TEST (test_2_1_fight_t, apply_target_is_damaged)
+TEST (test_02_01_fight_t, apply_target_is_damaged)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -120,7 +120,7 @@ TEST (test_2_1_fight_t, apply_target_is_damaged)
 	EXPECT_EQ (tm1._damageTaken, 20U);
 }
 
-TEST (test_2_1_fight_t, apply_attacker_is_damaged)
+TEST (test_02_01_fight_t, apply_attacker_is_damaged)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -130,7 +130,7 @@ TEST (test_2_1_fight_t, apply_attacker_is_damaged)
 	EXPECT_EQ (tm2._damageTaken, 10U);
 }
 
-TEST (test_2_1_fight_t, applies_to_blobs)
+TEST (test_02_01_fight_t, applies_to_blobs)
 {
 	Blob target = CreateBlob ().HP (7U).damage (1U);
 	Blob attacker = CreateBlob ().HP (6U).damage (5U);
