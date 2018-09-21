@@ -1,20 +1,20 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, attackWeight)
+TEST (test_11_00_blob_chooseNextAction_t, attackWeight)
 {
-	Blob b1  = Blob ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 50.0, 0U).setDamage (110U);
-	Blob b2 ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 100U);
+	Blob attacker = CreateBlob ().position (make_pt (3.0, 4.0)).smell (50.0).damage (110U);
+	Blob defender = CreateBlob ().position (make_pt (9.0, 12.0)).HP (100U);
 
-	EXPECT_DOUBLE_EQ (b1.attackWeight (b2), 0.8 * 1.0 / 21.0);
+	EXPECT_DOUBLE_EQ (attacker.attackWeight (defender), 0.8 * 1.0 / 21.0);
 }
 
-TEST (Blob, fleeWeight)
+TEST (test_11_00_blob_chooseNextAction_t, fleeWeight)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 50.0, 100U);
-	Blob b2 = Blob ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 0U).setDamage (110U);
+	Blob attacker = CreateBlob ().position (make_pt (9.0, 12.0)).damage (110U);
+	Blob defender = CreateBlob ().position  (make_pt (3.0, 4.0)).smell (50.0).HP (100U);
 
-	EXPECT_DOUBLE_EQ (b1.fleeWeight (b2), 0.8 * 1.0 / 21.0);
+	EXPECT_DOUBLE_EQ (defender.fleeWeight (attacker), 0.8 * 1.0 / 21.0);
 }
 
 int main (int argc, char** argv) 
