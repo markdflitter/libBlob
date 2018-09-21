@@ -190,14 +190,14 @@ TEST (Blob, move_limit_maxy)
 	EXPECT_DOUBLE_EQ (b1.y (), 1000.0);
 }
 
-TEST (Blob, move_strength_recovers)
+TEST (Blob, move_hitPoints_recover)
 {
 	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 1.0, 100.0, 100U);
 	b1.takeDamage (20U);
 
-	EXPECT_EQ (b1.strength (), 80U);
+	EXPECT_EQ (b1.HP (), 80U);
 	b1.move (0.0, 0.0, "");
-	EXPECT_EQ (b1.strength (), 81U);
+	EXPECT_EQ (b1.HP (), 81U);
 }
 
 

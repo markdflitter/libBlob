@@ -84,60 +84,6 @@ TEST (Blob, hunt_catches)
 	EXPECT_TRUE (b1.isInSameSquare (b2));
 }
 
-TEST (Blob, chooses_to_hunt)
-{
-	std::vector <Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 10.0, 100.0, 1U),
-		Blob ("", [](double) {return 0.0;}, 20.0, 20.0, 5.0, 5.0, 100.0)};
-
-	std::shared_ptr<Action> a = blobs.front ().chooseNextAction (blobs);
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_EQ (*m, Movement (&blobs[0], "hunting  (fast)", 10, M_PI/4)); 
-}
-
-TEST (Blob, chooses_not_to_hunt_because_not_aggressive)
-{
-	std::vector <Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 10.0, 1000.0, 1U, 0U, -1.0),
-		Blob ("", [](double) {return 0.0;}, 20.0, 20.0, 5.0, 5.0, 1000.0, 0U)};
-
-	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs); 
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	
-	EXPECT_EQ (m->_reason, "running from  (fast)");
-}
-
-TEST (Blob, chooses_not_to_hunt_because_weaker)
-{
-	std::vector <Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 10.0, 1000.0, 0U, 0U, 0.0),
-		Blob ("", [](double) {return 0.0;}, 20.0, 20.0, 5.0, 5.0, 1000.0, 1U)};
-
-	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs); 
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	
-	EXPECT_EQ (m->_reason, "running from  (fast)");
-}
-
-
-TEST (Blob, chooses_closest_to_hunt)
-{
-	std::vector <Blob> blobs {
-		Blob ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 10.0, 1000.0, 1U),
-		Blob ("", [](double) {return 0.0;}, 20.0, 20.0, 5.0, 5.0, 1000.0, 0U),
-		Blob ("", [](double) {return 0.0;}, 25.0, 25.0, 5.0, 5.0, 1000.0, 0U)};
-
-	std::shared_ptr<Action> a = blobs[0].chooseNextAction (blobs); 
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	
-	EXPECT_EQ (*m, Movement (&blobs[0], "hunting  (fast)", 10, M_PI/4)); 
-}
-
-
 int main (int argc, char** argv) 
 {
 	testing::InitGoogleTest (&argc, argv);

@@ -3,7 +3,7 @@
 
 TEST(Blob, kill)
 {
-	Blob b1;
+	Blob b1 = CreateBlob ();
 	EXPECT_FALSE (b1.isDead ());
 	
 	b1.kill ();

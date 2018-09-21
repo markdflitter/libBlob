@@ -4,7 +4,7 @@
 TEST (Blob, gets_tired_when_hunting_and_recovers)
 {
 	Blob b1 ("", [](double) {return 0.0;}, -100.0, -100.0, 0.0, 1.0, 10.0, 0U, 2U);
-	Blob b2;
+	Blob b2 = CreateBlob ();
 	
 	EXPECT_FALSE (b1.isTired ());
 
@@ -47,7 +47,7 @@ TEST (Blob, gets_tired_when_hunting_and_recovers)
 TEST (Blob, gets_tired_when_fleeing_and_recovers)
 {
 	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 10.0, 20.0, 10.0, 0U, 2U);
-	Blob b2;
+	Blob b2 = CreateBlob ();
 	
 	EXPECT_FALSE (b1.isTired ());
 

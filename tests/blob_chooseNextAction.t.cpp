@@ -3,7 +3,7 @@
 
 TEST (Blob, attackWeight)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 50.0, 110U);
+	Blob b1  = Blob ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 50.0, 0U).setDamage (110U);
 	Blob b2 ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 100U);
 
 	EXPECT_DOUBLE_EQ (b1.attackWeight (b2), 0.8 * 1.0 / 21.0);
@@ -12,7 +12,7 @@ TEST (Blob, attackWeight)
 TEST (Blob, fleeWeight)
 {
 	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 50.0, 100U);
-	Blob b2 ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 110U);
+	Blob b2 = Blob ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 0U).setDamage (110U);
 
 	EXPECT_DOUBLE_EQ (b1.fleeWeight (b2), 0.8 * 1.0 / 21.0);
 }

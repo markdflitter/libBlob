@@ -17,4 +17,9 @@ private:
   T _y;
 };
 
+template <typename T> Pt<T> make_pt (T p1, T p2)
+{
+  return Pt<T> (p1, p2);
+} 
 #endif
+

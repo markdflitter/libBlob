@@ -16,32 +16,107 @@
 #include <rnd.h>
 #include <assert.h>
 
+class CreateBlob 
+{
+public:
+	CreateBlob () :
+	        _name ("")
+	      , _position (make_pt (0.0, 0.0))
+	      , _speed (0.0)
+	      , _runningSpeed (0.0)
+	      , _smell (0.0)
+	      , _HP (0U)
+	      , _endurance (0U)
+	      , _aggression (0.0)
+	      , _lifespan (0U)
+	      , _damage (0U)
+	      , _moveDirectionFn ([] (double) {return 0.0;})
+	      , _aggressionFn ([](double a) {return a;})
+		{
+	      	}
+
+	CreateBlob& name (const std::string& name) {_name = name; return *this;}
+	CreateBlob& position (const Pt<double>& position) {_position = position; return *this;}
+	CreateBlob& speed (double speed) {_speed = speed; return *this;}
+	CreateBlob& runningSpeed (double runningSpeed) {_runningSpeed = runningSpeed; return *this;}
+	CreateBlob& smell (double smell) {_smell = smell; return *this;}
+	CreateBlob& HP (unsigned int HP) {_HP = HP; return *this;}
+	CreateBlob& endurance (unsigned int endurance) {_endurance = endurance; return *this;}
+	CreateBlob& aggression (double aggression) {_aggression = aggression; return *this;}
+	CreateBlob& lifespan (unsigned int lifespan) {_lifespan = lifespan; return *this;}
+	CreateBlob& damage (unsigned int damage) {_damage = damage; return *this;}
+	CreateBlob& moveDirectionFn (std::function<double(double)> moveDirectionFn)
+		{_moveDirectionFn = moveDirectionFn; return *this;}
+	CreateBlob& aggressionFn (std::function<double(double)> aggressionFn)
+		{_aggressionFn = aggressionFn; return *this;}
+private:
+	friend class Blob;
+	
+	std::string _name;
+	Pt<double> _position;
+	double _speed;
+        double _runningSpeed;
+	double _smell;
+	unsigned int _HP;
+	unsigned int _endurance;
+	double _aggression;
+	unsigned int _lifespan;
+	unsigned int _damage;
+
+	std::function<double(double)> _moveDirectionFn;
+	std::function<double(double)> _aggressionFn;
+};
+
 class Blob : public Moveable, public Target
 {
 public:
-	Blob (const std::string& name = ""
+	Blob (const CreateBlob& params) :
+		  _name (params._name)
+		, _speed (params._speed)
+		, _runningSpeed (params._runningSpeed)
+		, _smell (params._smell)
+		, _maxHP (params._HP)
+		, _HP (params._HP)
+		, _endurance (params._endurance)
+		, _aggression (params._aggression)
+		, _lifespan (params._lifespan)
+		, _damage (params._damage)
+		, _moveDirectionFn (params._moveDirectionFn)
+		, _aggressionFn (params._aggressionFn)
+		,  _state ("newborn")
+ 		, _fatigue (0)
+		, _tired (false)
+		, _age (0)
+		, _dead (false)
+	{
+		_points.push_back (params._position);
+	}
+
+	Blob (const std::string& name
 	      , std::function<double (double)> rnd = [](double) {return 0.0;}
 	      , double x = 0.0
 	      , double y = 0.0
               , double speed = 0.0
 	      , double runningSpeed = 0.0
               , double smell = 0.0
-              , unsigned int strength = 0
-	      , unsigned int endurance = 0
+              , unsigned int HP = 0U
+	      , unsigned int endurance = 0U
 	      , double aggression = 0.5
-	      , unsigned int longevity = 100
-	      , std::function<double (double)> aggression_rnd = [](double aggression) {return aggression;}) :
+	      , unsigned int lifespan = 100U
+	      , std::function<double (double)> aggression_rnd = [](double aggression) {return aggression;}
+	      , unsigned int damage = 0U) :
 		  _name (name)
-		, _rnd (rnd)
+		, _moveDirectionFn (rnd)
 		, _speed (speed)
 		, _runningSpeed (runningSpeed)
 		, _smell (smell)
-		, _initialStrength (strength)
-		, _strength (strength)
+		, _maxHP (HP)
+		, _HP (HP)
 		, _endurance (endurance)
 		, _aggression (aggression)
-		, _longevity (longevity)
-		, _aggression_rnd (aggression_rnd)
+		, _lifespan (lifespan)
+		, _aggressionFn (aggression_rnd)
+		, _damage (damage)
 		, _state ("newborn")
  		, _fatigue (0)
 		, _tired (false)
@@ -51,18 +126,20 @@ public:
 				_points.push_back (Pt<double> (x,y));
 			}
 
+	Blob& setDamage (unsigned int damage) {_damage = damage; return *this;}
+
 	std::string name () const {return _name;}
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
 	double speed () const {return _speed;}
 	double runningSpeed () const {return _runningSpeed;}
 	double smell () const {return _smell;}
-	unsigned int strength () const {return _strength;}
-	unsigned int initialStrength () const {return _initialStrength;}
-	unsigned int damage () const {return _strength;}
+	unsigned int HP () const {return _HP;}
+	unsigned int maxHP () const {return _maxHP;}
+	unsigned int damage () const {return _damage;}
 	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
- 	unsigned int longevity () const {return _longevity;}
+ 	unsigned int lifespan () const {return _lifespan;}
 	unsigned int age () const {return _age;}
 	std::string state () const {return _state;}
 
@@ -119,7 +196,7 @@ public:
 		{
 			_age++;
 
-			if (_age >= longevity ())
+			if (_age >= lifespan ())
 			{
 				kill ();
 			}
@@ -129,16 +206,16 @@ public:
 	void takeDamage (unsigned int damage)
 	{
 		growOlder ();
-		if (_strength >= damage)
+		if (_HP >= damage)
 		{
-			_strength -= damage;
+			_HP -= damage;
 		}
 		else
 		{
-			_strength = 0;
+			_HP = 0;
 		}
 
-		if (_strength == 0)
+		if (_HP == 0)
 		{
 			kill ();
 		}
@@ -170,7 +247,7 @@ public:
 		else
 		{
 			if (_fatigue > 0) _fatigue--;
-			if (_strength < _initialStrength) _strength++;
+			if (_HP < _maxHP) _HP++;
 		}
 		if (_fatigue == 0) _tired = false;
 		if (_fatigue == _endurance) _tired = true; 
@@ -183,7 +260,7 @@ public:
  
         std::shared_ptr <Action> createActionWander ()
         {
-		double angle = _rnd (_previousAngleInRadians);
+		double angle = _moveDirectionFn (_previousAngleInRadians);
 		return std::shared_ptr<Action> (new Movement (this, "wandering", _speed, angle));
 	}
         
@@ -192,7 +269,7 @@ public:
 		return std::shared_ptr <Action> (new Movement (this,
 				 "running from " + target.name () + (!isTired () ? " (fast)" : ""),
 				isTired () ? _speed : _runningSpeed,
-				_rnd ((0.9 * _previousAngleInRadians + 0.1 * (angle (target) + M_PI)))));
+				_moveDirectionFn ((0.9 * _previousAngleInRadians + 0.1 * (angle (target) + M_PI)))));
 	}
        
 	std::shared_ptr <Action> createActionHunt (const Blob& target)
@@ -229,17 +306,17 @@ public:
 
 	double inflictDamageWeightForAttacking (const Blob& b)
 	{
-		return relativeDifference (damage (), b.strength ()) * 2.0;
+		return relativeDifference (damage (), b.HP ()) * 2.0;
 	}
 
 	double avoidDamageWeightForAttacking (const Blob& b)
 	{
-		return relativeDifference (strength (), b.damage ()) * 2.0;
+		return relativeDifference (HP (), b.damage ()) * 2.0;
 	}
 
 	double avoidDamageWeightForFleeing (const Blob& b)
 	{
-		return relativeDifference (b.damage (), strength ()) * 2.0;
+		return relativeDifference (b.damage (), HP ()) * 2.0;
 	}
 
 	double distanceWeight (const Blob& b)
@@ -283,7 +360,7 @@ public:
 		{
 			if ((&b != this) && !b.isDead ())
 			{
-				double a = _aggression_rnd (_aggression);
+				double a = _aggressionFn (_aggression);
 
 				if (isInSameSquare (b) || canSmell (b))
 				{
@@ -336,27 +413,31 @@ public:
 private:
 	Pt<double> WORLD_SIZE = Pt<double>(2000.0, 1000.0);
 
-	std::function<double(double)> _rnd;
 	std::vector<Pt<double>> _points;
 
 	std::string _name;
-	std::string _state;
 	double _speed;
         double _runningSpeed;
 	double _smell;
-	unsigned int _initialStrength;
-	unsigned int _strength;
+	unsigned int _maxHP;
+	unsigned int _HP;
 	unsigned int _endurance;
 	double _aggression;
-	unsigned int _longevity;
-	std::function<double(double)> _aggression_rnd;
+	unsigned int _lifespan;
+	unsigned int _damage;
+
+	double _previousAngleInRadians = 0;
+
+	std::string _state;
+
 	unsigned int _fatigue;
 	bool _tired;
 
-	unsigned int _age;
-	
+	unsigned int _age;	
 	bool _dead;
-	double _previousAngleInRadians = 0;
+
+	std::function<double(double)> _moveDirectionFn;
+	std::function<double(double)> _aggressionFn;
 };
 
 inline std::ostream& operator<< (std::ostream& s, const Blob& b)
