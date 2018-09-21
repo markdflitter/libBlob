@@ -63,6 +63,9 @@ target_link_libraries (test_09_00_blob_flee ${GTEST_LIBRARIES} pthread)
 add_executable (test_09_01_blob_hunt tests/09_01_blob_hunt.t.cpp)
 target_link_libraries (test_09_01_blob_hunt ${GTEST_LIBRARIES} pthread)
 
+add_executable (test_09_02_blob_wander tests/09_02_blob_wander.t.cpp)
+target_link_libraries (test_09_02_blob_wander ${GTEST_LIBRARIES} pthread)
+
 add_executable (test_10_00_blob_relativeDifference tests/10_00_blob_relativeDifference.t.cpp)
 target_link_libraries (test_10_00_blob_relativeDifference ${GTEST_LIBRARIES} pthread)
 
@@ -81,17 +84,14 @@ target_link_libraries (test_10_04_blob_avoidDamageWeightForFleeing ${GTEST_LIBRA
 add_executable (test_11_00_blob_chooseNextAction tests/11_00_blob_chooseNextAction.t.cpp)
 target_link_libraries (test_11_00_blob_chooseNextAction ${GTEST_LIBRARIES} pthread)
 
-add_executable (test_12_00_blob_tired tests/12_00_blob_tired.t.cpp)
-target_link_libraries (test_12_00_blob_tired ${GTEST_LIBRARIES} pthread)
-
-add_executable (blob_wander_fixed_angle_test tests/blob_wander_fixed_angle.t.cpp)
-target_link_libraries (blob_wander_fixed_angle_test ${GTEST_LIBRARIES} pthread)
-
-add_executable (blob_wander_random_angle_test tests/blob_wander_random_angle.t.cpp)
-target_link_libraries (blob_wander_random_angle_test ${GTEST_LIBRARIES} pthread)
-
 add_executable (test_11_01_blob_chooseNextAction_dead tests/11_01_blob_chooseNextAction_dead.t.cpp)
 target_link_libraries (test_11_01_blob_chooseNextAction_dead ${GTEST_LIBRARIES} pthread)
+
+add_executable (test_11_02_blob_chooseNextAction_wander tests/11_02_blob_chooseNextAction_wander.t.cpp)
+target_link_libraries (test_11_02_blob_chooseNextAction_wander ${GTEST_LIBRARIES} pthread)
+
+add_executable (test_12_00_blob_tired tests/12_00_blob_tired.t.cpp)
+target_link_libraries (test_12_00_blob_tired ${GTEST_LIBRARIES} pthread)
 
 gtest_discover_tests (test_00_00_template)
 gtest_discover_tests (test_01_00_pt)
@@ -111,6 +111,7 @@ gtest_discover_tests (test_07_03_blob_attack)
 gtest_discover_tests (test_08_00_blob_age)
 gtest_discover_tests (test_09_00_blob_flee)
 gtest_discover_tests (test_09_01_blob_hunt)
+gtest_discover_tests (test_09_02_blob_wander)
 gtest_discover_tests (test_10_00_blob_relativeDifference)
 gtest_discover_tests (test_10_01_blob_distanceWeight)
 gtest_discover_tests (test_10_02_blob_inflictDamageWeightForAttacking)
@@ -118,6 +119,5 @@ gtest_discover_tests (test_10_03_blob_avoidDamageWeightForAttacking)
 gtest_discover_tests (test_10_04_blob_avoidDamageWeightForFleeing)
 gtest_discover_tests (test_11_00_blob_chooseNextAction)
 gtest_discover_tests (test_11_01_blob_chooseNextAction_dead)
+gtest_discover_tests (test_11_02_blob_chooseNextAction_wander)
 gtest_discover_tests (test_12_00_blob_tired)
-gtest_discover_tests (blob_wander_fixed_angle_test)
-gtest_discover_tests (blob_wander_random_angle_test)
