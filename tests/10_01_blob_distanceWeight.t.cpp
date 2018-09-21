@@ -1,56 +1,55 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, distanceWeight_sameSquare)
+TEST (test_10_01_blob_distanceWeight, sameSquare)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 110U);
-	Blob b2 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 100U);
+	Blob b1 = CreateBlob ();
+	Blob b2 = CreateBlob ();
 
 	EXPECT_DOUBLE_EQ (b1.distanceWeight(b2), 1.0);
 }
 
-TEST (Blob, distanceWeight_smell_is_zero)
+TEST (test_10_01_blob_distanceWeight, smell_is_zero)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 10.0, 0.0, 0.0, 0.0, 0.0, 110U);
-	Blob b2 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 100U);
+	Blob b1 = CreateBlob ().position (make_pt (10.0, 0.0));
+	Blob b2 = CreateBlob ();
 
 	EXPECT_DOUBLE_EQ (b1.distanceWeight(b2), 0.0);
 }
 
-TEST (Blob, distanceWeight_out_of_range)
+TEST (test_10_01_blob_distanceWeight, out_of_range)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 5.0, 110U);
-	Blob b2 ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 100U);
+	Blob b1 = CreateBlob ().position (make_pt (3.0, 4.0)).smell (5.0);
+	Blob b2 = CreateBlob ().position (make_pt (9.0, 12.0));
 
 	EXPECT_DOUBLE_EQ (b1.distanceWeight(b2), 0.0);
 }
 
-TEST (Blob, distanceWeight_in_range)
+TEST (test_10_01_blob_distanceWeight, in_range)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 50.0, 110U);
-	Blob b2 ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 100U);
+	Blob b1 = CreateBlob ().position (make_pt (3.0, 4.0)).smell (50.0);
+	Blob b2 = CreateBlob ().position (make_pt (9.0, 12.0));
 
 	EXPECT_DOUBLE_EQ (b1.distanceWeight(b2), 0.80);
 }
 
-TEST (Blob, distanceWeight_closer_blobs_are_weighted_higher)
+TEST (test_10_01_blob_distanceWeight, closer_blobs_are_weighted_higher)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 50.0, 110U);
-	Blob b2 ("", [](double) {return 0.0;}, 6.0, 8.0, 0.0, 0.0, 0.0, 100U);
-	Blob b3 ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 100U);
+	Blob base = CreateBlob ().position (make_pt (3.0, 4.0)).smell (50.0);
+	Blob near = CreateBlob ().position (make_pt (6.0, 8.0));
+	Blob far = CreateBlob ().position (make_pt (9.0, 12.0));
 
-	EXPECT_GT (b1.distanceWeight(b2), b1.distanceWeight (b3));
+	EXPECT_GT (base.distanceWeight(near), base.distanceWeight (far));
 }
 
-TEST (Blob, distanceWeight_better_smell_gives_higher_weight)
+TEST (test_10_01_blob_distanceWeight, better_smell_gives_higher_weight)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 50.0, 110U);
-	Blob b2 ("", [](double) {return 0.0;}, 3.0, 4.0, 0.0, 0.0, 100.0, 100U);
-	Blob b3 ("", [](double) {return 0.0;}, 9.0, 12.0, 0.0, 0.0, 0.0, 100U);
+	Blob target = CreateBlob ().position (make_pt (9.0, 12.0));
+	Blob lowSmellRange = CreateBlob ().position (make_pt (3.0, 4.0)).smell (50.0);
+	Blob highSmellRange = CreateBlob ().position (make_pt (3.0, 4.0)).smell (100.0);
 
-	EXPECT_GT (b2.distanceWeight(b3), b1.distanceWeight (b3));
+	EXPECT_GT (highSmellRange.distanceWeight(target), lowSmellRange.distanceWeight (target));
 }
-
 
 int main (int argc, char** argv) 
 {

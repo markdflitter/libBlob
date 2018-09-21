@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, relativeDifference_zero)
+TEST (test_10_00_blob_relativeDifference, relativeDifference_zero)
 {
 	Blob b = CreateBlob ();
 	EXPECT_DOUBLE_EQ (b.relativeDifference (1.0, 0.0), 0.5);
 	EXPECT_DOUBLE_EQ (b.relativeDifference (0.0, 1.0), -0.5);
 }
 
-TEST (Blob, relativeDifference_non_zero)
+TEST (test_10_00_blob_relativeDifference, relativeDifference_non_zero)
 {
 	Blob b = CreateBlob ();
 	EXPECT_DOUBLE_EQ (b.relativeDifference (50.0, 50.0), 0.0);
@@ -16,7 +16,7 @@ TEST (Blob, relativeDifference_non_zero)
 	EXPECT_DOUBLE_EQ (b.relativeDifference (50.0, 100.0), -1.0 / 6.0);
 }
 
-TEST (Blob, relativeDifference_negative_asserts)
+TEST (test_10_00_blob_relativeDifference, relativeDifference_negative_asserts)
 {
 	Blob b = CreateBlob ();
 	EXPECT_DEATH (b.relativeDifference (-50.0, 50.0), "");
@@ -24,7 +24,7 @@ TEST (Blob, relativeDifference_negative_asserts)
 	EXPECT_DEATH (b.relativeDifference (-50.0, -50.0), "");
 }
 
-TEST (Blob, relativeDifference_magnitude)
+TEST (test_10_00_blob_relativeDifference, relativeDifference_magnitude)
 {
 	Blob b = CreateBlob ();
 	EXPECT_GT (b.relativeDifference (1000, 50), b.relativeDifference (100, 50));
