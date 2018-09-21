@@ -45,10 +45,6 @@ TEST (test_10_03_blob_avoidDamageWeightForAttacking_t, increasesForWeakerDefende
 	Blob strongTarget = CreateBlob ().damage (100U);
 	Blob attacker = CreateBlob ().HP (100U);
 	
-	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 500U);
-	Blob b2 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0U, 0U, 0U, 0.0, [](double a) {return a;}, 50U);
-	Blob b3 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0U, 0U, 0U, 0.0, [](double a) {return a;}, 100U);
-
 	EXPECT_GT (attacker.avoidDamageWeightForAttacking (weakTarget),
 		   attacker.avoidDamageWeightForAttacking (strongTarget));
 }

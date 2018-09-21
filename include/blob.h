@@ -92,42 +92,6 @@ public:
 		_points.push_back (params._position);
 	}
 
-	Blob (const std::string& name
-	      , std::function<double (double)> rnd = [](double) {return 0.0;}
-	      , double x = 0.0
-	      , double y = 0.0
-              , double speed = 0.0
-	      , double runningSpeed = 0.0
-              , double smell = 0.0
-              , unsigned int HP = 0U
-	      , unsigned int endurance = 0U
-	      , double aggression = 0.5
-	      , unsigned int lifespan = 100U
-	      , std::function<double (double)> aggression_rnd = [](double aggression) {return aggression;}
-	      , unsigned int damage = 0U) :
-		  _name (name)
-		, _moveDirectionFn (rnd)
-		, _speed (speed)
-		, _runningSpeed (runningSpeed)
-		, _smell (smell)
-		, _maxHP (HP)
-		, _HP (HP)
-		, _endurance (endurance)
-		, _aggression (aggression)
-		, _lifespan (lifespan)
-		, _aggressionFn (aggression_rnd)
-		, _damage (damage)
-		, _state ("newborn")
- 		, _fatigue (0)
-		, _tired (false)
-		, _age (0)
-		, _dead (false)
-			{
-				_points.push_back (Pt<double> (x,y));
-			}
-
-	Blob& setDamage (unsigned int damage) {_damage = damage; return *this;}
-
 	std::string name () const {return _name;}
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
