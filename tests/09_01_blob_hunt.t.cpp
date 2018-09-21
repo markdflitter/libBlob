@@ -1,87 +1,87 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, hunts_north)
+TEST (test_09_01_blob_hunt, north)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 5.0, 5.0, 2.0, 4.0);
-	Blob b2 ("", [](double) {return 0.0;}, 5.0, 10.0, 12.0, 12.0);
+	Blob hunter = CreateBlob ().position (make_pt (5.0, 5.0)).runningSpeed (4.0);
+	Blob huntee = CreateBlob ().position (make_pt (5.0, 10.0));
 
-	std::shared_ptr<Action> a = b1.createActionHunt (b2);
+	std::shared_ptr<Action> a = hunter.createActionHunt (huntee);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_EQ (*m, Movement (&b1, "hunting  (fast)", 4, 0));
+	EXPECT_EQ (*m, Movement (&hunter, "hunting  (fast)", 4, 0));
 
 	a->apply ();
-	EXPECT_DOUBLE_EQ (b1.y (), 9.0);
+	EXPECT_DOUBLE_EQ (hunter.y (), 9.0);
 }
 
-TEST (Blob, hunt_south)
+TEST (test_09_01_blob_hunt, south)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 5.0, 5.0, 2.0, 4.0);
-	Blob b2 ("", [](double) {return 0.0;}, 5.0, -10.0, 12.0, 12.0);
+	Blob hunter = CreateBlob ().position (make_pt (5.0, 5.0)).runningSpeed (4.0);
+	Blob huntee = CreateBlob ().position (make_pt (5.0, -10.0));
 
-	std::shared_ptr<Action> a = b1.createActionHunt (b2);
+	std::shared_ptr<Action> a = hunter.createActionHunt (huntee);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_EQ (*m, Movement (&b1, "hunting  (fast)", 4, M_PI));
+	EXPECT_EQ (*m, Movement (&hunter, "hunting  (fast)", 4, M_PI));
 
 	a->apply ();
-	EXPECT_DOUBLE_EQ (b1.y (), 1.0);
+	EXPECT_DOUBLE_EQ (hunter.y (), 1.0);
 }
 
-TEST (Blob, hunt_east)
+TEST (test_09_01_blob_hunt, east)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 5.0, 5.0, 2.0, 4.0);
-	Blob b2 ("", [](double) {return 0.0;}, 10.0, 5.0, 12.0, 12.0);
+	Blob hunter = CreateBlob ().position (make_pt (5.0, 5.0)).runningSpeed (4.0);
+	Blob huntee = CreateBlob ().position (make_pt (10.0, 5.0));
 
-	std::shared_ptr<Action> a = b1.createActionHunt (b2);
+	std::shared_ptr<Action> a = hunter.createActionHunt (huntee);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_EQ (*m, Movement (&b1, "hunting  (fast)", 4, M_PI/2));
+	EXPECT_EQ (*m, Movement (&hunter, "hunting  (fast)", 4, M_PI/2));
 
 	a->apply ();
-	EXPECT_DOUBLE_EQ (b1.x (), 9.0);
+	EXPECT_DOUBLE_EQ (hunter.x (), 9.0);
 }
 
-TEST (Blob, hunt_west)
+TEST (test_09_01_blob_hunt, west)
 {
-	Blob b1 ("", [](double) {return 0.0;}, -5.0, 5.0, 2.0, 4.0);
-	Blob b2 ("", [](double) {return 0.0;}, -10.0, 5.0, 12.0, 12.0);
+	Blob hunter = CreateBlob ().position (make_pt (-5.0, 5.0)).runningSpeed (4.0);
+	Blob huntee = CreateBlob ().position (make_pt (-10.0, 5.0));
 
-	std::shared_ptr<Action> a = b1.createActionHunt (b2);
+	std::shared_ptr<Action> a = hunter.createActionHunt (huntee);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_EQ (*m, Movement (&b1, "hunting  (fast)", 4, 3 * M_PI / 2));
+	EXPECT_EQ (*m, Movement (&hunter, "hunting  (fast)", 4, 3 * M_PI / 2));
 
 	a->apply ();
-	EXPECT_DOUBLE_EQ (b1.x (), -9.0);
+	EXPECT_DOUBLE_EQ (hunter.x (), -9.0);
 }
 
-TEST (Blob, hunt_get_closer)
+TEST (test_09_01_blob_hunt, gets_closer)
 {
-	Blob b1 ("", [](double) {return 0.0;}, -5.0, 5.0, 7.0, 7.0);
-	Blob b2 ("", [](double) {return 0.0;}, -10.0, 5.0, 12.0, 12.0);
+	Blob hunter = CreateBlob ().position (make_pt (-5.0, 5.0)).runningSpeed (7.0);
+	Blob huntee = CreateBlob ().position (make_pt (-10.0, 10.0));
 
-	double d1 = b1.distance (b2);
-	std::shared_ptr<Action> m = b1.createActionHunt (b2);
+	double d1 = hunter.distance (huntee);
+	std::shared_ptr<Action> m = hunter.createActionHunt (huntee);
 	m->apply ();
 
-	double d2 = b1.distance (b2);
+	double d2 = hunter.distance (huntee);
 	EXPECT_LT (d2, d1);
 }
 
-TEST (Blob, hunt_catches)
+TEST (test_09_01_blob_hunt, catches)
 {
-	Blob b1 ("", [](double) {return 0.0;}, -5.0, 5.0, 7.0, 7.0);
-	Blob b2 ("", [](double) {return 0.0;}, -10.0, 5.0, 12.0, 12.0);
+	Blob hunter = CreateBlob ().position (make_pt (-5.0, 5.0)).runningSpeed (7.0);
+	Blob huntee = CreateBlob ().position (make_pt (-10.0, 5.0));
 
-	std::shared_ptr<Action> a = b1.createActionHunt (b2);
+	std::shared_ptr<Action> a = hunter.createActionHunt (huntee);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr<Movement> m = std::dynamic_pointer_cast <Movement> (a);
 	EXPECT_LT (m->_speed, 7.0);
 	a->apply ();
 
-	EXPECT_TRUE (b1.isInSameSquare (b2));
+	EXPECT_TRUE (hunter.isInSameSquare (huntee));
 }
 
 int main (int argc, char** argv) 

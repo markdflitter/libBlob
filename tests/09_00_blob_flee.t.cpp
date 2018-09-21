@@ -1,15 +1,15 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, flee)
+TEST (test_09_00_blob_flee, flee)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 10.0, 10.0, 5.0, 13.0);
-	Blob b2 ("", [](double) {return 0.0;}, 10.0, 15.0, 12.0, 12.0);
+	Blob runner = CreateBlob ().runningSpeed (13.0);
+	Blob runningFrom = CreateBlob ();
 
-	std::shared_ptr<Action> a = b1.createActionFlee (b2);
+	std::shared_ptr<Action> a = runner.createActionFlee (runningFrom);
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_EQ (*m, Movement (&b1, "running from  (fast)", 13.0, 0.0));
+	EXPECT_EQ (*m, Movement (&runner, "running from  (fast)", 13.0, 0.0));
 }
 
 int main (int argc, char** argv) 
