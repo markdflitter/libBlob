@@ -1,37 +1,43 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, growsOlder)
+TEST (test_8_0_blob_age, grows_older)
 {
 	Blob b1 = CreateBlob ();
 	EXPECT_EQ (b1.age (), 0U);
+	
 	b1.growOlder ();
 	EXPECT_EQ (b1.age (), 1U);
 }
 
-TEST (Blob, dies_of_old_age)
+TEST (test_8_0_blob_age, dies_of_old_age)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 0.0, 0.0, 0.0, 0U, 0U, 0.0, 2U);
+	Blob b1 = CreateBlob ().lifespan (2U);
+	
 	EXPECT_EQ (b1.age (), 0U);
+	
 	b1.growOlder ();
 	EXPECT_EQ (b1.age (), 1U);
+	
 	b1.growOlder ();
 	EXPECT_EQ (b1.age (), 2U);
 	EXPECT_TRUE (b1.isDead ());
 }
 
-TEST (Blob, blob_gets_older_when_moving)
+TEST (test_8_0_blob_age, gets_older_when_moving)
 {
 	Blob b1 = CreateBlob ();
 	EXPECT_EQ (b1.age (), 0U);
+	
 	b1.move (0.0, 0.0, "");
 	EXPECT_EQ (b1.age (), 1U);
 }
 
-TEST (Blob, blob_gets_older_when_taking_damage)
+TEST (test_8_0_blob_age, gets_older_when_taking_damage)
 {
 	Blob b1 = CreateBlob ();
 	EXPECT_EQ (b1.age (), 0U);
+	
 	b1.takeDamage (100);
 	EXPECT_EQ (b1.age (), 1U);
 }
