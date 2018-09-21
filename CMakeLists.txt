@@ -84,11 +84,17 @@ target_link_libraries (test_10_04_blob_avoidDamageWeightForFleeing ${GTEST_LIBRA
 add_executable (test_11_00_blob_chooseNextAction tests/11_00_blob_chooseNextAction.t.cpp)
 target_link_libraries (test_11_00_blob_chooseNextAction ${GTEST_LIBRARIES} pthread)
 
-add_executable (test_11_01_blob_chooseNextAction_dead tests/11_01_blob_chooseNextAction_dead.t.cpp)
-target_link_libraries (test_11_01_blob_chooseNextAction_dead ${GTEST_LIBRARIES} pthread)
+add_executable (test_11_01_blob_chooseNextAction_findPossibleActions tests/11_01_blob_chooseNextAction_findPossibleActions.t.cpp)
+target_link_libraries (test_11_01_blob_chooseNextAction_findPossibleActions ${GTEST_LIBRARIES} pthread)
 
-add_executable (test_11_02_blob_chooseNextAction_wander tests/11_02_blob_chooseNextAction_wander.t.cpp)
-target_link_libraries (test_11_02_blob_chooseNextAction_wander ${GTEST_LIBRARIES} pthread)
+add_executable (test_11_02_blob_chooseNextAction_selectAction tests/11_02_blob_chooseNextAction_selectAction.t.cpp)
+target_link_libraries (test_11_02_blob_chooseNextAction_selectAction ${GTEST_LIBRARIES} pthread)
+
+add_executable (test_11_03_blob_chooseNextAction_dead tests/11_03_blob_chooseNextAction_dead.t.cpp)
+target_link_libraries (test_11_03_blob_chooseNextAction_dead ${GTEST_LIBRARIES} pthread)
+
+add_executable (test_11_04_blob_chooseNextAction_wander tests/11_04_blob_chooseNextAction_wander.t.cpp)
+target_link_libraries (test_11_04_blob_chooseNextAction_wander ${GTEST_LIBRARIES} pthread)
 
 add_executable (test_12_00_blob_tired tests/12_00_blob_tired.t.cpp)
 target_link_libraries (test_12_00_blob_tired ${GTEST_LIBRARIES} pthread)
@@ -118,6 +124,8 @@ gtest_discover_tests (test_10_02_blob_inflictDamageWeightForAttacking)
 gtest_discover_tests (test_10_03_blob_avoidDamageWeightForAttacking)
 gtest_discover_tests (test_10_04_blob_avoidDamageWeightForFleeing)
 gtest_discover_tests (test_11_00_blob_chooseNextAction)
-gtest_discover_tests (test_11_01_blob_chooseNextAction_dead)
-gtest_discover_tests (test_11_02_blob_chooseNextAction_wander)
+gtest_discover_tests (test_11_01_blob_chooseNextAction_findPossibleActions)
+gtest_discover_tests (test_11_02_blob_chooseNextAction_selectAction)
+gtest_discover_tests (test_11_03_blob_chooseNextAction_dead)
+gtest_discover_tests (test_11_04_blob_chooseNextAction_wander)
 gtest_discover_tests (test_12_00_blob_tired)
