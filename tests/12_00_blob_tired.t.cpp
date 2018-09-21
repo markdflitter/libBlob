@@ -1,88 +1,88 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (Blob, gets_tired_when_hunting_and_recovers)
+TEST (test_12_00_blob_tired_t, gets_tired_when_hunting_and_recovers)
 {
-	Blob b1 ("", [](double) {return 0.0;}, -100.0, -100.0, 0.0, 1.0, 10.0, 0U, 2U);
-	Blob b2 = CreateBlob ();
+	Blob attacker = CreateBlob ().position (make_pt (-100.0, -100.0)).speed (1.0).runningSpeed (10.0).endurance (2U);
+	Blob target = CreateBlob ();
 	
-	EXPECT_FALSE (b1.isTired ());
+	EXPECT_FALSE (attacker.isTired ());
 
-	std::shared_ptr<Action> a = b1.createActionHunt (b2);	
+	std::shared_ptr<Action> a = attacker.createActionHunt (target);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_FALSE (b1.isTired ());
-	EXPECT_DOUBLE_EQ (m->_speed, 1.0);
+	EXPECT_FALSE (attacker.isTired ());
+	EXPECT_DOUBLE_EQ (m->_speed, 10.0);
 	a->apply ();
 
-	a = b1.createActionHunt (b2);	
+	a = attacker.createActionHunt (target);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
-	EXPECT_FALSE (b1.isTired ());
-	EXPECT_DOUBLE_EQ (m->_speed, 1.0);
+	EXPECT_FALSE (attacker.isTired ());
+	EXPECT_DOUBLE_EQ (m->_speed, 10.0);
 	a->apply ();
 	
-	a = b1.createActionHunt (b2);	
+	a = attacker.createActionHunt (target);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
-	EXPECT_TRUE (b1.isTired ());
-	EXPECT_DOUBLE_EQ (m->_speed, 0.0);
-	a->apply ();
-
-	a = b1.createActionHunt (b2);	
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	m = std::dynamic_pointer_cast <Movement> (a);
-	EXPECT_TRUE (b1.isTired ());
-	EXPECT_DOUBLE_EQ (m->_speed, 0.0);
-	a->apply ();
-
-	a = b1.createActionHunt (b2);	
-	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
-	m = std::dynamic_pointer_cast <Movement> (a);
-	EXPECT_FALSE (b1.isTired ());
+	EXPECT_TRUE (attacker.isTired ());
 	EXPECT_DOUBLE_EQ (m->_speed, 1.0);
+	a->apply ();
+
+	a = attacker.createActionHunt (target);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	EXPECT_TRUE (attacker.isTired ());
+	EXPECT_DOUBLE_EQ (m->_speed, 1.0);
+	a->apply ();
+
+	a = attacker.createActionHunt (target);	
+	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
+	m = std::dynamic_pointer_cast <Movement> (a);
+	EXPECT_FALSE (attacker.isTired ());
+	EXPECT_DOUBLE_EQ (m->_speed, 10.0);
 	a->apply ();
 }
 
-TEST (Blob, gets_tired_when_fleeing_and_recovers)
+TEST (test_12_00_blob_tired_t, gets_tired_when_fleeing_and_recovers)
 {
-	Blob b1 ("", [](double) {return 0.0;}, 0.0, 0.0, 10.0, 20.0, 10.0, 0U, 2U);
-	Blob b2 = CreateBlob ();
+	Blob runner = CreateBlob ().speed (10.0).runningSpeed (20.0).endurance (2U);
+	Blob attacker = CreateBlob ();
 	
-	EXPECT_FALSE (b1.isTired ());
+	EXPECT_FALSE (runner.isTired ());
 
-	std::shared_ptr<Action> a = b1.createActionFlee (b2);	
+	std::shared_ptr<Action> a = runner.createActionFlee (attacker);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	std::shared_ptr <Movement> m (std::dynamic_pointer_cast <Movement> (a));
-	EXPECT_FALSE (b1.isTired ());
+	EXPECT_FALSE (runner.isTired ());
 	EXPECT_DOUBLE_EQ (m->_speed, 20.0);
 	a->apply ();
 
-	a = b1.createActionFlee (b2);	
+	a = runner.createActionFlee (attacker);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
-	EXPECT_FALSE (b1.isTired ());
+	EXPECT_FALSE (runner.isTired ());
 	EXPECT_DOUBLE_EQ (m->_speed, 20.0);
 	a->apply ();
 	
-	a = b1.createActionFlee (b2);	
+	a = runner.createActionFlee (attacker);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
-	EXPECT_TRUE (b1.isTired ());
+	EXPECT_TRUE (runner.isTired ());
 	EXPECT_DOUBLE_EQ (m->_speed, 10.0);
 	a->apply ();
 
-	a = b1.createActionFlee (b2);	
+	a = runner.createActionFlee (attacker);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
-	EXPECT_TRUE (b1.isTired ());
+	EXPECT_TRUE (runner.isTired ());
 	EXPECT_DOUBLE_EQ (m->_speed, 10.0);
 	a->apply ();
 
-	a = b1.createActionFlee (b2);	
+	a = runner.createActionFlee (attacker);	
 	ASSERT_TRUE (std::dynamic_pointer_cast <Movement> (a));
 	m = std::dynamic_pointer_cast <Movement> (a);
-	EXPECT_FALSE (b1.isTired ());
+	EXPECT_FALSE (runner.isTired ());
 	EXPECT_DOUBLE_EQ (m->_speed, 20.0);
 	a->apply ();
 }
