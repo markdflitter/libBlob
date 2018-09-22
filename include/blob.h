@@ -261,29 +261,29 @@ public:
 		}
 	}
 
-	double relativeDifference (double v1, double v2)
+	double relativeDifference (double v1, double v2) const
 	{
 		assert (v1 >= 0.0);
 		assert (v2 >= 0.0);
 		return (v1 - v2) / (v1 + v2) / 2; 
 	}
 
-	double inflictDamageWeightForAttacking (const Blob& b)
+	double inflictDamageWeightForAttacking (const Blob& b) const
 	{
 		return relativeDifference (damage (), b.HP ()) * 2.0;
 	}
 
-	double avoidDamageWeightForAttacking (const Blob& b)
+	double avoidDamageWeightForAttacking (const Blob& b) const
 	{
 		return relativeDifference (HP (), b.damage ()) * 2.0;
 	}
 
-	double avoidDamageWeightForFleeing (const Blob& b)
+	double avoidDamageWeightForFleeing (const Blob& b) const
 	{
-		return relativeDifference (b.damage (), HP ()) * 2.0;
+		return b.inflictDamageWeightForAttacking (*this);
 	}
 
-	double distanceWeight (const Blob& b)
+	double distanceWeight (const Blob& b) const
 	{
 		if (isInSameSquare (b))
 		{
@@ -299,12 +299,12 @@ public:
 		}
 	}
 
-	double attackWeight (const Blob& b)
+	double attackWeight (const Blob& b) const
 	{
 		return distanceWeight (b) * std::max (inflictDamageWeightForAttacking (b), avoidDamageWeightForAttacking (b));
 	}	
 	
-	double fleeWeight (const Blob& b)
+	double fleeWeight (const Blob& b) const
 	{
 		return distanceWeight (b) * avoidDamageWeightForFleeing (b);
 	}
@@ -316,7 +316,7 @@ public:
 		Blob* target;
 	};
 
-	std::vector<ActionPossibility> findPossibleActions (std::vector<Blob>& others)
+	std::vector<ActionPossibility> findPossibleActions (std::vector<Blob>& others) const
 	{	
 		std::vector <ActionPossibility> possibilities;
 
@@ -349,15 +349,12 @@ public:
 			return lhs.weight < rhs.weight;});
 	
 			ActionPossibility selected_option = (possibilities.back ());
-			if (selected_option.weight > 0.0)
+			switch (selected_option.action)
 			{
-				switch (selected_option.action)
-				{
-					case ActionPossibility::attack:
- 						return createActionAttack (*(selected_option.target));
-					case ActionPossibility::flee:
-						return createActionFlee (*(selected_option.target));
-				}
+				case ActionPossibility::attack:
+ 					return createActionAttack (*(selected_option.target));
+				case ActionPossibility::flee:
+					return createActionFlee (*(selected_option.target));
 			}
 		}
 		return createActionWander ();
