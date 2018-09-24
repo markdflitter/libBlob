@@ -312,12 +312,38 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 	EXPECT_GT (actions[0].weight, actions[1].weight);
 }
 
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  more_aggressive_is_more_likely_to_attack)
+{
+	std::vector<Blob> blobs {CreateBlob ().HP (25U).damage (25U).aggression (0.5).position (make_pt (5.0, 5.0)),
+				 CreateBlob ().HP (100U).damage (100U).aggression (0.5).position (make_pt (5.1, 5.1)),
+				 CreateBlob ().HP (100U).damage (100U).aggression (0.6).position (make_pt (5.9, 5.9))};
+	auto actions_blob1 = blobs[1].findPossibleActions (blobs);
+	auto actions_blob2 = blobs[2].findPossibleActions (blobs);
 
-// blobs in the same square
-  // higher aggression ->more likely to attack
-  // more aggressive blobs more likely to attack
-  // lower aggression -> more likely to flee  
-  // less aggressive blobs more likely to flee
+	EXPECT_EQ (actions_blob1[0].action, Blob::ActionPossibility::attack);
+	EXPECT_EQ (actions_blob1[0].target, &blobs[0]);
+	EXPECT_EQ (actions_blob2[0].action, Blob::ActionPossibility::attack);
+	EXPECT_EQ (actions_blob2[0].target, &blobs[0]);
+	EXPECT_GT (actions_blob2[0].weight, actions_blob1[0].weight);
+}
+
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  more_aggressive_is_less_likely_to_flee)
+{
+	std::vector<Blob> blobs {CreateBlob ().HP (1000U).damage (1000U).aggression (0.5).position (make_pt (5.0, 5.0)),
+				 CreateBlob ().HP (100U).damage (100U).aggression (0.5).position (make_pt (5.1, 5.1)),
+				 CreateBlob ().HP (100U).damage (100U).aggression (0.6).position (make_pt (5.9, 5.9))};
+	auto actions_blob1 = blobs[1].findPossibleActions (blobs);
+	auto actions_blob2 = blobs[2].findPossibleActions (blobs);
+
+	EXPECT_EQ (actions_blob1[1].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions_blob1[1].target, &blobs[0]);
+	EXPECT_EQ (actions_blob2[1].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions_blob2[1].target, &blobs[0]);
+	EXPECT_LT (actions_blob2[1].weight, actions_blob1[1].weight);
+}
+
 
 // blobs in smell range
   // distance has an effect on weight
