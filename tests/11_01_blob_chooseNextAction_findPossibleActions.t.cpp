@@ -107,7 +107,6 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 	EXPECT_EQ (actions[3].target, &blobs[2]);
 }
 
-
 TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
   adds_flee_and_attack_options_for_more_than_1_blob_in_smell_range)
 {
@@ -344,15 +343,77 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 	EXPECT_LT (actions_blob2[1].weight, actions_blob1[1].weight);
 }
 
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  more_likely_to_attack_closer_blobs)
+{
+	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
+				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
+				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (20.0, 30.0))};
+	auto actions = blobs[0].findPossibleActions (blobs);
+
+	EXPECT_EQ (actions[0].action, Blob::ActionPossibility::attack);
+	EXPECT_EQ (actions[0].target, &blobs[1]);
+	EXPECT_EQ (actions[2].action, Blob::ActionPossibility::attack);
+	EXPECT_EQ (actions[2].target, &blobs[2]);
+	EXPECT_GT (actions[0].weight, actions[2].weight);
+}
+
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  more_likely_to_flee_closer_blobs)
+{
+	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
+				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
+				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (20.0, 30.0))};
+	auto actions = blobs[0].findPossibleActions (blobs);
+
+	EXPECT_EQ (actions[1].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions[1].target, &blobs[1]);
+	EXPECT_EQ (actions[3].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions[3].target, &blobs[2]);
+	EXPECT_GT (actions[1].weight, actions[3].weight);
+}
+
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  more_likely_to_flee_stronger_attacker)
+{
+	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
+				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
+				 CreateBlob ().HP (50U).damage (100U).aggression (0.5).position (make_pt (10.0, 20.0))};
+	auto actions = blobs[0].findPossibleActions (blobs);
+
+	EXPECT_EQ (actions[1].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions[1].target, &blobs[1]);
+	EXPECT_EQ (actions[3].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions[3].target, &blobs[2]);
+	EXPECT_GT (actions[3].weight, actions[1].weight);
+}
+
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  weaker_defender_more_likely_to_flee)
+{
+	std::vector<Blob> blobs {
+		CreateBlob ().HP (20U).damage (80U).smell(100.0).aggression (0.5).position (make_pt (3.0, 4.0)),
+		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (10.0, 20.0)),
+		CreateBlob ().HP (50U).damage (100U).aggression (0.5).position (make_pt (10.0, 20.0))};
+	auto actions_blob0 = blobs[0].findPossibleActions (blobs);
+	auto actions_blob1 = blobs[1].findPossibleActions (blobs);
+
+	EXPECT_EQ (actions_blob0.size (), 4);
+	EXPECT_EQ (actions_blob1.size (), 4);
+	EXPECT_EQ (actions_blob0[3].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions_blob0[3].target, &blobs[2]);
+	EXPECT_EQ (actions_blob1[3].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions_blob1[3].target, &blobs[2]);
+	EXPECT_GT (actions_blob0[3].weight, actions_blob1[1].weight);
+}
+
+
 
 // blobs in smell range
-  // distance has an effect on weight
   // flee action
-    // more likely to flee stronger attacker
-    // weaker defender more likely to flee
-    // more likely to flee closer
     // will flee closer even if there are stronger targets further away
-  // attack action
+    // will flee stronger if there is one closer  
+// attack action
     // more likely to attack weaker defender
     // stronger attacker more likely to attack
     // more likely to attack closer, if the same
@@ -369,19 +430,6 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 // may flee blobs further away
 
 //aggression randomness
-
-
-
-// same square
-// 1 distance has no effect on weight for attacking or fleeing actions
-// 2 weaker defender has higher weight for same attacker for fleeing action
-// 3 stronger attacker causes higher weight for same defender for fleeing action
-// 4 weaker defender has higher weight for same attacker for attacking action
-// 5 stronger attacker has higher weight for same defender for attacking action
-// relative attacker and flee weights need some thought
-// effect of aggression
-
-//add tests rhat the weights are what I expect 
 
 int main (int argc, char** argv) 
 {
