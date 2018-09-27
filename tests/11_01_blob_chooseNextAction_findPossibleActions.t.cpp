@@ -441,10 +441,45 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 	EXPECT_GT (actions[3].weight, actions[1].weight);
 }
 
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  more_likely_to_attack_weaker_blob_in_smell_range_less_HP)
+{
+	std::vector<Blob> blobs {
+		CreateBlob ().HP (20U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
+		CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
+		CreateBlob ().HP (50U).damage (1000U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0))};
+	auto actions = blobs[2].findPossibleActions (blobs);
+
+	EXPECT_EQ (actions.size (), 4);
+	EXPECT_EQ (actions[0].action, Blob::ActionPossibility::attack);
+	EXPECT_EQ (actions[0].target, &blobs[0]);
+	EXPECT_EQ (actions[2].action, Blob::ActionPossibility::attack);
+	EXPECT_EQ (actions[2].target, &blobs[1]);
+	EXPECT_GT (actions[0].weight, actions[2].weight);
+}
+
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  more_likely_to_attack_weaker_blob_in_smell_range_more_damage)
+{
+	std::vector<Blob> blobs {
+		CreateBlob ().HP (20U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
+		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0)),
+		CreateBlob ().HP (50U).damage (1000U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0))};
+	auto actions_blob1 = blobs[1].findPossibleActions (blobs);
+	auto actions_blob2 = blobs[2].findPossibleActions (blobs);
+
+	EXPECT_EQ (actions_blob1.size (), 4);
+	EXPECT_EQ (actions_blob2.size (), 4);
+	EXPECT_EQ (actions_blob1[0].action, Blob::ActionPossibility::attack);
+	EXPECT_EQ (actions_blob1[0].target, &blobs[0]);
+	EXPECT_EQ (actions_blob2[0].action, Blob::ActionPossibility::attack);
+	EXPECT_EQ (actions_blob2[0].target, &blobs[0]);
+	EXPECT_GT (actions_blob2[0].weight, actions_blob1[0].weight);
+}
+
+
 // blobs in smell range
 // attack action
-    // more likely to attack weaker defender
-    // stronger attacker more likely to attack
     // more likely to attack closer, if the same
     // more likely to attack closer, even if weaker avaiable further away
   // weaker blobs more likely to flee	
