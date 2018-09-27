@@ -312,7 +312,7 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 }
 
 TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
-  more_aggressive_is_more_likely_to_attack)
+  more_aggressive_in_same_square_is_more_likely_to_attack)
 {
 	std::vector<Blob> blobs {CreateBlob ().HP (25U).damage (25U).aggression (0.5).position (make_pt (5.0, 5.0)),
 				 CreateBlob ().HP (100U).damage (100U).aggression (0.5).position (make_pt (5.1, 5.1)),
@@ -328,7 +328,7 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 }
 
 TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
-  more_aggressive_is_less_likely_to_flee)
+  more_aggressive_in_same_square_is_less_likely_to_flee)
 {
 	std::vector<Blob> blobs {CreateBlob ().HP (1000U).damage (1000U).aggression (0.5).position (make_pt (5.0, 5.0)),
 				 CreateBlob ().HP (100U).damage (100U).aggression (0.5).position (make_pt (5.1, 5.1)),
@@ -344,7 +344,7 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 }
 
 TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
-  more_likely_to_attack_closer_blobs)
+  more_likely_to_attack_closer_blobs_in_smell_range)
 {
 	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
 				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
@@ -359,7 +359,7 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 }
 
 TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
-  more_likely_to_flee_closer_blobs)
+  more_likely_to_flee_closer_blobs_in_smell_range)
 {
 	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
 				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
@@ -374,7 +374,7 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 }
 
 TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
-  more_likely_to_flee_stronger_attacker)
+  more_likely_to_flee_stronger_attacker_in_smell_range)
 {
 	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
 				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
@@ -389,7 +389,7 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 }
 
 TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
-  weaker_defender_more_likely_to_flee)
+  weaker_defender_more_likely_to_flee_blob_in_smell_range)
 {
 	std::vector<Blob> blobs {
 		CreateBlob ().HP (20U).damage (80U).smell(100.0).aggression (0.5).position (make_pt (3.0, 4.0)),
@@ -407,12 +407,41 @@ TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
 	EXPECT_GT (actions_blob0[3].weight, actions_blob1[1].weight);
 }
 
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  will_flee_close_weaker_blob_in_smell_range_even_if_there_is_stronger_one_further_away)
+{
+	std::vector<Blob> blobs {
+		CreateBlob ().HP (20U).damage (80U).smell (500.0).aggression (0.5).position (make_pt (3.0, 4.0)),
+		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (10.0, 20.0)),
+		CreateBlob ().HP (50U).damage (1000U).aggression (0.5).position (make_pt (200.0, 200.0))};
+	auto actions = blobs[0].findPossibleActions (blobs);
 
+	EXPECT_EQ (actions.size (), 4);
+	EXPECT_EQ (actions[1].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions[1].target, &blobs[1]);
+	EXPECT_EQ (actions[3].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions[3].target, &blobs[2]);
+	EXPECT_GT (actions[1].weight, actions[3].weight);
+}
+
+TEST (test_11_01_blob_chooseNextAction_findPossibleActions_t,
+  will_flee_stronger_blob_in_smell_range_even_if_there_is_weaker_one_closer)
+{
+	std::vector<Blob> blobs {
+		CreateBlob ().HP (20U).damage (80U).smell (500.0).aggression (0.5).position (make_pt (3.0, 4.0)),
+		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (10.0, 20.0)),
+		CreateBlob ().HP (50U).damage (1000U).aggression (0.5).position (make_pt (100.0, 100.0))};
+	auto actions = blobs[0].findPossibleActions (blobs);
+
+	EXPECT_EQ (actions.size (), 4);
+	EXPECT_EQ (actions[1].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions[1].target, &blobs[1]);
+	EXPECT_EQ (actions[3].action, Blob::ActionPossibility::flee);
+	EXPECT_EQ (actions[3].target, &blobs[2]);
+	EXPECT_GT (actions[3].weight, actions[1].weight);
+}
 
 // blobs in smell range
-  // flee action
-    // will flee closer even if there are stronger targets further away
-    // will flee stronger if there is one closer  
 // attack action
     // more likely to attack weaker defender
     // stronger attacker more likely to attack
