@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
+// need to add action comparison
+// mght want to factor out blobs into "statics"
 
 TEST (test_11_03_blob_chooseNextAction_findPossibleActions_t,
   distance_does_not_affect_weight_if_in_same_square)

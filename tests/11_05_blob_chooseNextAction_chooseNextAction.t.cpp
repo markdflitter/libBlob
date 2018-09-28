@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <blob.h>
+// this tests the mapping from possibility to real action
 
 int main (int argc, char** argv) 
 {
