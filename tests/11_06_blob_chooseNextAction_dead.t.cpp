@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (test_11_01_blob_chooseNextAction_dead_t, dead_blobs_do_nothing)
+TEST (test_11_05_blob_chooseNextAction_dead_t, dead_blobs_do_nothing)
 {
 	std::vector<Blob> blobs {CreateBlob ().speed (1.0)};
 
@@ -19,7 +19,7 @@ TEST (test_11_01_blob_chooseNextAction_dead_t, dead_blobs_do_nothing)
 }
 
 
-TEST (test_11_01_blob_chooseNextAction_dead_t, dead_blobs_do_not_age)
+TEST (test_11_05_blob_chooseNextAction_dead_t, dead_blobs_do_not_age)
 {
 	std::vector<Blob> blobs {CreateBlob ().lifespan (2U)};
 	EXPECT_EQ (blobs[0].age (), 0U);

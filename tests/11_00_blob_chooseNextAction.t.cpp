@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
+// this test should check the weights, it needs to check that distance scales the weights
+// it probably needs to be renamed to reflect what it does
 
 TEST (test_11_00_blob_chooseNextAction_t, attackWeight)
 {
