@@ -15,6 +15,34 @@
 #include <fight.h>
 #include <rnd.h>
 #include <assert.h>
+	
+enum action_t {attack, flee, wander};
+
+class Blob;
+
+class Option 
+{
+public:
+	Option (action_t action, double weight, Blob* target) :
+		_action (action)
+	      , _weight (weight)
+	      , _target (target)
+	{
+	} 
+	
+	action_t action () const {return _action;}
+	double weight () const {return _weight;}
+	Blob* target () const {return _target;}
+
+	bool matches (const Option& other)
+	{
+		return (_action == other._action) && (_target == other._target);
+	}
+private:
+	action_t _action;
+	double _weight;
+	Blob* _target;
+};
 
 class CreateBlob 
 {
@@ -308,17 +336,10 @@ public:
 	{
 		return distanceWeight (b) * avoidDamageWeightForFleeing (b);
 	}
-	
-	struct ActionPossibility 
-	{
-		enum {attack, flee} action;
-		double weight;
-		Blob* target;
-	};
 
-	std::vector<ActionPossibility> findPossibleActions (std::vector<Blob>& others) const
+	std::vector<Option> findOptions (std::vector<Blob>& others) const
 	{	
-		std::vector <ActionPossibility> possibilities;
+		std::vector <Option> options;
 
 		for (auto& b : others)
 		{
@@ -328,36 +349,41 @@ public:
 
 				if (isInSameSquare (b) || canSmell (b))
 				{
-					possibilities.push_back (
-						ActionPossibility {ActionPossibility::attack, attackWeight (b) + a, &b});
-					possibilities.push_back (
-						ActionPossibility {ActionPossibility::flee, fleeWeight (b) - a, &b});
+					options.push_back (Option (attack, attackWeight (b) + a, &b));
+					options.push_back (Option {flee, fleeWeight (b) - a, &b});
 				}
 			}
 		}
 		
-		return possibilities;
+		return options;
 	}
 
-	std::shared_ptr<Action> selectAction (std::vector <ActionPossibility> possibilities)
+	std::vector<Option> prioritiseOptions (const std::vector <Option>& options)
 	{
-		if (possibilities.size () > 0)
-		{
-			std::sort (possibilities.begin (), possibilities.end (),
-			   [] (const ActionPossibility& lhs,
-			       const ActionPossibility& rhs) {
-			return lhs.weight < rhs.weight;});
-	
-			ActionPossibility selected_option = (possibilities.back ());
-			switch (selected_option.action)
-			{
-				case ActionPossibility::attack:
- 					return createActionAttack (*(selected_option.target));
-				case ActionPossibility::flee:
-					return createActionFlee (*(selected_option.target));
-			}
+		std::vector<Option> result = options;
+
+		std::sort (result.begin (), result.end (),
+			   [] (const Option& lhs,
+			       const Option& rhs) {
+			return lhs.weight () < rhs.weight ();});
+			
+		return result;
+	}
+
+	Option selectBestOption (const std::vector <Option>& options)
+	{
+		if (options.size () > 0)
+		{	
+			std::vector<Option>  prioritisedOptions = prioritiseOptions (options);
+		
+			return prioritisedOptions.back ();
 		}
-		return createActionWander ();
+		return Option (wander, 0.0, 0);
+	}
+
+	Option chooseBestOption (std::vector<Blob>& blobs)
+	{
+		return selectBestOption (findOptions (blobs));
 	}
 
 	std::shared_ptr <Action> chooseNextAction (std::vector<Blob>& blobs)
@@ -368,7 +394,16 @@ public:
 		}
 		else
 		{
-			return selectAction (findPossibleActions (blobs));
+			auto selectedOption = chooseBestOption (blobs);
+			switch (selectedOption.action ())
+			{
+				case attack:
+ 					return createActionAttack (*(selectedOption.target ()));
+				case flee:
+					return createActionFlee (*(selectedOption.target ()));
+				case wander:
+					return createActionWander ();
+			}
 		}
 	}
 private:

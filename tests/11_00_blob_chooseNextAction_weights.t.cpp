@@ -52,6 +52,24 @@ TEST (test_11_00_blob_chooseNextAction_weights_t, fleeWeight_scalesWithDistance)
 	EXPECT_GT (defender1.fleeWeight (attacker), defender2.fleeWeight (attacker));
 }
 
+TEST (test_11_00_blob_chooseNextAction_weights_t, distance_does_not_affect_fleeWeight_in__same_square)
+{
+	Blob attacker = CreateBlob ().position (make_pt (3.0, 4.0)).damage (100U);
+	Blob defender1 = CreateBlob ().position (make_pt (3.1, 4.0)).smell (100.0).HP (50U);
+	Blob defender2 = CreateBlob ().position (make_pt (3.9, 4.0)).smell (100.0).HP (50U);
+
+	EXPECT_DOUBLE_EQ (defender1.fleeWeight (attacker), defender2.fleeWeight (attacker));
+}
+
+TEST (test_11_00_blob_chooseNextAction_weights_t, distance_does_not_affect_attackWeight_in__same_square)
+{
+	Blob attacker1 = CreateBlob ().position (make_pt (3.9, 4.0)).damage (100U);
+	Blob attacker2 = CreateBlob ().position (make_pt (3.1, 4.0)).damage (100U);
+	Blob defender = CreateBlob ().position (make_pt (3.0, 4.0)).smell (100.0).HP (50U);
+
+	EXPECT_DOUBLE_EQ (attacker1.attackWeight (defender), attacker2.attackWeight (defender));
+}
+
 int main (int argc, char** argv) 
 {
 	testing::InitGoogleTest (&argc, argv);
