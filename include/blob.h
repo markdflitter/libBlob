@@ -63,20 +63,20 @@ public:
 		{
 	      	}
 
-	CreateBlob& name (const std::string& name) {_name = name; return *this;}
-	CreateBlob& position (const Pt<double>& position) {_position = position; return *this;}
-	CreateBlob& speed (double speed) {_speed = speed; return *this;}
-	CreateBlob& runningSpeed (double runningSpeed) {_runningSpeed = runningSpeed; return *this;}
-	CreateBlob& smell (double smell) {_smell = smell; return *this;}
-	CreateBlob& HP (unsigned int HP) {_HP = HP; return *this;}
-	CreateBlob& endurance (unsigned int endurance) {_endurance = endurance; return *this;}
-	CreateBlob& aggression (double aggression) {_aggression = aggression; return *this;}
-	CreateBlob& lifespan (unsigned int lifespan) {_lifespan = lifespan; return *this;}
-	CreateBlob& damage (unsigned int damage) {_damage = damage; return *this;}
-	CreateBlob& moveDirectionFn (std::function<double(double)> moveDirectionFn)
-		{_moveDirectionFn = moveDirectionFn; return *this;}
-	CreateBlob& aggressionFn (std::function<double(double)> aggressionFn)
-		{_aggressionFn = aggressionFn; return *this;}
+	CreateBlob name (const std::string& name) {CreateBlob b (*this); b._name = name; return b;}
+	CreateBlob position (const Pt<double>& position) {CreateBlob b (*this); b._position = position; return b;}
+	CreateBlob speed (double speed) {CreateBlob b (*this); b._speed = speed; return b;}
+	CreateBlob runningSpeed (double runningSpeed) {CreateBlob b (*this); b._runningSpeed = runningSpeed; return b;}
+	CreateBlob smell (double smell) {CreateBlob b (*this); b._smell = smell; return b;}
+	CreateBlob HP (unsigned int HP) {CreateBlob b (*this); b._HP = HP; return b;}
+	CreateBlob endurance (unsigned int endurance) {CreateBlob b (*this); b._endurance = endurance; return b;}
+	CreateBlob aggression (double aggression) {CreateBlob b (*this); b._aggression = aggression; return b;}
+	CreateBlob lifespan (unsigned int lifespan) {CreateBlob b (*this); b._lifespan = lifespan; return b;}
+	CreateBlob damage (unsigned int damage) {CreateBlob b (*this); b._damage = damage; return b;}
+	CreateBlob moveDirectionFn (std::function<double(double)> moveDirectionFn)
+		{CreateBlob b (*this); b._moveDirectionFn = moveDirectionFn; return b;}
+	CreateBlob aggressionFn (std::function<double(double)> aggressionFn)
+		{CreateBlob b (*this); b._aggressionFn = aggressionFn; return b;}
 private:
 	friend class Blob;
 	
@@ -301,11 +301,6 @@ public:
 		return relativeDifference (damage (), b.HP ()) * 2.0;
 	}
 
-	double avoidDamageWeightForAttacking (const Blob& b) const
-	{
-		return relativeDifference (HP (), b.damage ()) * 2.0;
-	}
-
 	double avoidDamageWeightForFleeing (const Blob& b) const
 	{
 		return b.inflictDamageWeightForAttacking (*this);
@@ -329,8 +324,8 @@ public:
 
 	double attackWeight (const Blob& b) const
 	{
-		return distanceWeight (b) * std::max (inflictDamageWeightForAttacking (b), avoidDamageWeightForAttacking (b));
-	}	
+		return distanceWeight (b) * inflictDamageWeightForAttacking (b);
+	}
 	
 	double fleeWeight (const Blob& b) const
 	{

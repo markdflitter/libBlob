@@ -1,205 +1,113 @@
 #include <gtest/gtest.h>
 #include <blob.h>
-//inRange -> in_range
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  more_likely_to_attack_closer_blobs_in_smell_range)
+auto weakest = CreateBlob ().HP (25U).smell (100.0).position (make_pt (5.0, 5.0));
+auto weaker = CreateBlob ().HP (50U).smell (100.0).position (make_pt (5.0, 5.0));
+auto stronger = CreateBlob ().HP (200U).smell (100.0).damage (100U).position (make_pt (10.0, 10.0));
+auto strongest = CreateBlob ().HP (200U).smell (100.0).damage (200U).position (make_pt (10.0, 10.0));
+
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, weaker_flees_stronger)
 {
-	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
-				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
-				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (20.0, 30.0))};
-	auto actions = blobs[0].findOptions (blobs);
-
-	EXPECT_EQ (actions[0].action (), attack);
-	EXPECT_EQ (actions[0].target (), &blobs[1]);
-	EXPECT_EQ (actions[2].action (), attack);
-	EXPECT_EQ (actions[2].target (), &blobs[2]);
-	EXPECT_GT (actions[0].weight (), actions[2].weight ());
+	std::vector <Blob> b {weaker, stronger};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[1])));
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  more_likely_to_flee_closer_blobs_in_smell_range)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, weaker_flees_closest_if_same_strength)
 {
-	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
-				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
-				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (20.0, 30.0))};
-	auto actions = blobs[0].findOptions (blobs);
-
-	EXPECT_EQ (actions[1].action (), flee);
-	EXPECT_EQ (actions[1].target (), &blobs[1]);
-	EXPECT_EQ (actions[3].action (), flee);
-	EXPECT_EQ (actions[3].target (), &blobs[2]);
-	EXPECT_GT (actions[1].weight (), actions[3].weight ());
+	std::vector <Blob> b {weaker, stronger, stronger.position (make_pt (7.0, 7.0))};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[2])));
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  more_likely_to_flee_stronger_attacker_in_smell_range)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, weaker_flees_most_smelly_if_same_strength)
 {
-	std::vector<Blob> blobs {CreateBlob ().HP (50U).damage (80U).smell(100).aggression (0.5).position (make_pt (3.0, 4.0)),
-				 CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (10.0, 20.0)),
-				 CreateBlob ().HP (50U).damage (100U).aggression (0.5).position (make_pt (10.0, 20.0))};
-	auto actions = blobs[0].findOptions (blobs);
-
-	EXPECT_EQ (actions[1].action (), flee);
-	EXPECT_EQ (actions[1].target (), &blobs[1]);
-	EXPECT_EQ (actions[3].action (), flee);
-	EXPECT_EQ (actions[3].target (), &blobs[2]);
-	EXPECT_GT (actions[3].weight (), actions[1].weight ());
+	std::vector <Blob> b {weaker, weaker.smell (50.0), stronger};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[2])));
+	EXPECT_TRUE (b[1].chooseBestOption (b).matches (Option(flee, 0, &b[2])));
+	EXPECT_GT (b[0].chooseBestOption (b).weight (), b[1].chooseBestOption (b).weight ());
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  weaker_defender_more_likely_to_flee_blob_in_smell_range)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, weaker_flees_strongest_if_equidistant)
 {
-	std::vector<Blob> blobs {
-		CreateBlob ().HP (20U).damage (80U).smell(100.0).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (10.0, 20.0)),
-		CreateBlob ().HP (50U).damage (100U).aggression (0.5).position (make_pt (10.0, 20.0))};
-	auto actions_blob0 = blobs[0].findOptions (blobs);
-	auto actions_blob1 = blobs[1].findOptions (blobs);
-
-	EXPECT_EQ (actions_blob0.size (), 4);
-	EXPECT_EQ (actions_blob1.size (), 4);
-	EXPECT_EQ (actions_blob0[3].action (), flee);
-	EXPECT_EQ (actions_blob0[3].target (), &blobs[2]);
-	EXPECT_EQ (actions_blob1[3].action (), flee);
-	EXPECT_EQ (actions_blob1[3].target (), &blobs[2]);
-	EXPECT_GT (actions_blob0[3].weight (), actions_blob1[1].weight ());
+	std::vector <Blob> b {weaker, stronger, strongest};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[2])));
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  will_flee_close_weaker_blob_in_smell_range_even_if_there_is_stronger_one_further_away)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, weakest_flees)
 {
-	std::vector<Blob> blobs {
-		CreateBlob ().HP (20U).damage (80U).smell (500.0).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (10.0, 20.0)),
-		CreateBlob ().HP (50U).damage (1000U).aggression (0.5).position (make_pt (200.0, 200.0))};
-	auto actions = blobs[0].findOptions (blobs);
-
-	EXPECT_EQ (actions.size (), 4);
-	EXPECT_EQ (actions[1].action (), flee);
-	EXPECT_EQ (actions[1].target (), &blobs[1]);
-	EXPECT_EQ (actions[3].action (), flee);
-	EXPECT_EQ (actions[3].target (), &blobs[2]);
-	EXPECT_GT (actions[1].weight (), actions[3].weight ());
+	std::vector <Blob> b {weakest, weaker, stronger};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[2])));
+	EXPECT_TRUE (b[1].chooseBestOption (b).matches (Option(flee, 0, &b[2])));
+	EXPECT_GT (b[0].chooseBestOption (b).weight (), b[1].chooseBestOption (b).weight ());
+}
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, weaker_flees_nearby_weaker)
+{
+	std::vector <Blob> b {weakest, weaker.damage (26U).position (make_pt (6.5, 6.5)), stronger.position (make_pt (5.0, 102.0))};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[1])));
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  will_flee_stronger_blob_in_smell_range_even_if_there_is_weaker_one_closer)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, weaker_flees_distant_stronger)
 {
-	std::vector<Blob> blobs {
-		CreateBlob ().HP (20U).damage (80U).smell (500.0).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (10.0, 20.0)),
-		CreateBlob ().HP (50U).damage (1000U).aggression (0.5).position (make_pt (100.0, 100.0))};
-	auto actions = blobs[0].findOptions (blobs);
-
-	EXPECT_EQ (actions.size (), 4);
-	EXPECT_EQ (actions[1].action (), flee);
-	EXPECT_EQ (actions[1].target (), &blobs[1]);
-	EXPECT_EQ (actions[3].action (), flee);
-	EXPECT_EQ (actions[3].target (), &blobs[2]);
-	EXPECT_GT (actions[3].weight (), actions[1].weight ());
+	std::vector <Blob> b {weakest, weaker.damage (26U).position (make_pt (6.5, 6.5)), strongest.position (make_pt (5.0, 102.0))};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[2])));
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  more_likely_to_attack_weaker_blob_in_smell_range_less_HP)
+TEST (test_11_03_blob_chooseNextAction_selectBestOption_same_square_t, weaker_wont_flee_if_aggressive)
 {
-	std::vector<Blob> blobs {
-		CreateBlob ().HP (20U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (1000U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0))};
-	auto actions = blobs[2].findOptions (blobs);
-
-	EXPECT_EQ (actions.size (), 4);
-	EXPECT_EQ (actions[0].action (), attack);
-	EXPECT_EQ (actions[0].target (), &blobs[0]);
-	EXPECT_EQ (actions[2].action (), attack);
-	EXPECT_EQ (actions[2].target (), &blobs[1]);
-	EXPECT_GT (actions[0].weight (), actions[2].weight ());
+	std::vector <Blob> b {weakest.aggression (1.0), stronger};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(attack, 0, &b[1])));
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  more_likely_to_attack_weaker_blob_in_smell_range_more_damage)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, stronger_attacks_weaker)
 {
-	std::vector<Blob> blobs {
-		CreateBlob ().HP (20U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0)),
-		CreateBlob ().HP (50U).damage (1000U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0))};
-	auto actions_blob1 = blobs[1].findOptions (blobs);
-	auto actions_blob2 = blobs[2].findOptions (blobs);
-
-	EXPECT_EQ (actions_blob1.size (), 4);
-	EXPECT_EQ (actions_blob2.size (), 4);
-	EXPECT_EQ (actions_blob1[0].action (), attack);
-	EXPECT_EQ (actions_blob1[0].target (), &blobs[0]);
-	EXPECT_EQ (actions_blob2[0].action (), attack);
-	EXPECT_EQ (actions_blob2[0].target (), &blobs[0]);
-	EXPECT_GT (actions_blob2[0].weight (), actions_blob1[0].weight ());
+	std::vector <Blob> b {stronger, weaker};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(attack, 0, &b[1])));
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  more_likely_to_attack_closer_blob_in_smell_range)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, stronger_attacks_closest_if_same_strength)
 {
-	std::vector<Blob> blobs {
-		CreateBlob ().HP (50U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (5.0, 6.0)),
-		CreateBlob ().HP (50U).damage (1000U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0))};
-	auto actions = blobs[2].findOptions (blobs);
-
-	EXPECT_EQ (actions.size (), 4);
-	EXPECT_EQ (actions[0].action (), attack);
-	EXPECT_EQ (actions[0].target (), &blobs[0]);
-	EXPECT_EQ (actions[2].action (), attack);
-	EXPECT_EQ (actions[2].target (), &blobs[1]);
-	EXPECT_GT (actions[2].weight (), actions[0].weight ());
+	std::vector <Blob> b {weaker, weaker.position (make_pt (7.0, 7.0)), stronger};
+	EXPECT_TRUE (b[2].chooseBestOption (b).matches (Option(attack, 0, &b[1])));
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  more_likely_to_attack_closer_blob_in_smell_range_even_if_there_is_a_weaker_one_further_away)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, stronger_attacks_most_smelly_if_same_strength)
 {
-	std::vector<Blob> blobs {
-		CreateBlob ().HP (40U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (5.0, 6.0)),
-		CreateBlob ().HP (50U).damage (1000U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0))};
-	auto actions = blobs[2].findOptions (blobs);
-
-	EXPECT_EQ (actions.size (), 4);
-	EXPECT_EQ (actions[0].action (), attack);
-	EXPECT_EQ (actions[0].target (), &blobs[0]);
-	EXPECT_EQ (actions[2].action (), attack);
-	EXPECT_EQ (actions[2].target (), &blobs[1]);
-	EXPECT_GT (actions[2].weight (), actions[0].weight ());
+	std::vector <Blob> b {weaker, stronger.smell (50.0), stronger};
+	EXPECT_TRUE (b[1].chooseBestOption (b).matches (Option(attack, 0, &b[0])));
+	EXPECT_TRUE (b[2].chooseBestOption (b).matches (Option(attack, 0, &b[0])));
+	EXPECT_GT (b[2].chooseBestOption (b).weight (), b[1].chooseBestOption (b).weight ());
 }
 
-TEST (test_11_01_blob_selectBestOption_findOptions_t,
-  will_attack_distant_blob_in_smell_range_if_there_it_is_weak_enough)
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, stronger_attacks_weakest_if_equidistant)
 {
-	std::vector<Blob> blobs {
-		CreateBlob ().HP (1U).damage (80U).aggression (0.5).position (make_pt (3.0, 4.0)),
-		CreateBlob ().HP (50U).damage (80U).smell (100.0).aggression (0.5).position (make_pt (5.0, 6.0)),
-		CreateBlob ().HP (50U).damage (1000U).smell (100.0).aggression (0.5).position (make_pt (10.0, 12.0))};
-	auto actions = blobs[2].findOptions (blobs);
-
-	EXPECT_EQ (actions.size (), 4);
-	EXPECT_EQ (actions[0].action (), attack);
-	EXPECT_EQ (actions[0].target (), &blobs[0]);
-	EXPECT_EQ (actions[2].action (), attack);
-	EXPECT_EQ (actions[2].target (), &blobs[1]);
-	EXPECT_GT (actions[0].weight (), actions[2].weight ());
+	std::vector <Blob> b {weakest, weaker, stronger};
+	EXPECT_TRUE (b[2].chooseBestOption (b).matches (Option(attack, 0, &b[0])));
 }
 
-// blobs in smell range
-// attack action
-  // weaker blobs more likely to flee	
-  //stronger blobs more likely to attack
-  // more aggressive blobs more likely to attack
-  // less aggressive blobs more likely to flee
-    
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, strongest_attacks)
+{
+	std::vector <Blob> b {strongest, stronger, weaker};
+	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(attack, 0, &b[2])));
+	EXPECT_TRUE (b[1].chooseBestOption (b).matches (Option(attack, 0, &b[2])));
+	EXPECT_GT (b[0].chooseBestOption (b).weight (), b[1].chooseBestOption (b).weight ());
+}
 
-// STILL NEEDS THOUGHT
-// combined
-//  more likely to flee blobs in same square
-// may flee blobs further away
-//aggression randomness
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, stronger_attacks_nearby_stronger)
+{
+	std::vector <Blob> b {weakest, stronger.HP (190U).position (make_pt (5.0, 100.0)), strongest.position (make_pt (5.0, 102.0))};
+	EXPECT_TRUE (b[2].chooseBestOption (b).matches (Option(attack, 0, &b[1])));
+}
+
+TEST (test_11_04_blob_chooseNextAction_selectBestOption_in_range_t, stronger_attacks_distant_weaker)
+{
+	std::vector <Blob> b {weakest, stronger.HP (199U).position (make_pt (5.0, 100.0)), strongest.position (make_pt (5.0, 102.0))};
+	EXPECT_TRUE (b[2].chooseBestOption (b).matches (Option(attack, 0, &b[0])));
+}
+
+TEST (test_11_03_blob_chooseNextAction_selectBestOption_same_square_t, stronger_wont_attack_if_cowardly)
+{
+	std::vector <Blob> b {weakest, stronger.aggression (-1.0)};
+	EXPECT_TRUE (b[1].chooseBestOption (b).matches (Option(flee, 0, &b[0])));
+}
 
 int main (int argc, char** argv) 
 {

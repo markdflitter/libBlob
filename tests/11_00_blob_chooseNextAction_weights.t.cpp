@@ -10,14 +10,6 @@ TEST (test_11_00_blob_chooseNextAction_weights_t, attackWeight_usesInflictDamage
 	EXPECT_DOUBLE_EQ (attacker.attackWeight (defender), 1.0);
 }
 
-TEST (test_11_00_blob_chooseNextAction_weights_t, attackWeight_usesAvoidDamageWeight)
-{
-	Blob attacker = CreateBlob ().position (make_pt (3.0, 4.0)).smell (1.0).HP (100U).damage (100U);
-	Blob defender = CreateBlob ().position (make_pt (3.0, 5.0)).HP (100U).damage (0U);
-
-	EXPECT_DOUBLE_EQ (attacker.attackWeight (defender), 1.0);
-}
-
 TEST (test_11_00_blob_chooseNextAction_weights_t, attackWeight_scalesWithDistance)
 {
 	Blob attacker = CreateBlob ().position (make_pt (3.0, 4.0)).smell (100.0).damage (100U);
