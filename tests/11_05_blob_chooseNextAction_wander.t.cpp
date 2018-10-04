@@ -6,7 +6,7 @@ double fixed_angle (double previousMoveDirection)
 	return previousMoveDirection + M_PI / 4.0;
 };
 
-TEST (test_11_06_blob_chooseNextAction_wander_t, chooses_to_wander_in_a_circle)
+TEST (test_11_05_blob_chooseNextAction_wander_t, chooses_to_wander_in_a_circle)
 {
 	Blob b = CreateBlob ().position (make_pt (10.1, 20.2)).speed (5.0).moveDirectionFn (fixed_angle).lifespan (10U);
 	std::vector<Blob> blobs;
@@ -52,7 +52,7 @@ TEST (test_11_06_blob_chooseNextAction_wander_t, chooses_to_wander_in_a_circle)
 	EXPECT_DOUBLE_EQ (b.y (), 20.2);
 }
 
-TEST (test_11_06_blob_chooseNextAction_wander_t, chooses_to_wander_randomly)
+TEST (test_11_05_blob_chooseNextAction_wander_t, chooses_to_wander_randomly)
 {
 	std::mt19937 gen {0};
 	std::normal_distribution<> dist{0.0, 40.0};
@@ -73,7 +73,7 @@ TEST (test_11_06_blob_chooseNextAction_wander_t, chooses_to_wander_randomly)
 	EXPECT_DOUBLE_EQ (m->_angleInRadians, 0.78385874166005687);
 }
 
-TEST (test_11_06_blob_chooseNextAction_wander_t, wanders_randomly)
+TEST (test_11_05_blob_chooseNextAction_wander_t, wanders_randomly)
 {
 	std::mt19937 gen {0};
 	std::normal_distribution<> dist{0.0, 40.0};
@@ -104,7 +104,7 @@ TEST (test_11_06_blob_chooseNextAction_wander_t, wanders_randomly)
 	EXPECT_DOUBLE_EQ (b.y (), 28.9731059145399569);
 }
 
-TEST (test_11_06_blob_chooseNextAction_wander_t, different_blobs_wander_independently)
+TEST (test_11_05_blob_chooseNextAction_wander_t, different_blobs_wander_independently)
 {
 	Blob b1 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (1.0, 40.0));
 	Blob b2 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (1.0, 40.0));

@@ -93,11 +93,8 @@ target_link_libraries (test_11_03_blob_selectBestOption_in_range ${GTEST_LIBRARI
 add_executable (test_11_04_blob_chooseNextAction tests/11_04_blob_chooseNextAction.t.cpp)
 target_link_libraries (test_11_04_blob_chooseNextAction ${GTEST_LIBRARIES} pthread)
 
-add_executable (test_11_05_blob_chooseNextAction_dead tests/11_05_blob_chooseNextAction_dead.t.cpp)
-target_link_libraries (test_11_05_blob_chooseNextAction_dead ${GTEST_LIBRARIES} pthread)
-
-add_executable (test_11_06_blob_chooseNextAction_wander tests/11_06_blob_chooseNextAction_wander.t.cpp)
-target_link_libraries (test_11_06_blob_chooseNextAction_wander ${GTEST_LIBRARIES} pthread)
+add_executable (test_11_05_blob_chooseNextAction_wander tests/11_05_blob_chooseNextAction_wander.t.cpp)
+target_link_libraries (test_11_05_blob_chooseNextAction_wander ${GTEST_LIBRARIES} pthread)
 
 add_executable (test_12_00_blob_tired tests/12_00_blob_tired.t.cpp)
 target_link_libraries (test_12_00_blob_tired ${GTEST_LIBRARIES} pthread)
@@ -130,6 +127,5 @@ gtest_discover_tests (test_11_01_blob_prioritiseOptions)
 gtest_discover_tests (test_11_02_blob_selectBestOption_same_square)
 gtest_discover_tests (test_11_03_blob_selectBestOption_in_range)
 gtest_discover_tests (test_11_04_blob_chooseNextAction)
-gtest_discover_tests (test_11_05_blob_chooseNextAction_dead)
-gtest_discover_tests (test_11_06_blob_chooseNextAction_wander)
+gtest_discover_tests (test_11_05_blob_chooseNextAction_wander)
 gtest_discover_tests (test_12_00_blob_tired)
