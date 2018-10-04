@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-TEST (test_11_02_blob_chooseNextAction_prioritiseOptions, no_options)
+TEST (test_11_01_blob_prioritiseOptions, no_options)
 {
 	std::vector<Option> v;
 	Blob b = CreateBlob ();
@@ -10,7 +10,7 @@ TEST (test_11_02_blob_chooseNextAction_prioritiseOptions, no_options)
 	EXPECT_TRUE (r.empty ());
 }
 
-TEST (test_11_02_blob_chooseNextAction_prioritiseOptions, various_options)
+TEST (test_11_01_blob_prioritiseOptions, various_options)
 {
 	std::vector<Option> v {
 		Option (attack, 10.0, 0),

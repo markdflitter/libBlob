@@ -2,7 +2,7 @@
 #include <blob.h>
 // this tests that we return the right option, just check the test names
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   returns_nothing_if_alone)
 {
   	Blob b = CreateBlob ();
@@ -12,7 +12,7 @@ TEST (test_11_01_blob_chooseNextAction_findOptions_t,
 	EXPECT_TRUE (actions.empty ());
 }
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   does_not_consider_self)
 {
 	std::vector<Blob> blobs {CreateBlob ().smell (100.0)};
@@ -21,7 +21,7 @@ TEST (test_11_01_blob_chooseNextAction_findOptions_t,
 	EXPECT_TRUE (actions.empty ());
 }
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   does_not_consider_the_dead)
 {
 	std::vector<Blob> blobs {CreateBlob ().smell (100.0), CreateBlob ()};
@@ -31,7 +31,7 @@ TEST (test_11_01_blob_chooseNextAction_findOptions_t,
 	EXPECT_TRUE (actions.empty ());
 }
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   does_not_consider_others_in_other_squares_or_outside_smell_range)
 {
 	std::vector<Blob> blobs {CreateBlob ().smell (100.0), CreateBlob ().position (make_pt (100.0, 100.0))};
@@ -40,7 +40,7 @@ TEST (test_11_01_blob_chooseNextAction_findOptions_t,
 	EXPECT_TRUE (actions.empty ());
 }
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_actions_for_others_in_same_square)
 {
 	std::vector<Blob> blobs {CreateBlob (), CreateBlob ()};
@@ -54,7 +54,7 @@ TEST (test_11_01_blob_chooseNextAction_findOptions_t,
 }
 
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_options_for_others_in_smell_range)
 {
 	std::vector<Blob> blobs {CreateBlob ().smell (5.0), CreateBlob ().position (make_pt (3.0, 4.0))};
@@ -67,7 +67,7 @@ TEST (test_11_01_blob_chooseNextAction_findOptions_t,
 	EXPECT_EQ (actions[1].target (), &blobs[1]);
 }
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_options_for_more_than_1_other_in_same_square)
 {
 	std::vector<Blob> blobs {CreateBlob (), CreateBlob (), CreateBlob ()};
@@ -84,7 +84,7 @@ TEST (test_11_01_blob_chooseNextAction_findOptions_t,
 	EXPECT_EQ (actions[3].target (), &blobs[2]);
 }
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_options_for_more_than_1_other_in_smell_range)
 {
 	std::vector<Blob> blobs {CreateBlob ().smell (5.0),
@@ -103,7 +103,7 @@ TEST (test_11_01_blob_chooseNextAction_findOptions_t,
 	EXPECT_EQ (actions[3].target (), &blobs[2]);
 }
 
-TEST (test_11_01_blob_chooseNextAction_findOptions_t,
+TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_options_all_relevant_others)
 {
 	std::vector<Blob> blobs {CreateBlob ().smell (5.0),

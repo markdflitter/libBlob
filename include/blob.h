@@ -296,14 +296,14 @@ public:
 		return (v1 - v2) / (v1 + v2) / 2; 
 	}
 
-	double inflictDamageWeightForAttacking (const Blob& b) const
+	double inflictDamageWeight (const Blob& b) const
 	{
 		return relativeDifference (damage (), b.HP ()) * 2.0;
 	}
 
-	double avoidDamageWeightForFleeing (const Blob& b) const
+	double avoidDamageWeight (const Blob& b) const
 	{
-		return b.inflictDamageWeightForAttacking (*this);
+		return b.inflictDamageWeight (*this);
 	}
 
 	double distanceWeight (const Blob& b) const
@@ -324,12 +324,12 @@ public:
 
 	double attackWeight (const Blob& b) const
 	{
-		return distanceWeight (b) * inflictDamageWeightForAttacking (b);
+		return distanceWeight (b) * inflictDamageWeight (b);
 	}
 	
 	double fleeWeight (const Blob& b) const
 	{
-		return distanceWeight (b) * avoidDamageWeightForFleeing (b);
+		return distanceWeight (b) * avoidDamageWeight (b);
 	}
 
 	std::vector<Option> findOptions (std::vector<Blob>& others) const
