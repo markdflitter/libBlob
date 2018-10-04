@@ -33,7 +33,7 @@ public:
 
 	double operator ()(double aggression) 
 	{
-		return std::max (0.0, std::min (1.0, aggression + _dist (_gen)));
+		return std::max (-1.0, std::min (1.0, aggression + _dist (_gen)));
 	}
 private:
 	std::mt19937 _gen;
