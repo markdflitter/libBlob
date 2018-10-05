@@ -68,8 +68,6 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_increases_high_aggress
 
 TEST (test_11_05_blob_selectBestOption_aggression_t, different_options_get_different_aggression)
 {
-// need to look at this again and make sure amage and HP are right
-
 	std::vector <Blob> b1 {blob.damage (100U).HP (100U), blob.damage (99U).HP (100U)};
 	std::vector <Blob> b2 {blob.damage (100U).HP (100U).aggressionFn (Rnd2 (0)), blob.damage (99U).HP (100U)};
 	auto options1 = b1[0].findOptions (b1);
