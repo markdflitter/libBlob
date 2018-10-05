@@ -47,7 +47,7 @@ TEST (test_11_03_blob_selectBestOption_in_range_t, weaker_flees_nearby_weaker)
 
 TEST (test_11_03_blob_selectBestOption_in_range_t, weaker_flees_distant_stronger)
 {
-	std::vector <Blob> b {weakest, weaker.damage (26U).position (make_pt (6.5, 6.5)), strongest.position (make_pt (5.0, 102.0))};
+	std::vector <Blob> b {weakest, weaker.damage (26U).position (make_pt (6.5, 6.5)), strongest.position (make_pt (5.0, 95.0))};
 	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[2])));
 }
 

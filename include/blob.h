@@ -303,7 +303,7 @@ public:
 
 	double avoidDamageWeight (const Blob& b) const
 	{
-		return b.inflictDamageWeight (*this);
+		return relativeDifference (b.damage () + 1, HP ()) * 2.0;
 	}
 
 	double distanceWeight (const Blob& b) const

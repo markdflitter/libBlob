@@ -14,7 +14,7 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, aggressionFn_is_applied_to_
 {
 	std::vector <Blob> b {blob.aggressionFn ([](double) {return -1000;}), blob};
 	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[1])));
-	EXPECT_EQ (b[0].chooseBestOption (b).weight (), 1000);
+	EXPECT_EQ (b[0].chooseBestOption (b).weight (), 1000.0 + (1.0 / 401.0));
 }
 
 TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2)
@@ -68,13 +68,15 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_increases_high_aggress
 
 TEST (test_11_05_blob_selectBestOption_aggression_t, different_options_get_different_aggression)
 {
-	std::vector <Blob> b1 {blob.aggressionFn (Rnd2 (0)), blob};
-	std::vector <Blob> b2 {blob, blob};
+// need to look at this again and make sure amage and HP are right
+
+	std::vector <Blob> b1 {blob.damage (100U).HP (100U), blob.damage (99U).HP (100U)};
+	std::vector <Blob> b2 {blob.damage (100U).HP (100U).aggressionFn (Rnd2 (0)), blob.damage (99U).HP (100U)};
 	auto options1 = b1[0].findOptions (b1);
 	auto options2 = b2[0].findOptions (b2);
 
-	EXPECT_DOUBLE_EQ (options2 [0].weight (), options2 [1].weight ());
-	EXPECT_NE (options1 [0].weight (), options1 [1].weight ());
+	EXPECT_DOUBLE_EQ (options1 [0].weight (), options1 [1].weight ());
+	EXPECT_NE (options2 [0].weight (), options2 [1].weight ());
 }
 
 TEST (test_11_05_blob_selectBestOption_aggression_t, aggressionFn_forces_attack_same_square)
