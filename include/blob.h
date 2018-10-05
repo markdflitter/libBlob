@@ -340,12 +340,10 @@ public:
 		{
 			if ((&b != this) && !b.isDead ())
 			{
-				double a = _aggressionFn (_aggression);
-
 				if (isInSameSquare (b) || canSmell (b))
 				{
-					options.push_back (Option (attack, attackWeight (b) + a, &b));
-					options.push_back (Option {flee, fleeWeight (b) - a, &b});
+					options.push_back (Option (attack, attackWeight (b) + _aggressionFn (_aggression), &b));
+					options.push_back (Option {flee, fleeWeight (b) - _aggressionFn (_aggression), &b});
 				}
 			}
 		}
