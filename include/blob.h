@@ -103,12 +103,11 @@ public:
 		, _speed (params._speed)
 		, _runningSpeed (params._runningSpeed)
 		, _smell (params._smell)
-		, _maxHP (params._HP)
-		, _HP (params._HP)
+		, _baseHP (params._HP)
 		, _endurance (params._endurance)
 		, _aggression (params._aggression)
 		, _lifespan (params._lifespan)
-		, _damage (params._damage)
+		, _baseDamage (params._damage)
 		, _moveDirectionFn (params._moveDirectionFn)
 		, _aggressionFn (params._aggressionFn)
 		,  _state ("newborn")
@@ -118,21 +117,26 @@ public:
 		, _dead (false)
 	{
 		_points.push_back (params._position);
+		setHP (maxHP ());
 	}
 
 	std::string name () const {return _name;}
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
-	double speed () const {return _speed;}
-	double runningSpeed () const {return _runningSpeed;}
-	double smell () const {return _smell;}
+	double baseSpeed () const {return _speed;}
+	double speed () const {return _speed * (double (_HP)) / baseHP ();}
+	double runningSpeed () const {return _runningSpeed * (double (_HP)) / baseHP ();}
+	double smell () const {return _smell * ageRatio ();}
+	unsigned int baseHP () const {return _baseHP;}
 	unsigned int HP () const {return _HP;}
-	unsigned int maxHP () const {return _maxHP;}
-	unsigned int damage () const {return _damage;}
+	unsigned int maxHP () const {return ((unsigned int) ((_baseHP * ageRatio ()) + 0.5));}
+	unsigned int baseDamage () const {return _baseDamage;}
+	unsigned int damage () const {return ((unsigned int) ((_baseDamage * (double (_HP)) / baseHP ()) + 0.5));}
 	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
  	unsigned int lifespan () const {return _lifespan;}
 	unsigned int age () const {return _age;}
+	double ageRatio () const {return std::max (0.0, ((double) (_lifespan -_age)) / _lifespan);}
 	std::string state () const {return _state;}
 
 	double fatigue () const {return _fatigue;}
@@ -182,15 +186,35 @@ public:
 		_state = "dead";
 	}
 
+	void setHP (unsigned int newHP)
+	{
+		_HP = newHP;
+		if (_HP == 0U)
+		{
+			kill ();
+		}
+	}
+
 	void growOlder ()
 	{
 		if (!isDead ())
 		{
 			_age++;
-
-			if (_age >= lifespan ())
+		if (_HP > maxHP ()) 
 			{
-				kill ();
+				setHP (maxHP ());
+				if (HP () == 0U)
+				{
+					assert (isDead ());
+				}
+			}
+			else if (_HP < maxHP ())
+			{
+				setHP (_HP + 1U);
+			}
+			if (HP () == 0U)
+			{
+				assert (isDead ());
 			}
 		}
 	}
@@ -200,16 +224,11 @@ public:
 		growOlder ();
 		if (_HP >= damage)
 		{
-			_HP -= damage;
+			setHP (_HP - damage);
 		}
 		else
 		{
-			_HP = 0;
-		}
-
-		if (_HP == 0)
-		{
-			kill ();
+			setHP (0);
 		}
 	}
 
@@ -239,7 +258,6 @@ public:
 		else
 		{
 			if (_fatigue > 0) _fatigue--;
-			if (_HP < _maxHP) _HP++;
 		}
 		if (_fatigue == 0) _tired = false;
 		if (_fatigue == _endurance) _tired = true; 
@@ -408,12 +426,12 @@ private:
 	double _speed;
         double _runningSpeed;
 	double _smell;
-	unsigned int _maxHP;
+	unsigned int _baseHP;
 	unsigned int _HP;
 	unsigned int _endurance;
 	double _aggression;
 	unsigned int _lifespan;
-	unsigned int _damage;
+	unsigned int _baseDamage;
 
 	double _previousAngleInRadians = 0;
 

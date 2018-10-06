@@ -19,21 +19,27 @@ TEST (test_03_00_blob_t, position)
 	EXPECT_DOUBLE_EQ (b.y (), 200.2);
 }
 
+TEST (test_03_00_blob_t, smell)
+{
+	Blob b = CreateBlob ().smell (300.3).lifespan (100U);
+	EXPECT_DOUBLE_EQ (b.smell (), 300.3);
+}
+
 TEST (test_03_00_blob_t, speed)
 {
-	Blob b = CreateBlob ().speed (300.3);
+	Blob b = CreateBlob ().speed (300.3).HP (100U).lifespan (100U);
 	EXPECT_DOUBLE_EQ (b.speed (), 300.3);
 }
 
 TEST (test_03_00_blob_t, running_speed)
 {
-	Blob b = CreateBlob ().runningSpeed (400.4);
+	Blob b = CreateBlob ().runningSpeed (400.4).HP (100U).lifespan (100U);
 	EXPECT_DOUBLE_EQ (b.runningSpeed (), 400.4);
 }
 
 TEST (test_03_00_blob_t, HP)
 {
-	Blob b = CreateBlob ().HP (500U);
+	Blob b = CreateBlob ().HP (500U).lifespan (100U);
 	EXPECT_EQ (b.maxHP (), 500U);
 	EXPECT_EQ (b.HP (), 500U);
 }
@@ -60,6 +66,18 @@ TEST (test_03_00_blob_t, age)
 {
 	Blob b = CreateBlob ();
 	EXPECT_EQ (b.age (), 0U);
+}
+
+TEST (test_03_00_blob_t, baseDamage)
+{
+	Blob b = CreateBlob ().damage (100U).lifespan (5U).HP (100U);
+	EXPECT_EQ (b.damage (), 100U);
+}
+
+TEST (test_03_00_blob_t, damage)
+{
+	Blob b = CreateBlob ().damage (100U).lifespan (5U).HP (100U);
+	EXPECT_EQ (b.damage (), 100U);
 }
 
 TEST (test_03_00_blob_t, state)

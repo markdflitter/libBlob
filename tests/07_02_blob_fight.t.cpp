@@ -3,7 +3,7 @@
 
 TEST (test_07_02_blob_fight_t, takesDamage)
 {
-	Blob b = CreateBlob ().HP (100U).lifespan (10U);
+	Blob b = CreateBlob ().HP (100U).lifespan (1000U);
 	EXPECT_EQ (b.HP (), 100U);
 	EXPECT_FALSE (b.isDead ());
 

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-auto blob = CreateBlob ().HP (200U).damage (200U).position (make_pt (5.0, 5.0));
+auto blob = CreateBlob ().HP (200U).damage (200U).position (make_pt (5.0, 5.0)).lifespan (1000U);
 
 TEST (test_11_05_blob_selectBestOption_aggression_t, aggressionFn_is_applied_to_attackWeight)
 {

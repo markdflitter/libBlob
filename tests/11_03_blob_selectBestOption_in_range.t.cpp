@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-auto weakest = CreateBlob ().HP (25U).smell (100.0).position (make_pt (5.0, 5.0));
-auto weaker = CreateBlob ().HP (50U).smell (100.0).position (make_pt (5.0, 5.0));
-auto stronger = CreateBlob ().HP (200U).smell (100.0).damage (100U).position (make_pt (10.0, 10.0));
-auto strongest = CreateBlob ().HP (200U).smell (100.0).damage (200U).position (make_pt (10.0, 10.0));
+auto weakest = CreateBlob ().HP (25U).smell (100.0).position (make_pt (5.0, 5.0)).lifespan (1000U);
+auto weaker = CreateBlob ().HP (50U).smell (100.0).position (make_pt (5.0, 5.0)).lifespan (1000U);
+auto stronger = CreateBlob ().HP (200U).smell (100.0).damage (100U).position (make_pt (10.0, 10.0)).lifespan (1000U);
+auto strongest = CreateBlob ().HP (200U).smell (100.0).damage (200U).position (make_pt (10.0, 10.0)).lifespan (1000U);
 
 TEST (test_11_03_blob_selectBestOption_in_range_t, weaker_flees_stronger)
 {
