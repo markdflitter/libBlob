@@ -136,7 +136,11 @@ public:
 	double aggression () const {return _aggression;}
  	unsigned int lifespan () const {return _lifespan;}
 	unsigned int age () const {return _age;}
-	double ageRatio () const {return std::max (0.0, ((double) (_lifespan -_age)) / _lifespan);}
+	double ageRatio () const
+	{
+		double l = 1.5 * (double) _lifespan;
+		return std::max (0.0, (l -_age) / l);
+	}
 	std::string state () const {return _state;}
 
 	double fatigue () const {return _fatigue;}
@@ -146,7 +150,7 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& s, const Blob& b);
 
-	std::vector<Pt<double>> history () const {return _points;}
+	const std::vector<Pt<double>>& history () const {return _points;}
 
 	double distance (const Blob& other) const
 	{
@@ -200,7 +204,7 @@ public:
 		if (!isDead ())
 		{
 			_age++;
-		if (_HP > maxHP ()) 
+			if (_HP > maxHP ()) 
 			{
 				setHP (maxHP ());
 				if (HP () == 0U)
@@ -212,10 +216,11 @@ public:
 			{
 				setHP (_HP + 1U);
 			}
-			if (HP () == 0U)
+			if (age () >= lifespan ())
 			{
-				assert (isDead ());
+				kill ();
 			}
+
 		}
 	}
 
@@ -246,7 +251,7 @@ public:
 		newY = std::max (-WORLD_SIZE.y (), std::min (WORLD_SIZE.y (), newY));
 		
 		_points.push_back (Pt<double> (newX, newY));
-		while (_points.size () > 500)
+		while (_points.size () > 200)
 			_points.erase (_points.begin (), _points.begin () + 1);
 	
 		_state = newState;
