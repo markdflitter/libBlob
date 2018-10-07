@@ -43,7 +43,7 @@ TEST (test_11_00_blob_findOptions_t,
 TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_actions_for_others_in_same_square)
 {
-	std::vector<Blob> blobs {CreateBlob (), CreateBlob ()};
+	std::vector<Blob> blobs {CreateBlob ().HP (100U).lifespan (100U), CreateBlob ().HP (100U).lifespan (100U)};
 	auto actions = blobs[0].findOptions (blobs);
 	
 	EXPECT_EQ (actions.size (), 2U);
@@ -57,7 +57,8 @@ TEST (test_11_00_blob_findOptions_t,
 TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_options_for_others_in_smell_range)
 {
-	std::vector<Blob> blobs {CreateBlob ().smell (5.0), CreateBlob ().position (make_pt (3.0, 4.0))};
+	std::vector<Blob> blobs {CreateBlob ().smell (5.0).HP (100U).lifespan (100U),
+				 CreateBlob ().position (make_pt (3.0, 4.0)).HP (100U).lifespan (100U)};
 	auto actions = blobs[0].findOptions (blobs);
 	
 	EXPECT_EQ (actions.size (), 2U);
@@ -70,7 +71,9 @@ TEST (test_11_00_blob_findOptions_t,
 TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_options_for_more_than_1_other_in_same_square)
 {
-	std::vector<Blob> blobs {CreateBlob (), CreateBlob (), CreateBlob ()};
+	std::vector<Blob> blobs {CreateBlob ().HP (100U).lifespan (100U),
+				 CreateBlob ().HP (100U).lifespan (100U),
+				 CreateBlob ().HP (100U).lifespan (100U)};
 	auto actions = blobs[0].findOptions (blobs);
 	
 	EXPECT_EQ (actions.size (), 4U);
@@ -87,9 +90,9 @@ TEST (test_11_00_blob_findOptions_t,
 TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_options_for_more_than_1_other_in_smell_range)
 {
-	std::vector<Blob> blobs {CreateBlob ().smell (5.0),
-			         CreateBlob ().position (make_pt (1.0, 1.0)),
-				 CreateBlob ().position (make_pt (2.0, 2.0))};
+	std::vector<Blob> blobs {CreateBlob ().smell (5.0).HP (100U).lifespan (100U),
+			         CreateBlob ().position (make_pt (1.0, 1.0)).HP (100U).lifespan (100U),
+				 CreateBlob ().position (make_pt (2.0, 2.0)).HP (100U).lifespan (100U)};
 	auto actions = blobs[0].findOptions (blobs);
 	
 	EXPECT_EQ (actions.size (), 4U);
@@ -106,11 +109,11 @@ TEST (test_11_00_blob_findOptions_t,
 TEST (test_11_00_blob_findOptions_t,
   adds_flee_and_attack_options_all_relevant_others)
 {
-	std::vector<Blob> blobs {CreateBlob ().smell (5.0),
-				 CreateBlob (),
-				 CreateBlob (),
-			         CreateBlob ().position (make_pt (1.0, 1.0)),
-				 CreateBlob ().position (make_pt (2.0, 2.0))};
+	std::vector<Blob> blobs {CreateBlob ().smell (5.0).HP (100U).lifespan (100U),
+				 CreateBlob ().HP (100U).lifespan (100U),
+				 CreateBlob ().HP (100U).lifespan (100U),
+			         CreateBlob ().position (make_pt (1.0, 1.0)).HP (100U).lifespan (100U),
+				 CreateBlob ().position (make_pt (2.0, 2.0)).HP (100U).lifespan (100U)};
 	auto actions = blobs[0].findOptions (blobs);
 	
 	EXPECT_EQ (actions.size (), 8U);

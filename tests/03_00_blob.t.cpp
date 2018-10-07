@@ -82,7 +82,7 @@ TEST (test_03_00_blob_t, damage)
 
 TEST (test_03_00_blob_t, state)
 {
-	Blob b = CreateBlob ();
+	Blob b = CreateBlob ().HP (100U).lifespan (100U);
 	EXPECT_EQ (b.state (), "newborn");
 }
 
@@ -98,11 +98,18 @@ TEST (test_03_00_blob_t, starts_untired)
 	EXPECT_FALSE (b.isTired ());
 }
 
-TEST (test_03_00_blob_t, starts_alive)
+TEST (test_03_00_blob_t, starts_dead)
 {
 	Blob b = CreateBlob ();
+	EXPECT_TRUE (b.isDead ());
+}
+
+TEST (test_03_00_blob_t, starts_alive)
+{
+	Blob b = CreateBlob ().HP (100U).lifespan (100U);
 	EXPECT_FALSE (b.isDead ());
 }
+
 
 TEST (test_03_00_blob_t, output)
 {

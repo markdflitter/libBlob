@@ -29,13 +29,13 @@ TEST (test_03_01_blob_history_t, history_length)
 	}
 	
 	std::vector<Pt<double>> history = b1.history ();
-	EXPECT_EQ (history.size (), 500U);
+	EXPECT_EQ (history.size (), 200U);
 	
 	EXPECT_DOUBLE_EQ (history[0].x (), 10.0);
- 	EXPECT_DOUBLE_EQ (history[0].y (), 481.0);
+ 	EXPECT_DOUBLE_EQ (history[0].y (), 781.0);
 	
-	EXPECT_DOUBLE_EQ (history[499].x (), 10.0);
- 	EXPECT_DOUBLE_EQ (history[499].y (), 980.0);
+	EXPECT_DOUBLE_EQ (history[199].x (), 10.0);
+ 	EXPECT_DOUBLE_EQ (history[199].y (), 980.0);
 }
 
 int main (int argc, char** argv) 

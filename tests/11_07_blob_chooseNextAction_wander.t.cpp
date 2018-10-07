@@ -8,7 +8,7 @@ double fixed_angle (double previousMoveDirection)
 
 TEST (test_11_07_blob_chooseNextAction_wander_t, chooses_to_wander_in_a_circle)
 {
-	Blob b = CreateBlob ().position (make_pt (10.1, 20.2)).speed (5.0).moveDirectionFn (fixed_angle).lifespan (10U);
+	Blob b = CreateBlob ().position (make_pt (10.1, 20.2)).speed (5.0).moveDirectionFn (fixed_angle).HP (100U).lifespan (10U);
 	std::vector<Blob> blobs;
 	
 	std::shared_ptr<Action> m = b.chooseNextAction (blobs);
@@ -62,7 +62,7 @@ TEST (test_11_07_blob_chooseNextAction_wander_t, chooses_to_wander_randomly)
 		return previousMoveDirection + (2.0 * M_PI * dist (gen) / 360.0);
 	};
 
-	Blob b = CreateBlob ().position (make_pt (10.1, 20.2)).speed (5.0).moveDirectionFn (rnd_angle).lifespan (10U);
+	Blob b = CreateBlob ().position (make_pt (10.1, 20.2)).speed (5.0).moveDirectionFn (rnd_angle).HP (100U).lifespan (10U);
 	EXPECT_DOUBLE_EQ (b.x (), 10.1);
 	EXPECT_DOUBLE_EQ (b.y (), 20.2);
 
@@ -83,7 +83,7 @@ TEST (test_11_07_blob_chooseNextAction_wander_t, wanders_randomly)
 		return previousMoveDirection + (2.0 * M_PI * dist (gen) / 360.0);
 	};
 
-	Blob b = CreateBlob ().position (make_pt (10.1, 20.2)).speed (5.0).moveDirectionFn (rnd_angle).lifespan (10U);
+	Blob b = CreateBlob ().position (make_pt (10.1, 20.2)).speed (5.0).moveDirectionFn (rnd_angle).HP (100U).lifespan (10U);
 	EXPECT_DOUBLE_EQ (b.x (), 10.1);
 	EXPECT_DOUBLE_EQ (b.y (), 20.2);
 
@@ -106,9 +106,9 @@ TEST (test_11_07_blob_chooseNextAction_wander_t, wanders_randomly)
 
 TEST (test_11_07_blob_chooseNextAction_wander_t, different_blobs_wander_independently)
 {
-	Blob b1 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (1.0, 40.0));
-	Blob b2 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (1.0, 40.0));
-	Blob b3 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (2.0, 40.0));
+	Blob b1 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (1.0, 40.0)).HP (100U).lifespan (100U);
+	Blob b2 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (1.0, 40.0)).HP (100U).lifespan (100U);;
+	Blob b3 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (2.0, 40.0)).HP (100U).lifespan (100U);;
 	
 	std::vector<Blob> blobs;
 	b1.chooseNextAction (blobs)->apply ();

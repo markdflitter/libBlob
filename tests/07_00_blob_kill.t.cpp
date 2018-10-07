@@ -3,7 +3,7 @@
 
 TEST(test_07_00_blob_kill_t, is_dead_after_being_killed)
 {
-	Blob b1 = CreateBlob ();
+	Blob b1 = CreateBlob ().HP (100U).lifespan (100U);
 	EXPECT_FALSE (b1.isDead ());
 	
 	b1.kill ();
