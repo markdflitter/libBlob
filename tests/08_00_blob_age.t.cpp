@@ -97,6 +97,7 @@ TEST (test_08_00_blob_age_t, blobs_get_slower_with_less_HP)
 
 	b1.setHP (80);
 
+	EXPECT_DOUBLE_EQ (b1.baseSpeed (), 100.0);
 	EXPECT_DOUBLE_EQ (b1.speed (), 80.0);
 }
 
@@ -106,6 +107,7 @@ TEST (test_08_00_blob_age_t, blobs_get_slower_with_age)
 	EXPECT_DOUBLE_EQ (b1.speed (), 100.0);
 
 	b1.growOlder ();
+	EXPECT_DOUBLE_EQ (b1.baseSpeed (), 100.0);
 	EXPECT_DOUBLE_EQ (b1.speed (), 87.0);
 }
 
