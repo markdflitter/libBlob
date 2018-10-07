@@ -28,6 +28,7 @@ TEST (test_03_00_blob_t, smell)
 TEST (test_03_00_blob_t, speed)
 {
 	Blob b = CreateBlob ().speed (300.3).HP (100U).lifespan (100U);
+	EXPECT_DOUBLE_EQ (b.baseSpeed (), 300.3);
 	EXPECT_DOUBLE_EQ (b.speed (), 300.3);
 }
 
@@ -40,8 +41,28 @@ TEST (test_03_00_blob_t, running_speed)
 TEST (test_03_00_blob_t, HP)
 {
 	Blob b = CreateBlob ().HP (500U).lifespan (100U);
+	EXPECT_EQ (b.baseHP (), 500U);
 	EXPECT_EQ (b.maxHP (), 500U);
 	EXPECT_EQ (b.HP (), 500U);
+}
+
+TEST (test_03_00_blob_t, setHP)
+{
+	Blob b = CreateBlob ().HP (500U).lifespan (100U);
+
+	EXPECT_EQ (b.HP (), 500U);
+	b.setHP (80U);	
+	EXPECT_EQ (b.HP (), 80U);
+}
+
+TEST (test_03_00_blob_t, setHP_and_die)
+{
+	Blob b = CreateBlob ().HP (500U).lifespan (100U);
+
+	EXPECT_EQ (b.HP (), 500U);
+	b.setHP (0U);	
+	EXPECT_EQ (b.HP (), 0U);
+	EXPECT_TRUE (b.isDead ());
 }
 
 TEST (test_03_00_blob_t, endurance)
@@ -68,15 +89,10 @@ TEST (test_03_00_blob_t, age)
 	EXPECT_EQ (b.age (), 0U);
 }
 
-TEST (test_03_00_blob_t, baseDamage)
-{
-	Blob b = CreateBlob ().damage (100U).lifespan (5U).HP (100U);
-	EXPECT_EQ (b.damage (), 100U);
-}
-
 TEST (test_03_00_blob_t, damage)
 {
 	Blob b = CreateBlob ().damage (100U).lifespan (5U).HP (100U);
+	EXPECT_EQ (b.baseDamage (), 100U);
 	EXPECT_EQ (b.damage (), 100U);
 }
 
