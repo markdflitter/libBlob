@@ -206,14 +206,16 @@ public:
 	{
 		if (!isDead ())
 		{
+
+			unsigned int damage = maxHP () - HP ();
 			_age++;
 			if (_HP > maxHP ()) 
 			{
 				setHP (maxHP ());
-				if (HP () == 0U)
-				{
-					assert (isDead ());
-				}
+			}
+			else
+			{
+				setHP (maxHP () - damage);
 			}
 			if (_HP < maxHP ())
 			{

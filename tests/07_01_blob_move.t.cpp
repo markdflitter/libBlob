@@ -191,12 +191,12 @@ TEST (test_07_01_blob_move_t, move_limit_maxy)
 
 TEST (test_07_01_blob_move_t, move_hitPoints_recover)
 {
-	Blob b1 = CreateBlob ().HP (100U).lifespan (100U);
+	Blob b1 = CreateBlob ().HP (100U).lifespan (100000U);
 	b1.takeDamage (5U);
 
-	EXPECT_EQ (b1.HP (), 46U);
+	EXPECT_EQ (b1.HP (), 45U);
 	b1.growOlder ();
-	EXPECT_EQ (b1.HP (), 47U);
+	EXPECT_EQ (b1.HP (), 46U);
 }
 
 TEST (test_07_01_blob_move_t, move_hitPoints_recover_stops_at_max)

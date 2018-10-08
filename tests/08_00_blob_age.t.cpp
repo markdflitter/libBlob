@@ -112,9 +112,9 @@ TEST (test_08_00_blob_age_t, blobs_HP_change_with_age)
 	for (size_t i = 0; i < 10; i++)
 	{
 		b1.growOlder ();
-		if (i < 9)
+		if (i < 5)
 		{
-			EXPECT_EQ (b1.HP (), previous + 1U);
+			EXPECT_GT (b1.HP (), previous);
 		}
 		else
 		{
@@ -123,6 +123,18 @@ TEST (test_08_00_blob_age_t, blobs_HP_change_with_age)
 		previous = b1.HP ();
 	}
 }
+
+TEST (test_08_00_blob_age_t, damaged_blobs_stay_damaged_with_age)
+{
+	Blob b1 = CreateBlob ().lifespan (10U).HP (100U);
+	EXPECT_EQ (b1.HP (), 50U);
+	b1.setHP (40U);
+
+	b1.growOlder ();
+
+	EXPECT_EQ (b1.HP (), 59U);
+}
+
 
 TEST (test_08_00_blob_age_t, blobs_get_slower_with_less_HP)
 {
@@ -144,7 +156,7 @@ TEST (test_08_00_blob_age_t, blobs_change_speed_with_age)
 	for (size_t i = 0; i < 10; i++)
 	{
 		b1.growOlder ();
-		if (i < 9)
+		if (i < 5)
 		{
 			EXPECT_GT (b1.speed (), previous);
 		}
@@ -177,7 +189,7 @@ TEST (test_08_00_blob_age_t, blobs_change_runningSpeed_with_age)
 	for (size_t i = 0; i < 10; i++)
 	{
 		b1.growOlder ();
-		if (i < 9)
+		if (i < 5)
 		{
 			EXPECT_GT (b1.runningSpeed (), previous);
 		}
@@ -230,7 +242,7 @@ TEST (test_08_00_blob_age_t, blobs_change_damage_with_age)
 	for (size_t i = 0; i < 10; i++)
 	{
 		b1.growOlder ();
-		if (i < 9)
+		if (i < 5)
 		{
 			EXPECT_GT (b1.damage (), previous);
 		}
