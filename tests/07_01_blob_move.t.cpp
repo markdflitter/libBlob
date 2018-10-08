@@ -194,23 +194,23 @@ TEST (test_07_01_blob_move_t, move_hitPoints_recover)
 	Blob b1 = CreateBlob ().HP (100U).lifespan (100U);
 	b1.takeDamage (5U);
 
-	EXPECT_EQ (b1.HP (), 94U);
+	EXPECT_EQ (b1.HP (), 46U);
 	b1.growOlder ();
-	EXPECT_EQ (b1.HP (), 95U);
+	EXPECT_EQ (b1.HP (), 47U);
 }
 
 TEST (test_07_01_blob_move_t, move_hitPoints_recover_stops_at_max)
 {
 	Blob b1 = CreateBlob ().HP (100U).lifespan (10000U);
 	b1.takeDamage (5U);
-	EXPECT_EQ (b1.HP (), 95U);
+	EXPECT_EQ (b1.HP (), 45U);
 	b1.growOlder ();
 	b1.growOlder ();
 	b1.growOlder ();
 	b1.growOlder ();
 	b1.growOlder ();
 	b1.growOlder ();
-	EXPECT_EQ (b1.HP (), 100U);
+	EXPECT_EQ (b1.HP (), 50U);
 }
 
 

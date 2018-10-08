@@ -3,23 +3,23 @@
 
 TEST (test_10_03_blob_fleeWeight_t, avoidDamageWeight_peer)
 {
-	Blob b1 = CreateBlob ().HP (100U).damage (100U).lifespan (1000U);
+	Blob b1 = CreateBlob ().HP (200U).damage (200U).lifespan (1000U);
 
 	EXPECT_DOUBLE_EQ (b1.avoidDamageWeight (b1), 0.0049751243781094527);
 }
 
 TEST (test_10_03_blob_fleeWeight_t, avoidDamageWeight_positive)
 {
-	Blob Attacker = CreateBlob ().HP (100U).damage (100U).lifespan (1000U);
-	Blob runner = CreateBlob ().HP (50U).lifespan (100U);
+	Blob Attacker = CreateBlob ().HP (100U).damage (200U).lifespan (1000U);
+	Blob runner = CreateBlob ().HP (100U).lifespan (100U);
 
 	EXPECT_DOUBLE_EQ (runner.avoidDamageWeight (Attacker), 51.0 / 151.0);
 }
 
 TEST (test_10_03_blob_fleeWeight_t, avoidDamageWeight_negative)
 {
-	Blob Attacker = CreateBlob ().HP (100U).damage (50U).lifespan (1000U);
-	Blob runner = CreateBlob ().HP (100U).lifespan (100U);
+	Blob Attacker = CreateBlob ().HP (100U).damage (100U).lifespan (1000U);
+	Blob runner = CreateBlob ().HP (200U).lifespan (100U);
 
 	EXPECT_DOUBLE_EQ (runner.avoidDamageWeight (Attacker), -49.0 / 151.0);
 }
@@ -46,8 +46,8 @@ TEST (test_10_03_blob_fleeWeight_t, avoidDamageWeight_increases_for_weaker_defen
 
 TEST (test_10_03_blob_fleeWeight_t, fleeWeight)
 {
-	Blob attacker = CreateBlob ().position (make_pt (9.0, 12.0)).HP (100U).damage (110U).lifespan (1000U);
-	Blob defender = CreateBlob ().position  (make_pt (3.0, 4.0)).smell (50.0).HP (100U).lifespan (1000U);
+	Blob attacker = CreateBlob ().position (make_pt (9.0, 12.0)).HP (200U).damage (220U).lifespan (1000U);
+	Blob defender = CreateBlob ().position  (make_pt (3.0, 4.0)).smell (50.0).HP (200U).lifespan (1000U);
 
 	EXPECT_DOUBLE_EQ (defender.fleeWeight (attacker), 0.8 * 11.0 / 211.0);
 }

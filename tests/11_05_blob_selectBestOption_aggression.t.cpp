@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-auto blob = CreateBlob ().HP (200U).damage (200U).position (make_pt (5.0, 5.0)).lifespan (1000U);
+auto blob = CreateBlob ().HP (400U).damage (400U).position (make_pt (5.0, 5.0)).lifespan (1000U);
 
 TEST (test_11_05_blob_selectBestOption_aggression_t, aggressionFn_is_applied_to_attackWeight)
 {
@@ -68,8 +68,8 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_increases_high_aggress
 
 TEST (test_11_05_blob_selectBestOption_aggression_t, different_options_get_different_aggression)
 {
-	std::vector <Blob> b1 {blob.damage (100U).HP (100U), blob.damage (99U).HP (100U)};
-	std::vector <Blob> b2 {blob.damage (100U).HP (100U).aggressionFn (Rnd2 (0)), blob.damage (99U).HP (100U)};
+	std::vector <Blob> b1 {blob.damage (200U).HP (200U), blob.damage (198U).HP (200U)};
+	std::vector <Blob> b2 {blob.damage (200U).HP (200U).aggressionFn (Rnd2 (0)), blob.damage (198U).HP (200U)};
 	auto options1 = b1[0].findOptions (b1);
 	auto options2 = b2[0].findOptions (b2);
 

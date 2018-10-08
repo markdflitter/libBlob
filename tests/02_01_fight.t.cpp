@@ -132,14 +132,16 @@ TEST (test_02_01_fight_t, apply_attacker_is_damaged)
 
 TEST (test_02_01_fight_t, applies_to_blobs)
 {
-	Blob target = CreateBlob ().HP (7U).damage (1U).lifespan (100U);
-	Blob attacker = CreateBlob ().HP (6U).damage (5U).lifespan (100U);
+	Blob target = CreateBlob ().HP (20U).damage (4U).lifespan (100U);
+	Blob attacker = CreateBlob ().HP (40U).damage (6U).lifespan (100U);
+	EXPECT_EQ (target.HP (), 10U);
+	EXPECT_EQ (attacker.HP (), 20U);
 
 	std::shared_ptr <Action> a = attacker.createActionFight (target);
 	a->apply ();
 
-	EXPECT_EQ (target.HP (), 2U);
-	EXPECT_EQ (attacker.HP (), 5U);
+	EXPECT_EQ (target.HP (), 7U);
+	EXPECT_EQ (attacker.HP (), 19U);
 }
 
 int main (int argc, char** argv) 

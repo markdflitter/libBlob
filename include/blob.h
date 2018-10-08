@@ -138,8 +138,11 @@ public:
 	unsigned int age () const {return _age;}
 	double ageRatio () const
 	{
-		double l = 1.5 * (double) _lifespan;
-		return std::max (0.0, (l -_age) / l);
+		double a = -2.0 / (((double) _lifespan) * _lifespan);
+		double b = 2.0 / ((double) _lifespan);
+		double c = 0.5;
+
+		return a * ((double) _age) * _age + b * ((double) _age) + c;
 	}
 	std::string state () const {return _state;}
 
@@ -212,7 +215,7 @@ public:
 					assert (isDead ());
 				}
 			}
-			else if (_HP < maxHP ())
+			if (_HP < maxHP ())
 			{
 				setHP (_HP + 1U);
 			}

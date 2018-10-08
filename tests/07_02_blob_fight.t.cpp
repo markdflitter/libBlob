@@ -4,18 +4,18 @@
 TEST (test_07_02_blob_fight_t, takesDamage)
 {
 	Blob b = CreateBlob ().HP (100U).lifespan (1000U);
-	EXPECT_EQ (b.HP (), 100U);
+	EXPECT_EQ (b.HP (), 50U);
 	EXPECT_FALSE (b.isDead ());
 
 	b.takeDamage (1U);
-	EXPECT_EQ (b.HP (), 99U);
+	EXPECT_EQ (b.HP (), 49U);
 	EXPECT_FALSE (b.isDead ());
 }
 
 TEST (test_07_02_blob_fight_t, kill)
 {
 	Blob b = CreateBlob ().HP (100U).lifespan (10U);
-	EXPECT_EQ (b.HP (), 100U);
+	EXPECT_EQ (b.HP (), 50U);
 	EXPECT_FALSE (b.isDead ());
 
 	b.takeDamage (100U);
@@ -26,7 +26,7 @@ TEST (test_07_02_blob_fight_t, kill)
 TEST (test_07_02_blob_fight_t, overkill)
 {
 	Blob b = CreateBlob ().HP (100U).lifespan (10U);
-	EXPECT_EQ (b.HP (), 100U);
+	EXPECT_EQ (b.HP (), 50U);
 	EXPECT_FALSE (b.isDead ());
 
 	b.takeDamage (1000U);
