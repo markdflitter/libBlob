@@ -176,7 +176,7 @@ public:
 	
 	bool canSmell (const Blob& other) const
 	{
-		return isInRange (other, _smell);
+		return isInRange (other, smell ());
 	}
 
 	double angle (const Blob& other) const
