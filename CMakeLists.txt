@@ -21,6 +21,9 @@ target_link_libraries (test_02_00_movement ${GTEST_LIBRARIES} pthread)
 add_executable (test_02_01_fight tests/02_01_fight.t.cpp)
 target_link_libraries (test_02_01_fight ${GTEST_LIBRARIES} pthread)
 
+add_executable (test_02_02_option tests/02_02_option.t.cpp)
+target_link_libraries (test_02_02_option ${GTEST_LIBRARIES} pthread)
+
 add_executable (test_03_00_blob tests/03_00_blob.t.cpp)
 target_link_libraries (test_03_00_blob ${GTEST_LIBRARIES} pthread)
 
@@ -109,6 +112,7 @@ gtest_discover_tests (test_00_00_template)
 gtest_discover_tests (test_01_00_pt)
 gtest_discover_tests (test_02_00_movement)
 gtest_discover_tests (test_02_01_fight)
+gtest_discover_tests (test_02_02_option)
 gtest_discover_tests (test_03_00_blob)
 gtest_discover_tests (test_03_01_blob_history)
 gtest_discover_tests (test_04_00_blob_distance)
