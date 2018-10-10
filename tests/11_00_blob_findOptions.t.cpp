@@ -33,7 +33,8 @@ TEST (test_11_00_blob_findOptions_t,
 TEST (test_11_00_blob_findOptions_t,
   does_not_consider_others_in_other_squares_or_outside_smell_range)
 {
-	std::vector<Blob> blobs {CreateBlob ().smell (100.0), CreateBlob ().position (make_pt (100.0, 100.0))};
+	std::vector<Blob> blobs {CreateBlob ().smell (282.0).damage (100U).lifespan (100U), 
+		                 CreateBlob ().position (make_pt (100.0, 100.0)).HP (5U).lifespan (100U)};
 	auto actions = blobs[0].findOptions (blobs);
 	
 	EXPECT_TRUE (actions.empty ());
