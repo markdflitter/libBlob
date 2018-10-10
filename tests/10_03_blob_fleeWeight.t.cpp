@@ -47,7 +47,7 @@ TEST (test_10_03_blob_fleeWeight_t, avoidDamageWeight_increases_for_weaker_defen
 TEST (test_10_03_blob_fleeWeight_t, fleeWeight)
 {
 	Blob attacker = CreateBlob ().position (make_pt (9.0, 12.0)).HP (200U).damage (220U).lifespan (1000U);
-	Blob defender = CreateBlob ().position  (make_pt (3.0, 4.0)).smell (50.0).HP (200U).lifespan (1000U);
+	Blob defender = CreateBlob ().position  (make_pt (3.0, 4.0)).smell (100.0).HP (200U).lifespan (1000U);
 
 	EXPECT_DOUBLE_EQ (defender.fleeWeight (attacker), 0.8 * 11.0 / 211.0);
 }

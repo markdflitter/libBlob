@@ -342,7 +342,7 @@ public:
 		}
 		else if (canSmell (b)) 
 		{
-			return 1.0 - (distance (b) / _smell);
+			return 1.0 - (distance (b) / smell ());
 		}
 		else
 		{

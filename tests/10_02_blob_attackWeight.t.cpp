@@ -47,7 +47,7 @@ TEST (test_10_02_blob_attackWeight_t, inflictDamageWeight_increases_for_weaker_d
 
 TEST (test_10_02_blob_attackWeight_t, attackWeight)
 {
-	Blob attacker = CreateBlob ().position (make_pt (3.0, 4.0)).smell (50.0).HP (100U).damage (110U).lifespan (1000U);
+	Blob attacker = CreateBlob ().position (make_pt (3.0, 4.0)).smell (100.0).HP (100U).damage (110U).lifespan (1000U);
 	Blob defender = CreateBlob ().position (make_pt (9.0, 12.0)).HP (100U).lifespan (1000U);
 
 	EXPECT_DOUBLE_EQ (attacker.attackWeight (defender), 0.8 * 1.0 / 21.0);

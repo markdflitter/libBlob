@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-auto weakest = CreateBlob ().HP (25U).smell (100.0).position (make_pt (5.0, 5.0)).lifespan (1000U);
-auto weaker = CreateBlob ().HP (50U).smell (100.0).position (make_pt (5.0, 5.0)).lifespan (1000U);
-auto stronger = CreateBlob ().HP (200U).smell (100.0).damage (100U).position (make_pt (10.0, 10.0)).lifespan (1000U);
-auto strongest = CreateBlob ().HP (200U).smell (100.0).damage (200U).position (make_pt (10.0, 10.0)).lifespan (1000U);
+auto weakest = CreateBlob ().HP (25U).smell (200.0).position (make_pt (5.0, 5.0)).lifespan (1000U);
+auto weaker = CreateBlob ().HP (50U).smell (200.0).position (make_pt (5.0, 5.0)).lifespan (1000U);
+auto stronger = CreateBlob ().HP (200U).smell (200.0).damage (100U).position (make_pt (10.0, 10.0)).lifespan (1000U);
+auto strongest = CreateBlob ().HP (200U).smell (200.0).damage (200U).position (make_pt (10.0, 10.0)).lifespan (1000U);
 
 TEST (test_11_03_blob_selectBestOption_in_range_t, weaker_flees_stronger)
 {
@@ -42,6 +42,14 @@ TEST (test_11_03_blob_selectBestOption_in_range_t, weakest_flees)
 TEST (test_11_03_blob_selectBestOption_in_range_t, weaker_flees_nearby_weaker)
 {
 	std::vector <Blob> b {weakest, weaker.damage (26U).position (make_pt (6.5, 6.5)), stronger.position (make_pt (5.0, 102.0))};
+	
+	std::cout << b[0].avoidDamageWeight (b[1]) << std::endl;
+	std::cout << b[0].avoidDamageWeight (b[2]) << std::endl;
+	std::cout << b[0].distanceWeight (b[1]) << std::endl;
+	std::cout << b[0].distanceWeight (b[2]) << std::endl;
+	std::cout << b[0].fleeWeight (b[2]) << std::endl;
+	std::cout << b[0].fleeWeight (b[1]) << std::endl;
+
 	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[1])));
 }
 
