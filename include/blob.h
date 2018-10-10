@@ -401,7 +401,7 @@ public:
 		}
 	}
 private:
-	Pt<double> WORLD_SIZE = Pt<double>(2000.0, 1000.0);
+	Pt<double> WORLD_SIZE = Pt<double>(1000.0, 500.0);
 
 	std::vector<Pt<double>> _points;
 
