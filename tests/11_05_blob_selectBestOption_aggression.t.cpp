@@ -17,9 +17,9 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, aggressionFn_is_applied_to_
 	EXPECT_EQ (b[0].chooseBestOption (b).weight (), 1000.0 + (1.0 / 401.0));
 }
 
-TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2)
+TEST (test_11_05_blob_selectBestOption_aggression_t, RandomAggression)
 {
-	Rnd2 rnd (0);
+	RandomAggression rnd (0);
 	for (size_t i = 0; i < 100; ++i)
 	{
 		double r = rnd (0);
@@ -28,23 +28,23 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2)
 	}
 }
 
-TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_different_seeds_give_different_result)
+TEST (test_11_05_blob_selectBestOption_aggression_t, RandomAggression_different_seeds_give_different_result)
 {
-	Rnd2 rnd1 (0);
-	Rnd2 rnd2 (1);
+	RandomAggression rnd1 (0);
+	RandomAggression rnd2 (1);
 	EXPECT_NE (rnd1 (0), rnd2 (0));
 }
 
-TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_uses_base_aggression)
+TEST (test_11_05_blob_selectBestOption_aggression_t, RandomAggression_uses_base_aggression)
 {
-	Rnd2 rnd (0);
+	RandomAggression rnd (0);
 	EXPECT_DOUBLE_EQ (rnd (10.0), 1.0);
 	EXPECT_DOUBLE_EQ (rnd (-10.0), -1.0);
 }
 
-TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_reduces_high_aggression)
+TEST (test_11_05_blob_selectBestOption_aggression_t, RandomAggression_reduces_high_aggression)
 {
-	Rnd2 rnd (0);
+	RandomAggression rnd (0);
 	double result = 0.0;
 	for (size_t i = 0; i < 100; ++i)
 	{
@@ -54,9 +54,9 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_reduces_high_aggressio
 	EXPECT_LT (result, 100);
 }
 
-TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_increases_high_aggression)
+TEST (test_11_05_blob_selectBestOption_aggression_t, RandomAggression_increases_high_aggression)
 {
-	Rnd2 rnd (0);
+	RandomAggression rnd (0);
 	double result = 0.0;
 	for (size_t i = 0; i < 100; ++i)
 	{
@@ -69,7 +69,7 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, Rnd2_increases_high_aggress
 TEST (test_11_05_blob_selectBestOption_aggression_t, different_options_get_different_aggression)
 {
 	std::vector <Blob> b1 {blob.damage (200U).HP (200U), blob.damage (198U).HP (200U)};
-	std::vector <Blob> b2 {blob.damage (200U).HP (200U).aggressionFn (Rnd2 (0)), blob.damage (198U).HP (200U)};
+	std::vector <Blob> b2 {blob.damage (200U).HP (200U).aggressionFn (RandomAggression (0)), blob.damage (198U).HP (200U)};
 	auto options1 = b1[0].findOptions (b1);
 	auto options2 = b2[0].findOptions (b2);
 

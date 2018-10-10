@@ -4,10 +4,10 @@
 #include <random>
 #include <math.h>
 
-class Rnd 
+class RandomMove 
 {
 public:
-	Rnd (unsigned int seed, int stddev) :
+	RandomMove (unsigned int seed, int stddev) :
 		_gen (seed)
 	     ,  _dist (0, stddev) 
 	{
@@ -22,10 +22,10 @@ private:
 	std::normal_distribution<> _dist;
 };
 
-class Rnd2 
+class RandomAggression
 {
 public:
-	Rnd2 (unsigned int seed) :
+	RandomAggression (unsigned int seed) :
 		_gen (seed)
 	     ,  _dist (0.0, 0.5) 
 	{

@@ -106,9 +106,9 @@ TEST (test_11_07_blob_chooseNextAction_wander_t, wanders_randomly)
 
 TEST (test_11_07_blob_chooseNextAction_wander_t, different_blobs_wander_independently)
 {
-	Blob b1 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (1.0, 40.0)).HP (100U).lifespan (100U);
-	Blob b2 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (1.0, 40.0)).HP (100U).lifespan (100U);;
-	Blob b3 = CreateBlob ().speed (10.0).moveDirectionFn (Rnd (2.0, 40.0)).HP (100U).lifespan (100U);;
+	Blob b1 = CreateBlob ().speed (10.0).moveDirectionFn (RandomMove (1.0, 40.0)).HP (100U).lifespan (100U);
+	Blob b2 = CreateBlob ().speed (10.0).moveDirectionFn (RandomMove (1.0, 40.0)).HP (100U).lifespan (100U);;
+	Blob b3 = CreateBlob ().speed (10.0).moveDirectionFn (RandomMove (2.0, 40.0)).HP (100U).lifespan (100U);;
 	
 	std::vector<Blob> blobs;
 	b1.chooseNextAction (blobs)->apply ();

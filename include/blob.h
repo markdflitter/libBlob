@@ -102,7 +102,7 @@ public:
 		  _name (params._name)
 		, _speed (params._speed)
 		, _runningSpeed (params._runningSpeed)
-		, _smell (params._smell)
+		, _baseSmell (params._smell)
 		, _baseHP (params._HP)
 		, _endurance (params._endurance)
 		, _aggression (params._aggression)
@@ -126,7 +126,7 @@ public:
 	double baseSpeed () const {return _speed;}
 	double speed () const {return _speed * (double (_HP)) / baseHP ();}
 	double runningSpeed () const {return _runningSpeed * (double (_HP)) / baseHP ();}
-	double smell () const {return _smell * ageRatio ();}
+	double smell () const {return _baseSmell * ageRatio ();}
 	unsigned int baseHP () const {return _baseHP;}
 	unsigned int HP () const {return _HP;}
 	unsigned int maxHP () const {return ((unsigned int) ((_baseHP * ageRatio ()) + 0.5));}
@@ -435,7 +435,7 @@ private:
 	std::string _name;
 	double _speed;
         double _runningSpeed;
-	double _smell;
+	double _baseSmell;
 	unsigned int _baseHP;
 	unsigned int _HP;
 	unsigned int _endurance;
