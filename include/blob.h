@@ -15,6 +15,7 @@
 #include <fight.h>
 #include <rnd.h>
 #include "option.h"
+#include <assert.h>
 	
 class CreateBlob 
 {
