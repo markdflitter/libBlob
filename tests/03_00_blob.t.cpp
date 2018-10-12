@@ -145,6 +145,21 @@ TEST (test_03_00_blob_t, output)
 	EXPECT_EQ (s.str (), "20.2,40.4");
 }
 
+TEST (test_03_00_blob_t, limitHPtoMax_keeps_damage)
+{
+	Blob b = CreateBlob ().HP (100U).lifespan (10U).maxHunger (100U);
+	EXPECT_EQ (b.HP (), 50U);
+
+	b.takeDamage (10U);
+	EXPECT_EQ (b.HP (), 40U);
+
+	b.limitHPtoMax (20U);
+	EXPECT_EQ (b.HP (), 30U);
+
+	b.growOlder ();
+	EXPECT_EQ (b.HP (), 49U);
+}
+
 int main (int argc, char** argv) 
 {
 	testing::InitGoogleTest (&argc, argv);
