@@ -162,7 +162,7 @@ TEST (test_07_01_blob_move_t, move_limit_minx)
 	Blob b1 = CreateBlob ().lifespan (100U).maxHunger (100U).HP (100U);
 	b1.move (2400.0, 3.0 * M_PI / 2.0, "");
 
-	EXPECT_DOUBLE_EQ (b1.x (), -1000.0);
+	EXPECT_DOUBLE_EQ (b1.x (), -1500.0);
 }
 
 TEST (test_07_01_blob_move_t, move_limit_maxx)
@@ -170,7 +170,7 @@ TEST (test_07_01_blob_move_t, move_limit_maxx)
 	Blob b1 = CreateBlob ().lifespan (100U).maxHunger (100U).HP (100U);
 	b1.move (2400.0, M_PI / 2.0, "");
 
-	EXPECT_DOUBLE_EQ (b1.x (), 1000.0);
+	EXPECT_DOUBLE_EQ (b1.x (), 1500.0);
 }
 
 TEST (test_07_01_blob_move_t, move_limit_miny)
@@ -178,7 +178,7 @@ TEST (test_07_01_blob_move_t, move_limit_miny)
 	Blob b1 = CreateBlob ().lifespan (100U).maxHunger (100U).HP (100U);
 	b1.move (1200.0, M_PI, "");
 
-	EXPECT_DOUBLE_EQ (b1.y (), -500.0);
+	EXPECT_DOUBLE_EQ (b1.y (), -750.0);
 }
 
 TEST (test_07_01_blob_move_t, move_limit_maxy)
@@ -186,7 +186,7 @@ TEST (test_07_01_blob_move_t, move_limit_maxy)
 	Blob b1 = CreateBlob ().lifespan (100U).maxHunger (100U).HP (100U);
 	b1.move (1200.0, 0.0, "");
 
-	EXPECT_DOUBLE_EQ (b1.y (), 500.0);
+	EXPECT_DOUBLE_EQ (b1.y (), 750.0);
 }
 
 TEST (test_07_01_blob_move_t, move_hitPoints_recover)
