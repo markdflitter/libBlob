@@ -30,14 +30,6 @@ TEST (test_08_01_blob_hunger_t, gets_hungry_when_inflicting_damage)
 	EXPECT_DOUBLE_EQ (attacker.hunger (), 5.0);
 }
 
-TEST (test_08_01_blob_hunger_t, stops_getting_hungrier)
-{
-	Blob b1 = CreateBlob ().HP (100U).damage (10U).lifespan (100U).maxHunger (100U);
-	
-	b1.getHungrier (1000.0);
-	EXPECT_DOUBLE_EQ (b1.hunger (), 100.0);
-}
-
 TEST (test_08_01_blob_hunger_t, hunger_reduces_HP)
 {
 	Blob b1 = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);

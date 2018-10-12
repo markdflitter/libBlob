@@ -195,40 +195,38 @@ public:
 		}
 	}
 
+	void limitHPtoMax (unsigned int previousDamage)
+	{
+		// this is so that if we increase max (due to aging), then our current HP go up by the same amount
+		setHP (maxHP () - previousDamage);
+	}
+
 	void growOlder ()
 	{
 		if (!isDead ())
 		{
-
-			unsigned int damage = maxHP () - HP ();
+			unsigned int previousDamage = maxHP () - HP ();
 			if (++_age >= lifespan ())
 			{
 				kill ();
 			}	
-			if (_HP > maxHP ()) 
-			{
-				setHP (maxHP ());
-			}
-			else
-			{
-				setHP (maxHP () - damage);
-			}
+			limitHPtoMax (previousDamage);
 			if (_HP < maxHP ())
 			{
 				setHP (_HP + 1U);
 			}
-			
-
 		}
 	}
 
 	void getHungrier (double amount)
 	{
+		unsigned int previousDamage = maxHP () - HP ();
 		_hunger += amount;
 		if (_hunger > (double) _maxHunger)
 		{
 			_hunger = (double) _maxHunger;
 		}
+		limitHPtoMax (previousDamage);
 	}
 
 	void takeDamage (unsigned int damage)
