@@ -33,14 +33,35 @@ TEST (test_08_00_blob_age_t, gets_older_when_moving)
 	EXPECT_EQ (b1.age (), 1U);
 }
 
-TEST (test_08_00_blob_age_t, gets_older_when_taking_damage)
+TEST (test_08_00_blob_age_t, gets_older_when_inflicting_damage)
 {
-	Blob b1 = CreateBlob ().HP (100U).lifespan (100U);
-	EXPECT_EQ (b1.age (), 0U);
+	Blob target = CreateBlob ().HP (100U).lifespan (100U);
+	Blob attacker = CreateBlob ().HP (100U).lifespan (100U);
+	EXPECT_EQ (attacker.age (), 0U);
 	
-	b1.takeDamage (100);
-	EXPECT_EQ (b1.age (), 1U);
+	attacker.inflictDamage (&target);
+	EXPECT_EQ (attacker.age (), 1U);
+}
 
+TEST (test_08_00_blob_age_t, does_not_age_when_taking_damage)
+{
+	Blob target = CreateBlob ().HP (100U).lifespan (100U);
+	EXPECT_EQ (target.age (), 0U);
+	
+	target.takeDamage (10U);
+	EXPECT_EQ (target.age (), 0U);
+}
+
+TEST (test_08_00_blob_age_t, does_not_age_when_retaliating)
+{
+	Blob target = CreateBlob ().HP (100U).lifespan (100U);
+	Blob attacker = CreateBlob ().HP (100U).lifespan (100U);
+	EXPECT_EQ (target.age (), 0U);
+	EXPECT_EQ (attacker.age (), 0U);
+	
+	target.retaliate (&attacker);
+	EXPECT_EQ (target.age (), 0U);
+	EXPECT_EQ (attacker.age (), 0U);
 }
 
 TEST (test_08_00_blob_age_t, ageRatio_when_born)
@@ -165,7 +186,7 @@ TEST (test_08_00_blob_age_t, blobs_change_speed_with_age)
 			EXPECT_LT (b1.speed (), previous);
 		}
 		previous = b1.speed ();
-		EXPECT_DOUBLE_EQ (b1.baseSpeed (), 100.0);
+		EXPECT_DOUBLE_EQ (b1.baseSpeed (), (i == 9) ? 0.0 : 100.0);
 	}
 
 }
@@ -262,6 +283,17 @@ TEST (test_08_00_blob_age_t, blobs_that_start_dead_do_not_age)
 	
 	b1.growOlder ();
 	EXPECT_EQ (b1.age (), 0U);
+}
+
+TEST (test_08_00_blob_age_t, blobs_age_1_year_when_attacked)
+{
+	std::vector <Blob> blobs {CreateBlob ().HP (100U).damage (10U).lifespan (5U),
+			    	  CreateBlob ().HP (1000U).damage (50U).lifespan (5U)};
+	blobs[0].chooseNextAction (blobs)->apply ();
+	blobs[1].chooseNextAction (blobs)->apply ();
+	
+	EXPECT_EQ (blobs[0].age (), 1U);
+	EXPECT_EQ (blobs[1].age (), 1U);
 }
 
 int main (int argc, char** argv) 

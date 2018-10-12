@@ -11,17 +11,27 @@ public:
 	{
 	}
 
-	unsigned int damage () const
-	{
-		return _damage;
-	}
-
 	void takeDamage (unsigned int damage)
 	{
 		_damageTaken = damage;
 	}
 
+	void inflictDamage (Target* target)
+	{
+		_damageInflicted = _damage;
+		target->takeDamage (_damage);
+	}
+
+	void retaliate (Target* target)
+	{
+		_damageRetaliated = _damage;
+		target->takeDamage (_damage);
+	}
+
+
 	unsigned int _damageTaken = 0;
+	unsigned int _damageInflicted = 0;
+	unsigned int _damageRetaliated = 0;
 	unsigned int _damage = 0;
 };
 
@@ -95,22 +105,7 @@ TEST(test_02_01_fight_t, not_equal_different_attacker)
 	EXPECT_TRUE (a1 != a2);
 }
 
-TEST (test_02_01_fight_t, output)
-{
-	TargetMock tm1 (10U);
-	TargetMock tm2 (20U);
-	std::shared_ptr<Action> a (new Fight (&tm1, &tm2));
-	EXPECT_TRUE (std::dynamic_pointer_cast <Fight> (a));
-	std::shared_ptr <Fight> m (std::dynamic_pointer_cast <Fight> (a));
-	
-	std::stringstream s;
-
-	s << *m;
-
-	EXPECT_EQ (s.str (), "20");
-}
-
-TEST (test_02_01_fight_t, apply_target_is_damaged)
+TEST (test_02_01_fight_t, apply_target)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
@@ -118,28 +113,22 @@ TEST (test_02_01_fight_t, apply_target_is_damaged)
 	
 	a->apply ();
 	EXPECT_EQ (tm1._damageTaken, 20U);
-}
-
-TEST (test_02_01_fight_t, apply_attacker_is_damaged)
-{
-	TargetMock tm1 (10U);
-	TargetMock tm2 (20U);
-	std::shared_ptr<Action> a (new Fight (&tm1, &tm2));
-	
-	a->apply ();
+	EXPECT_EQ (tm1._damageInflicted, 0U);
+	EXPECT_EQ (tm1._damageRetaliated, 10U);
 	EXPECT_EQ (tm2._damageTaken, 10U);
+	EXPECT_EQ (tm2._damageInflicted, 20U);
+	EXPECT_EQ (tm2._damageRetaliated, 0U);
 }
 
 TEST (test_02_01_fight_t, applies_to_blobs)
 {
-	Blob target = CreateBlob ().HP (20U).damage (4U).lifespan (100U);
-	Blob attacker = CreateBlob ().HP (40U).damage (6U).lifespan (100U);
+	Blob target = CreateBlob ().HP (20U).damage (4U).lifespan (1000U);
+	Blob attacker = CreateBlob ().HP (40U).damage (6U).lifespan (1000U);
 	EXPECT_EQ (target.HP (), 10U);
 	EXPECT_EQ (attacker.HP (), 20U);
 
 	std::shared_ptr <Action> a = attacker.createActionFight (target);
 	a->apply ();
-
 	EXPECT_EQ (target.HP (), 7U);
 	EXPECT_EQ (attacker.HP (), 19U);
 }

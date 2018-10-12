@@ -31,6 +31,7 @@ public:
 	      , _aggression (0.0)
 	      , _lifespan (0U)
 	      , _damage (0U)
+	      , _maxHunger (0U)
 	      , _moveDirectionFn ([] (double) {return 0.0;})
 	      , _aggressionFn ([](double a) {return a;})
 		{
@@ -46,6 +47,7 @@ public:
 	CreateBlob aggression (double aggression) {CreateBlob b (*this); b._aggression = aggression; return b;}
 	CreateBlob lifespan (unsigned int lifespan) {CreateBlob b (*this); b._lifespan = lifespan; return b;}
 	CreateBlob damage (unsigned int damage) {CreateBlob b (*this); b._damage = damage; return b;}
+	CreateBlob maxHunger (unsigned int maxHunger) {CreateBlob b (*this); b._maxHunger = maxHunger; return b;}
 	CreateBlob moveDirectionFn (std::function<double(double)> moveDirectionFn)
 		{CreateBlob b (*this); b._moveDirectionFn = moveDirectionFn; return b;}
 	CreateBlob aggressionFn (std::function<double(double)> aggressionFn)
@@ -63,6 +65,7 @@ private:
 	double _aggression;
 	unsigned int _lifespan;
 	unsigned int _damage;
+	unsigned int _maxHunger;
 
 	std::function<double(double)> _moveDirectionFn;
 	std::function<double(double)> _aggressionFn;
@@ -81,12 +84,14 @@ public:
 		, _aggression (params._aggression)
 		, _lifespan (params._lifespan)
 		, _baseDamage (params._damage)
+		, _maxHunger (params._maxHunger)
 		, _moveDirectionFn (params._moveDirectionFn)
 		, _aggressionFn (params._aggressionFn)
 		,  _state ("newborn")
  		, _fatigue (0)
 		, _tired (false)
 		, _age (0)
+		, _hunger (0U)
 		, _dead (false)
 	{
 		_points.push_back (params._position);
@@ -97,17 +102,19 @@ public:
 	double x () const {return _points.back ().x ();}
 	double y () const {return _points.back ().y ();}
 	double baseSpeed () const {return _speed;}
-	double speed () const {return _speed * (double (_HP)) / baseHP ();}
-	double runningSpeed () const {return _runningSpeed * (double (_HP)) / baseHP ();}
+	double speed () const {return (baseHP () == 0) ? 0U : _speed * (double (_HP)) / baseHP ();}
+	double runningSpeed () const {return (baseHP () == 0) ? 0U :_runningSpeed * (double (_HP)) / baseHP ();}
 	double smell () const {return _baseSmell * ageRatio ();}
 	unsigned int baseHP () const {return _baseHP;}
 	unsigned int HP () const {return _HP;}
 	unsigned int maxHP () const {return ((unsigned int) ((_baseHP * ageRatio ()) + 0.5));}
 	unsigned int baseDamage () const {return _baseDamage;}
-	unsigned int damage () const {return ((unsigned int) ((_baseDamage * (double (_HP)) / baseHP ()) + 0.5));}
+	unsigned int damage () const {return (baseHP () == 0) ? 0U : ((unsigned int) ((_baseDamage * (double (_HP)) / baseHP ()) + 0.5));}
 	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
- 	unsigned int lifespan () const {return _lifespan;}
+ 	unsigned int maxHunger () const {return _maxHunger;}
+ 	unsigned int hunger () const {return _hunger;}
+	unsigned int lifespan () const {return _lifespan;}
 	unsigned int age () const {return _age;}
 	double ageRatio () const
 	{
@@ -164,7 +171,19 @@ public:
 	{
 		_dead = true;
 		_state = "dead";
+		_speed = 0.0;
+		_runningSpeed = 0.0;
+		_baseSmell = 0.0;
+		_baseHP = 0U;
+		_HP = 0U;
+		_baseDamage = 0U;
+		_endurance = 0U;
+		_aggression = 0.0;
+		_maxHunger = 0U;
+		_hunger = 0U;
 	}
+
+
 
 	void setHP (unsigned int newHP)
 	{
@@ -181,7 +200,10 @@ public:
 		{
 
 			unsigned int damage = maxHP () - HP ();
-			_age++;
+			if (++_age >= lifespan ())
+			{
+				kill ();
+			}	
 			if (_HP > maxHP ()) 
 			{
 				setHP (maxHP ());
@@ -194,17 +216,13 @@ public:
 			{
 				setHP (_HP + 1U);
 			}
-			if (age () >= lifespan ())
-			{
-				kill ();
-			}
+			
 
 		}
 	}
 
 	void takeDamage (unsigned int damage)
 	{
-		growOlder ();
 		if (_HP >= damage)
 		{
 			setHP (_HP - damage);
@@ -214,6 +232,18 @@ public:
 			setHP (0);
 		}
 	}
+
+	void inflictDamage (Target* target)
+	{
+		growOlder ();
+		target->takeDamage (damage ());
+	}
+
+	void retaliate (Target* target)
+	{
+		target->takeDamage (damage ());
+	}
+
 
         void move (double speed, double angleInRadians, const std::string& newState) 
 	{
@@ -415,6 +445,8 @@ private:
 	double _aggression;
 	unsigned int _lifespan;
 	unsigned int _baseDamage;
+	unsigned int _maxHunger;
+	unsigned int _hunger;
 
 	double _previousAngleInRadians = 0;
 

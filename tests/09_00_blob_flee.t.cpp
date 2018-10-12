@@ -3,7 +3,7 @@
 
 TEST (test_09_00_blob_flee_t, flee)
 {
-	Blob runner = CreateBlob ().runningSpeed (13.0);
+	Blob runner = CreateBlob ().runningSpeed (13.0).HP (100U).lifespan (100U);
 	Blob runningFrom = CreateBlob ();
 
 	std::shared_ptr<Action> a = runner.createActionFlee (runningFrom);

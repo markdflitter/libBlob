@@ -3,7 +3,7 @@
 
 TEST (test_12_00_blob_tired_t, gets_tired_when_hunting_and_recovers)
 {
-	Blob attacker = CreateBlob ().position (make_pt (-100.0, -100.0)).speed (1.0).runningSpeed (10.0).endurance (2U);
+	Blob attacker = CreateBlob ().lifespan (100U).HP (100U).position (make_pt (-100.0, -100.0)).speed (1.0).runningSpeed (10.0).endurance (2U);
 	Blob target = CreateBlob ();
 	
 	EXPECT_FALSE (attacker.isTired ());
@@ -46,7 +46,7 @@ TEST (test_12_00_blob_tired_t, gets_tired_when_hunting_and_recovers)
 
 TEST (test_12_00_blob_tired_t, gets_tired_when_fleeing_and_recovers)
 {
-	Blob runner = CreateBlob ().speed (10.0).runningSpeed (20.0).endurance (2U);
+	Blob runner = CreateBlob ().lifespan (100U).HP (100U).speed (10.0).runningSpeed (20.0).endurance (2U);
 	Blob attacker = CreateBlob ();
 	
 	EXPECT_FALSE (runner.isTired ());

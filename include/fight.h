@@ -9,7 +9,8 @@ class Target
 public:
 	virtual ~Target () {}
 	virtual void takeDamage (unsigned int damage) = 0;
-	virtual unsigned int damage () const = 0;
+	virtual void inflictDamage (Target* target) = 0;
+	virtual void retaliate (Target* target) = 0;
 };
 
 class Fight : public Action
@@ -32,24 +33,15 @@ class Fight : public Action
 		}
 
 		void apply ();
-
-		friend std::ostream& operator<< (std::ostream& s, const Fight& a);
 	public:
 		Target* _target;
 		Target* _attacker;
 };
 
-inline std::ostream& operator<< (std::ostream& s, const Fight& a)
-{
-	s << a._attacker->damage ();
-	return s; 
-}
-
 inline void Fight::apply ()
 {
-	unsigned int retaliation = _target->damage ();
-	_target->takeDamage (_attacker->damage ());
-	_attacker->takeDamage (retaliation);
+	_attacker->inflictDamage (_target);
+	_target->retaliate (_attacker);
 }
 
 #endif

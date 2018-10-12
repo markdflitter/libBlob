@@ -22,7 +22,7 @@ TEST (test_03_01_blob_history_t, history)
 
 TEST (test_03_01_blob_history_t, history_length)
 {
-	Blob b1 = CreateBlob ().position (make_pt (10.0, -20.0));
+	Blob b1 = CreateBlob ().position (make_pt (10.0, -500.0));
 	for (int i = 0; i < 1000; i++)
 	{
 		b1.move (1.0, 0, "");
@@ -32,10 +32,10 @@ TEST (test_03_01_blob_history_t, history_length)
 	EXPECT_EQ (history.size (), 200U);
 	
 	EXPECT_DOUBLE_EQ (history[0].x (), 10.0);
- 	EXPECT_DOUBLE_EQ (history[0].y (), 781.0);
+ 	EXPECT_DOUBLE_EQ (history[0].y (), 301.0);
 	
 	EXPECT_DOUBLE_EQ (history[199].x (), 10.0);
- 	EXPECT_DOUBLE_EQ (history[199].y (), 980.0);
+ 	EXPECT_DOUBLE_EQ (history[199].y (), 500.0);
 }
 
 int main (int argc, char** argv) 
