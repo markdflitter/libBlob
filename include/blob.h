@@ -116,7 +116,7 @@ public:
 	unsigned int baseDamage () const {return _baseDamage;}
 	unsigned int damage () const {return (baseHP () == 0) ? 0U : ((unsigned int) ((_baseDamage * (double (_HP)) / baseHP ()) + 0.5));}
 	unsigned int endurance () const {return _endurance;}
-	double aggression () const {return _aggression;}
+	double aggression () const {return isDead () ? _aggression : ((2.0 - hungerRatio ()) * _aggression);}
  	unsigned int maxHunger () const {return _maxHunger;}
  	double hunger () const {return _hunger;}
  	unsigned int size () const {return ((unsigned int) ((((double) _size) * ageRatio ()) + 0.5)) ;}
@@ -412,7 +412,7 @@ public:
 			{
 				if (b.isDead ())
 				{
-	 				if (b.size () > 0U && hungerRatio () < 0.75)
+	 				if (b.size () > 0U && hungerRatio () < 0.30)
 					{
 						if (isInSameSquare (b))
 						{
@@ -486,7 +486,7 @@ public:
 		}
 	}
 private:
-	Pt<double> WORLD_SIZE = Pt<double>(1000.0, 500.0);
+	Pt<double> WORLD_SIZE = Pt<double>(1500.0, 750.0);
 
 	std::vector<Pt<double>> _points;
 
