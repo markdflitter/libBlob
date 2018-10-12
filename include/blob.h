@@ -13,6 +13,7 @@
 #include <action.h>
 #include <movement.h>
 #include <fight.h>
+#include <eat.h>
 #include <rnd.h>
 #include "option.h"
 #include <assert.h>
@@ -32,6 +33,7 @@ public:
 	      , _lifespan (0U)
 	      , _damage (0U)
 	      , _maxHunger (0U)
+	      , _size (0U)
 	      , _moveDirectionFn ([] (double) {return 0.0;})
 	      , _aggressionFn ([](double a) {return a;})
 		{
@@ -48,6 +50,7 @@ public:
 	CreateBlob lifespan (unsigned int lifespan) {CreateBlob b (*this); b._lifespan = lifespan; return b;}
 	CreateBlob damage (unsigned int damage) {CreateBlob b (*this); b._damage = damage; return b;}
 	CreateBlob maxHunger (unsigned int maxHunger) {CreateBlob b (*this); b._maxHunger = maxHunger; return b;}
+	CreateBlob size (unsigned int size) {CreateBlob b (*this); b._size = size; return b;}
 	CreateBlob moveDirectionFn (std::function<double(double)> moveDirectionFn)
 		{CreateBlob b (*this); b._moveDirectionFn = moveDirectionFn; return b;}
 	CreateBlob aggressionFn (std::function<double(double)> aggressionFn)
@@ -66,12 +69,13 @@ private:
 	unsigned int _lifespan;
 	unsigned int _damage;
 	unsigned int _maxHunger;
+	unsigned int _size;
 
 	std::function<double(double)> _moveDirectionFn;
 	std::function<double(double)> _aggressionFn;
 };
 
-class Blob : public Moveable, public Target
+class Blob : public Moveable, public Target, public Eater, public Food
 {
 public:
 	Blob (const CreateBlob& params) :
@@ -85,6 +89,7 @@ public:
 		, _lifespan (params._lifespan)
 		, _baseDamage (params._damage)
 		, _maxHunger (params._maxHunger)
+		, _size (params._size)
 		, _moveDirectionFn (params._moveDirectionFn)
 		, _aggressionFn (params._aggressionFn)
 		,  _state ("newborn")
@@ -114,6 +119,7 @@ public:
 	double aggression () const {return _aggression;}
  	unsigned int maxHunger () const {return _maxHunger;}
  	double hunger () const {return _hunger;}
+ 	unsigned int size () const {return ((unsigned int) ((((double) _size) * ageRatio ()) + 0.5)) ;}
 	unsigned int lifespan () const {return _lifespan;}
 	unsigned int age () const {return _age;}
 	double ageRatio () const
@@ -184,8 +190,6 @@ public:
 		_hunger = 0.0;
 	}
 
-
-
 	void setHP (unsigned int newHP)
 	{
 		_HP = newHP;
@@ -241,8 +245,9 @@ public:
 		}
 	}
 
-	void inflictDamage (Target* target)
+	void inflictDamage (Target* target, const std::string& state)
 	{
+		_state = _state;
 		growOlder ();
 		target->takeDamage (damage ());
 		getHungrier (damage ());
@@ -285,7 +290,20 @@ public:
 
 		getHungrier (speed);
 	}
-        
+       
+	void eat (Food* food, const std::string& state)
+	{
+		_state = state;
+		_hunger -= food->takeABite (_hunger);
+	}
+ 
+	unsigned int takeABite (unsigned int biteSize)
+	{
+		unsigned int biteTaken = std::min (biteSize, _size);
+		_size -= biteTaken;
+		return biteTaken;
+	}
+ 
 	std::shared_ptr <Action> createActionDead ()
         {
 		return std::shared_ptr<Action> (new Movement (this, "dead", 0, 0));
@@ -315,7 +333,7 @@ public:
 	
 	std::shared_ptr <Action> createActionFight (Blob& target)
         {
-		return std::shared_ptr <Action> (new Fight (&target, this));
+		return std::shared_ptr <Action> (new Fight (&target, this, "fighting " + target.name ()));
 	}
 
 	std::shared_ptr <Action> createActionAttack (Blob& target)
@@ -330,6 +348,11 @@ public:
 		}
 	}
 
+	std::shared_ptr <Action> createActionEat (Blob& food)
+	{
+		return std::shared_ptr <Action> (new Eat (this, &food, " eating" + food.name ()));
+	}
+
 	double relativeDifference (double v1, double v2) const
 	{
 		assert (v1 >= 0.0);
@@ -341,6 +364,12 @@ public:
 	{
 		return relativeDifference (damage (), b.HP ()) * 2.0;
 	}
+
+	double hungerWeight (const Blob& b) const
+	{
+		return std::min (1.0, ((double) b.size ()) / 2000.0) * (1.0 - hungerRatio ());
+	}
+
 
 	double avoidDamageWeight (const Blob& b) const
 	{
@@ -379,9 +408,23 @@ public:
 
 		for (auto& b : others)
 		{
-			if ((&b != this) && !b.isDead ())
+			if (&b != this)
 			{
-				if (isInSameSquare (b) || canSmell (b))
+				if (b.isDead ())
+				{
+	 				if (b.size () > 0U && hungerRatio () < 0.75)
+					{
+						if (isInSameSquare (b))
+						{
+							options.push_back (Option (::eat, 2 * hungerWeight (b) + _aggressionFn (_aggression), &b));
+						}
+						else if (canSmell (b))
+						{
+							options.push_back (Option (attack, (2 * hungerWeight (b) * distanceWeight (b)) + _aggressionFn (_aggression), &b));
+						}
+					}
+				}
+				else if (isInSameSquare (b) || canSmell (b))
 				{
 					options.push_back (Option (attack, attackWeight (b) + _aggressionFn (_aggression), &b));
 					options.push_back (Option {flee, fleeWeight (b) - _aggressionFn (_aggression), &b});
@@ -437,6 +480,8 @@ public:
 					return createActionFlee (*(selectedOption.target ()));
 				case wander:
 					return createActionWander ();
+				case ::eat:
+					return createActionEat (*(selectedOption.target ()));
 			}
 		}
 	}
@@ -457,6 +502,7 @@ private:
 	unsigned int _baseDamage;
 	unsigned int _maxHunger;
 	double _hunger;
+	unsigned int _size;
 
 	double _previousAngleInRadians = 0;
 

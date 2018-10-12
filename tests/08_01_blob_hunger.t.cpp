@@ -26,7 +26,7 @@ TEST (test_08_01_blob_hunger_t, gets_hungry_when_inflicting_damage)
 	Blob target = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
 	EXPECT_DOUBLE_EQ (attacker.hunger (), 0.0);
 	
-	attacker.inflictDamage (&target);
+	attacker.inflictDamage (&target, "");
 	EXPECT_DOUBLE_EQ (attacker.hunger (), 5.0);
 }
 

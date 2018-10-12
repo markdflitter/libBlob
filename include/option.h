@@ -1,7 +1,7 @@
 #ifndef INCLUDED_OPTION_H
 #define INCLUDED_OPTION_H
 
-enum action_t {attack, flee, wander};
+enum action_t {attack, flee, wander, eat};
 
 class Blob;
 

@@ -9,16 +9,17 @@ class Target
 public:
 	virtual ~Target () {}
 	virtual void takeDamage (unsigned int damage) = 0;
-	virtual void inflictDamage (Target* target) = 0;
+	virtual void inflictDamage (Target* target, const std::string& state) = 0;
 	virtual void retaliate (Target* target) = 0;
 };
 
 class Fight : public Action
 {
 	public:
-		Fight (Target* target, Target* attacker) :
+		Fight (Target* target, Target* attacker, const std::string& state) :
 			_target (target)
 		      , _attacker (attacker)
+		      , _state (state)
 		{
 		}
 
@@ -36,11 +37,12 @@ class Fight : public Action
 	public:
 		Target* _target;
 		Target* _attacker;
+		std::string _state;
 };
 
 inline void Fight::apply ()
 {
-	_attacker->inflictDamage (_target);
+	_attacker->inflictDamage (_target, _state);
 	_target->retaliate (_attacker);
 }
 

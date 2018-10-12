@@ -16,7 +16,7 @@ public:
 		_damageTaken = damage;
 	}
 
-	void inflictDamage (Target* target)
+	void inflictDamage (Target* target, const std::string& state)
 	{
 		_damageInflicted = _damage;
 		target->takeDamage (_damage);
@@ -39,7 +39,7 @@ TEST(test_02_01_fight_t, create)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	Fight a (&tm1, &tm2);
+	Fight a (&tm1, &tm2, "");
 	EXPECT_EQ (a._target, &tm1);
 	EXPECT_EQ (a._attacker, &tm2);
 }
@@ -48,7 +48,7 @@ TEST(test_02_01_fight_t, equal_to_self)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	Fight a (&tm1, &tm2);
+	Fight a (&tm1, &tm2, "");
 	EXPECT_TRUE (a == a);
 }
 
@@ -56,8 +56,8 @@ TEST (test_02_01_fight_t, equal_to_other)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	Fight a1 (&tm1, &tm2);
-	Fight a2 (&tm1, &tm2);
+	Fight a1 (&tm1, &tm2, "");
+	Fight a2 (&tm1, &tm2, "");
 	EXPECT_TRUE (a1 == a2);
 }
 
@@ -65,8 +65,8 @@ TEST (test_02_01_fight_t, equal_false_different_target)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	Fight a1 (&tm1, &tm2);
-	Fight a2 (&tm2, &tm2);
+	Fight a1 (&tm1, &tm2, "");
+	Fight a2 (&tm2, &tm2, "");
 	EXPECT_FALSE (a1 == a2);
 }
 
@@ -74,8 +74,8 @@ TEST (test_02_01_fight_t, equal_false_different_attacker)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	Fight a1 (&tm1, &tm2);
-	Fight a2 (&tm1, &tm1);
+	Fight a1 (&tm1, &tm2, "");
+	Fight a2 (&tm1, &tm1, "");
 	EXPECT_FALSE (a1 == a2);
 }
 
@@ -83,7 +83,7 @@ TEST(test_02_01_fight_t, not_equal_equal_to_self)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	Fight a (&tm1, &tm2);
+	Fight a (&tm1, &tm2, "");
 	EXPECT_FALSE (a != a);
 }
 
@@ -91,8 +91,8 @@ TEST(test_02_01_fight_t, not_equal_different_target)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	Fight a1 (&tm1, &tm2);
-	Fight a2 (&tm2, &tm2);
+	Fight a1 (&tm1, &tm2, "");
+	Fight a2 (&tm2, &tm2, "");
 	EXPECT_TRUE (a1 != a2);
 }
 
@@ -100,8 +100,8 @@ TEST(test_02_01_fight_t, not_equal_different_attacker)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	Fight a1 (&tm1, &tm2);
-	Fight a2 (&tm1, &tm1);
+	Fight a1 (&tm1, &tm2, "");
+	Fight a2 (&tm1, &tm1, "");
 	EXPECT_TRUE (a1 != a2);
 }
 
@@ -109,7 +109,7 @@ TEST (test_02_01_fight_t, apply_target)
 {
 	TargetMock tm1 (10U);
 	TargetMock tm2 (20U);
-	std::shared_ptr<Action> a (new Fight (&tm1, &tm2));
+	std::shared_ptr<Action> a (new Fight (&tm1, &tm2, ""));
 	
 	a->apply ();
 	EXPECT_EQ (tm1._damageTaken, 20U);

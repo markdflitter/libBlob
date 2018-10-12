@@ -39,7 +39,7 @@ TEST (test_08_00_blob_age_t, gets_older_when_inflicting_damage)
 	Blob attacker = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
 	EXPECT_EQ (attacker.age (), 0U);
 	
-	attacker.inflictDamage (&target);
+	attacker.inflictDamage (&target, "");
 	EXPECT_EQ (attacker.age (), 1U);
 }
 

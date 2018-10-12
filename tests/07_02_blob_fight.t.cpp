@@ -19,7 +19,7 @@ TEST (test_07_02_blob_fight_t, inflictsDamage)
 	EXPECT_EQ (target.HP (), 50U);
 	EXPECT_FALSE (attacker.isDead ());
 
-	attacker.inflictDamage (&target);
+	attacker.inflictDamage (&target, "");
 	EXPECT_EQ (target.HP (), 45U);
 	EXPECT_FALSE (target.isDead ());
 }
@@ -42,7 +42,7 @@ TEST (test_07_02_blob_fight_t, does_not_retaliate_if_dead)
 	EXPECT_EQ (target.HP (), 50U);
 	EXPECT_FALSE (attacker.isDead ());
 
-	attacker.inflictDamage (&target);
+	attacker.inflictDamage (&target, "");
 	EXPECT_TRUE (target.isDead ());
 	target.retaliate (&attacker);
 	EXPECT_EQ (attacker.HP (), 50U);
