@@ -2,8 +2,8 @@
 #include <blob.h>
 // this tests the mapping from possibility to real action
 
-auto weaker = CreateBlob ().HP (50U).smell (100.0).position (make_pt (5.0, 5.0)).lifespan (1000u);
-auto stronger = CreateBlob ().HP (200U).smell (100.0).damage (100U).position (make_pt (10.0, 10.0)).lifespan (1000U);
+auto weaker = CreateBlob ().HP (50U).smell (100.0).position (make_pt (5.0, 5.0)).lifespan (1000u).maxHunger (100U);
+auto stronger = CreateBlob ().HP (200U).smell (100.0).damage (100U).position (make_pt (10.0, 10.0)).lifespan (1000U).maxHunger (100U);
 
 TEST (test_11_06_blob_chooseNextAction_t, fight)
 {

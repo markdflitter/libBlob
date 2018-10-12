@@ -3,7 +3,7 @@
 
 TEST (test_08_00_blob_age_t, grows_older)
 {
-	Blob b1 = CreateBlob ().HP (100U).lifespan (100U);
+	Blob b1 = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
 	EXPECT_EQ (b1.age (), 0U);
 	
 	b1.growOlder ();
@@ -26,7 +26,7 @@ TEST (test_08_00_blob_age_t, dies_of_old_age)
 
 TEST (test_08_00_blob_age_t, gets_older_when_moving)
 {
-	Blob b1 = CreateBlob ().HP (100U).lifespan (100U);
+	Blob b1 = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
 	EXPECT_EQ (b1.age (), 0U);
 	
 	b1.move (0.0, 0.0, "");
@@ -35,8 +35,8 @@ TEST (test_08_00_blob_age_t, gets_older_when_moving)
 
 TEST (test_08_00_blob_age_t, gets_older_when_inflicting_damage)
 {
-	Blob target = CreateBlob ().HP (100U).lifespan (100U);
-	Blob attacker = CreateBlob ().HP (100U).lifespan (100U);
+	Blob target = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
+	Blob attacker = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
 	EXPECT_EQ (attacker.age (), 0U);
 	
 	attacker.inflictDamage (&target);
@@ -45,7 +45,7 @@ TEST (test_08_00_blob_age_t, gets_older_when_inflicting_damage)
 
 TEST (test_08_00_blob_age_t, does_not_age_when_taking_damage)
 {
-	Blob target = CreateBlob ().HP (100U).lifespan (100U);
+	Blob target = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
 	EXPECT_EQ (target.age (), 0U);
 	
 	target.takeDamage (10U);
@@ -54,8 +54,8 @@ TEST (test_08_00_blob_age_t, does_not_age_when_taking_damage)
 
 TEST (test_08_00_blob_age_t, does_not_age_when_retaliating)
 {
-	Blob target = CreateBlob ().HP (100U).lifespan (100U);
-	Blob attacker = CreateBlob ().HP (100U).lifespan (100U);
+	Blob target = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
+	Blob attacker = CreateBlob ().HP (100U).lifespan (100U).maxHunger (100U);
 	EXPECT_EQ (target.age (), 0U);
 	EXPECT_EQ (attacker.age (), 0U);
 	

@@ -107,7 +107,7 @@ public:
 	double smell () const {return _baseSmell * ageRatio ();}
 	unsigned int baseHP () const {return _baseHP;}
 	unsigned int HP () const {return _HP;}
-	unsigned int maxHP () const {return ((unsigned int) ((_baseHP * ageRatio ()) + 0.5));}
+	unsigned int maxHP () const {return ((unsigned int) ((_baseHP * hungerRatio () * ageRatio ()) + 0.5));}
 	unsigned int baseDamage () const {return _baseDamage;}
 	unsigned int damage () const {return (baseHP () == 0) ? 0U : ((unsigned int) ((_baseDamage * (double (_HP)) / baseHP ()) + 0.5));}
 	unsigned int endurance () const {return _endurance;}
@@ -124,6 +124,7 @@ public:
 
 		return a * ((double) _age) * _age + b * ((double) _age) + c;
 	}
+	double hungerRatio () const {return (_maxHunger - _hunger) / _maxHunger;}
 	std::string state () const {return _state;}
 
 	double fatigue () const {return _fatigue;}
