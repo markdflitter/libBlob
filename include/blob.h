@@ -91,7 +91,7 @@ public:
  		, _fatigue (0)
 		, _tired (false)
 		, _age (0)
-		, _hunger (0U)
+		, _hunger (0.0)
 		, _dead (false)
 	{
 		_points.push_back (params._position);
@@ -113,7 +113,7 @@ public:
 	unsigned int endurance () const {return _endurance;}
 	double aggression () const {return _aggression;}
  	unsigned int maxHunger () const {return _maxHunger;}
- 	unsigned int hunger () const {return _hunger;}
+ 	double hunger () const {return _hunger;}
 	unsigned int lifespan () const {return _lifespan;}
 	unsigned int age () const {return _age;}
 	double ageRatio () const
@@ -180,7 +180,7 @@ public:
 		_endurance = 0U;
 		_aggression = 0.0;
 		_maxHunger = 0U;
-		_hunger = 0U;
+		_hunger = 0.0;
 	}
 
 
@@ -221,6 +221,15 @@ public:
 		}
 	}
 
+	void getHungrier (double amount)
+	{
+		_hunger += amount;
+		if (_hunger > (double) _maxHunger)
+		{
+			_hunger = (double) _maxHunger;
+		}
+	}
+
 	void takeDamage (unsigned int damage)
 	{
 		if (_HP >= damage)
@@ -237,6 +246,7 @@ public:
 	{
 		growOlder ();
 		target->takeDamage (damage ());
+		getHungrier (damage ());
 	}
 
 	void retaliate (Target* target)
@@ -244,11 +254,10 @@ public:
 		target->takeDamage (damage ());
 	}
 
-
         void move (double speed, double angleInRadians, const std::string& newState) 
 	{
 		growOlder ();
-
+		
 		_previousAngleInRadians = angleInRadians;
 
 		double denormalisedMoveDirection = _previousAngleInRadians - M_PI / 2;
@@ -274,6 +283,8 @@ public:
 		}
 		if (_fatigue == 0) _tired = false;
 		if (_fatigue == _endurance) _tired = true; 
+
+		getHungrier (speed);
 	}
         
 	std::shared_ptr <Action> createActionDead ()
@@ -446,7 +457,7 @@ private:
 	unsigned int _lifespan;
 	unsigned int _baseDamage;
 	unsigned int _maxHunger;
-	unsigned int _hunger;
+	double _hunger;
 
 	double _previousAngleInRadians = 0;
 

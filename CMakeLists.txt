@@ -60,6 +60,9 @@ target_link_libraries (test_07_03_blob_attack ${GTEST_LIBRARIES} pthread)
 add_executable (test_08_00_blob_age tests/08_00_blob_age.t.cpp)
 target_link_libraries (test_08_00_blob_age ${GTEST_LIBRARIES} pthread)
 
+add_executable (test_08_01_blob_hunger tests/08_01_blob_hunger.t.cpp)
+target_link_libraries (test_08_01_blob_hunger ${GTEST_LIBRARIES} pthread)
+
 add_executable (test_09_00_blob_flee tests/09_00_blob_flee.t.cpp)
 target_link_libraries (test_09_00_blob_flee ${GTEST_LIBRARIES} pthread)
 
@@ -125,6 +128,7 @@ gtest_discover_tests (test_07_01_blob_move)
 gtest_discover_tests (test_07_02_blob_fight)
 gtest_discover_tests (test_07_03_blob_attack)
 gtest_discover_tests (test_08_00_blob_age)
+gtest_discover_tests (test_08_01_blob_hunger)
 gtest_discover_tests (test_09_00_blob_flee)
 gtest_discover_tests (test_09_01_blob_hunt)
 gtest_discover_tests (test_09_02_blob_wander)
