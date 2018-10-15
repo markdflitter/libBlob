@@ -5,6 +5,7 @@ printUsage ()
 
 projectType=libraries
 project=libBlob
+copyToSrc=1
 
 clean=
 debug=
@@ -88,3 +89,12 @@ if [ "$test" = "1" ] || [ "$testOnly" = "1" ]; then
 fi
 
 popd
+
+if [ "$copyToSrc" = "1" ]; then
+	if [ -f ./blobUI.app ]; then
+ 		rm -rf ./$project.$targetFolder.app
+	fi
+
+	cp ../../../bld/$projectType/$project/$targetFolder/$project.app ./$project.$targetFolder.app
+fi
+
