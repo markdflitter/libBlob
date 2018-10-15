@@ -213,9 +213,3 @@ TEST (test_07_01_blob_move_t, move_hitPoints_recover_stops_at_max)
 	EXPECT_EQ (b1.HP (), 50U);
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

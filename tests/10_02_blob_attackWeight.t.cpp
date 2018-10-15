@@ -71,9 +71,3 @@ TEST (test_10_02_blob_attackWeight_t, distance_does_not_affect_attackWeight_in_s
 	EXPECT_DOUBLE_EQ (attacker1.attackWeight (defender), attacker2.attackWeight (defender));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

@@ -46,9 +46,3 @@ TEST (test_05_01_isInSameSquare_t, different_squares_but_still_in_range)
 	EXPECT_TRUE (b2.isInSameSquare (b1));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

@@ -2,8 +2,11 @@
 #include <blob.h>
 // this tests the mapping from possibility to real action
 
-auto weaker = CreateBlob ().HP (50U).smell (100.0).position (make_pt (5.0, 5.0)).lifespan (1000u).maxHunger (100U);
-auto stronger = CreateBlob ().HP (200U).smell (100.0).damage (100U).position (make_pt (10.0, 10.0)).lifespan (1000U).maxHunger (100U);
+namespace
+{
+	auto weaker = CreateBlob ().HP (50U).smell (100.0).position (make_pt (5.0, 5.0)).lifespan (1000u).maxHunger (100U);
+	auto stronger = CreateBlob ().HP (200U).smell (100.0).damage (100U).position (make_pt (10.0, 10.0)).lifespan (1000U).maxHunger (100U);
+}
 
 TEST (test_11_06_blob_chooseNextAction_t, fight)
 {
@@ -81,11 +84,5 @@ TEST (test_11_06_blob_chooseNextAction_t, dead_blobs_do_not_age)
 	std::shared_ptr <Action> a = blobs[0].chooseNextAction (blobs);
 	a->apply ();
 	EXPECT_EQ (blobs[0].age (), 0U);
-}
-
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
 }
 

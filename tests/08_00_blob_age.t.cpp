@@ -296,9 +296,3 @@ TEST (test_08_00_blob_age_t, blobs_age_1_year_when_attacked)
 	EXPECT_EQ (blobs[1].age (), 1U);
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

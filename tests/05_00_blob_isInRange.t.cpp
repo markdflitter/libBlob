@@ -55,9 +55,3 @@ TEST (test_05_01_blob_isInRange_t, in_range_xy)
 	EXPECT_TRUE (b2.isInRange (b1, 5.0));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

@@ -70,9 +70,3 @@ TEST (test_10_03_blob_fleeWeight_t, distance_does_not_affect_fleeWeight_in_same_
 	EXPECT_DOUBLE_EQ (defender1.fleeWeight (attacker), defender2.fleeWeight (attacker));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

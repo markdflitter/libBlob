@@ -1,7 +1,10 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-auto blob = CreateBlob ().HP (400U).damage (400U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
+namespace
+{
+	auto blob = CreateBlob ().HP (400U).damage (400U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
+}
 
 TEST (test_11_05_blob_selectBestOption_aggression_t, aggressionFn_is_applied_to_attackWeight)
 {
@@ -133,11 +136,5 @@ TEST (test_11_05_blob_selectBestOption_aggression_t, aggressionFn_forces_flee_in
 	auto option = b[0].chooseBestOption(b);
 
 	EXPECT_TRUE (option.matches (Option (flee, 0, &b[1])));
-}
-
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
 }
 

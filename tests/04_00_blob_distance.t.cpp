@@ -55,9 +55,3 @@ TEST (test_04_00_blob_distance_t, distance_minus_345_triangle_cross_origin)
 	EXPECT_DOUBLE_EQ (b2.distance (b1), 5.0);
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

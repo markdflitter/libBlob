@@ -84,9 +84,3 @@ TEST (test_09_01_blob_hunt_t, catches)
 	EXPECT_TRUE (hunter.isInSameSquare (huntee));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

@@ -24,9 +24,3 @@ TEST(test_07_00_blob_kill_t, is_dead_after_being_killed)
 
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

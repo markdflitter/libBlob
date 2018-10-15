@@ -23,9 +23,3 @@ TEST (test_07_03_blob_attack_t, fights_if_in_same_square)
 	std::shared_ptr <Fight> m (std::dynamic_pointer_cast <Fight> (a));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

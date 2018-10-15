@@ -133,8 +133,3 @@ TEST (test_02_01_fight_t, applies_to_blobs)
 	EXPECT_EQ (attacker.HP (), 19U);
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}

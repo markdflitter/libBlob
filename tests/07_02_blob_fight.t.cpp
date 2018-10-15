@@ -70,9 +70,3 @@ TEST (test_07_02_blob_fight_t, overkill)
 	EXPECT_TRUE (b.isDead ());
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

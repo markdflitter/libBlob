@@ -31,9 +31,3 @@ TEST (test_10_00_blob_relativeDifference_t, relativeDifference_magnitude)
 	EXPECT_GT (b.relativeDifference (1000, 50), b.relativeDifference (1000, 500));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

@@ -51,9 +51,3 @@ TEST (test_10_01_blob_distanceWeight_t, better_smell_gives_higher_weight)
 	EXPECT_GT (highSmellRange.distanceWeight(target), lowSmellRange.distanceWeight (target));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

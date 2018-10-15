@@ -48,9 +48,3 @@ TEST (test_08_01_blob_hunger_t, hunger_starve_to_death)
 	EXPECT_TRUE (b1.isDead ());
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

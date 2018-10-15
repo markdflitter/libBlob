@@ -12,9 +12,3 @@ TEST (test_09_00_blob_flee_t, flee)
 	EXPECT_EQ (*m, Movement (&runner, "running from  (fast)", 13.0, 0.0));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

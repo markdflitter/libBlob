@@ -38,9 +38,3 @@ TEST (test_03_01_blob_history_t, history_length)
  	EXPECT_DOUBLE_EQ (history[199].y (), 500.0);
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

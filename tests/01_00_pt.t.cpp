@@ -34,8 +34,3 @@ TEST (test_01_00_pt_t, make_pt)
 	EXPECT_DOUBLE_EQ (p.y (), 20.0);
 }
 
-int main (int argc, char** argv) {
-  testing::InitGoogleTest (&argc, argv);
-  return RUN_ALL_TESTS();
-}
-

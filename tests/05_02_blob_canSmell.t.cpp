@@ -36,9 +36,3 @@ TEST (test_05_02_blob_canSmell_t, can_smell_each_other)
 	EXPECT_TRUE (b2.canSmell (b1));
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

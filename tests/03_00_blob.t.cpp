@@ -160,8 +160,3 @@ TEST (test_03_00_blob_t, limitHPtoMax_keeps_damage)
 	EXPECT_EQ (b.HP (), 49U);
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}

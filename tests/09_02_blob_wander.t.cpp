@@ -1,10 +1,13 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-double fixed_angle (double previousMoveDirection)
+namespace
 {
-	return previousMoveDirection + M_PI / 4.0;
-};
+	double fixed_angle (double previousMoveDirection)
+	{
+		return previousMoveDirection + M_PI / 4.0;
+	};
+}
 
 TEST (test_09_02_blob_wander_t, fixed_angle_is_fixed)
 {
@@ -159,11 +162,5 @@ TEST (test_09_02_blob_wander_t, wanders_in_a_circle)
 	a->apply ();
         EXPECT_DOUBLE_EQ (b.x (), 10.1);
 	EXPECT_DOUBLE_EQ (b.y (), 20.2);
-}
-
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
 }
 

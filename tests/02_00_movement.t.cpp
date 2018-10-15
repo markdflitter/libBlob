@@ -152,8 +152,3 @@ TEST (test_02_00_movement_t, applies_to_blob)
 	EXPECT_EQ (b1.state (), "because");
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}

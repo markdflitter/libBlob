@@ -87,9 +87,3 @@ TEST (test_12_00_blob_tired_t, gets_tired_when_fleeing_and_recovers)
 	a->apply ();
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

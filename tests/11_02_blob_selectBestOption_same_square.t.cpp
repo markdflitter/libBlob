@@ -1,11 +1,13 @@
 #include <gtest/gtest.h>
 #include <blob.h>
 
-auto weakest = CreateBlob ().HP (25U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
-auto weaker = CreateBlob ().HP (50U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
-auto stronger = CreateBlob ().HP (200U).damage (100U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
-auto strongest = CreateBlob ().HP (200U).damage (200U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
-
+namespace
+{
+	auto weakest = CreateBlob ().HP (25U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
+	auto weaker = CreateBlob ().HP (50U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
+	auto stronger = CreateBlob ().HP (200U).damage (100U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
+	auto strongest = CreateBlob ().HP (200U).damage (200U).position (make_pt (5.0, 5.0)).lifespan (1000U).maxHunger (100U);
+}
 
 TEST (test_11_02_blob_selectBestOption_same_square_t, weaker_flees_stronger)
 {
@@ -57,11 +59,5 @@ TEST (test_11_02_blob_selectBestOption_same_square_t, stronger_wont_attack_if_co
 {
 	std::vector <Blob> b {stronger.aggression (-1.0), weaker};
 	EXPECT_TRUE (b[0].chooseBestOption (b).matches (Option(flee, 0, &b[1])));
-}
-
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
 }
 

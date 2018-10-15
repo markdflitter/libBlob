@@ -135,9 +135,3 @@ TEST (test_11_00_blob_findOptions_t,
 	EXPECT_EQ (actions[7].target (), &blobs[4]);
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-

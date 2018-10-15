@@ -73,9 +73,3 @@ TEST (test_06_00_blob_angle_t, south_west)
 	EXPECT_DOUBLE_EQ (angle, 5 * M_PI / 4);
 }
 
-int main (int argc, char** argv) 
-{
-	testing::InitGoogleTest (&argc, argv);
-	return RUN_ALL_TESTS();
-}
-
