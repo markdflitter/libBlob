@@ -3,6 +3,9 @@ printUsage ()
   echo "./build.sh [-c | --clean] [-d | --debug] [-D | --deep-clean] [-t | --test] [-T | --test-only] [-F | -test-filter <test to run>] [-h | --help]"
 }
 
+projectType=libraries
+project=libBlob
+
 clean=
 debug=
 deepClean=
@@ -12,9 +15,9 @@ testFilter=
 
 while [ "$1" != "" ]; do 
 	case $1 in
-		-c|--clean)		clean=1	;;
+		--clean)		clean=1	;;
+		--deep-clean)		deepClean=1 ;;
 		-d|--debug)		debug=1 ;;
-		-D|--deep-clean)	deepClean=1 ;;
 		-t|--test)		test=1	;;
 		-T|--test-only)		testOnly=1 ;;
 		-F|--test-filter)
@@ -38,33 +41,33 @@ if [ "$debug" = "1" ]; then
 fi
 
 if [ "deepClean" = "1" ]; then
-  rm -rf ../../../bld/libraries/libBlob/$targetFolder
+  rm -rf ../../../bld/$projectType/$project/$targetFolder
 fi
 
 if [ ! -d ../../../bld ]; then
   mkdir ../../../bld
 fi
 
-if [ ! -d ../../../bld/libraries ]; then
-  mkdir ../../../bld/libraries
+if [ ! -d ../../../bld/$projectType ]; then
+  mkdir ../../../bld/$projectType
 fi
 
-if [ ! -d ../../../bld/libraries/libBlob ]; then
-  mkdir ../../../bld/libraries/libBlob
+if [ ! -d ../../../bld/$projectType/$project ]; then
+  mkdir ../../../bld/$projectType/$project
 fi
 
-if [ ! -d ../../../bld/libraries/libBlob/$targetFolder ]; then
-  mkdir ../../../bld/libraries/libBlob/$targetFolder
+if [ ! -d ../../../bld/$projectType/$project/$targetFolder ]; then
+  mkdir ../../../bld/$projectType/$project/$targetFolder
 fi
 
 
-pushd ../../../bld/libraries/libBlob/$targetFolder
+pushd ../../../bld/$projectType/$project/$targetFolder
 
 if [ "$testOnly" != "1" ]; then
 	if [ "$debug" = "1" ]; then
-		cmake ../../../../src/libraries/libBlob -DCMAKE_BUILD_TYPE=Debug
+		cmake ../../../../src/$projectType/$project -DCMAKE_BUILD_TYPE=Debug
 	else
-		cmake ../../../../src/libraries/libBlob
+		cmake ../../../../src/$projectType/$project
 	fi
 
 	if [ "$clean" = "1" ]; then
